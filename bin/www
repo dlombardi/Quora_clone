@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+ require('dotenv').load();
 
 var app = require('../app');
 var debug = require('debug')('generator:server');
