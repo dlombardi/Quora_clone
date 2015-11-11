@@ -11,7 +11,7 @@ var dirs = {
   src: {
     scss: './src/stylesheets/*.scss',
     js: "./src/javascripts/**/*.js",
-    html: "./src/templates/*.html"
+    html: "./src/templates/**/*.html"
   },
   dist: {
     css: './public/css',
@@ -30,8 +30,8 @@ gulp.task('scripts', function(){
   return gulp.src(dirs.src.js)
     .pipe(concat('all.js'))
     .pipe(gulp.dest(dirs.dist.js))
+    .pipe(rename('all.min.js'))
     .pipe(uglify())
-    .pipe(minify())
     .pipe(gulp.dest(dirs.dist.js))
 });
 

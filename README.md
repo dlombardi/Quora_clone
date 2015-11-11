@@ -1,6 +1,5 @@
-## Quora Clone
+# Fullstack MEAN Template
 
-Using Express, Angular, Foundation, SCSS, and Stormpath.
+Setup:  `npm run setup` to reset and install all dependencies.
 
----
-Developed by Darien Lombardi, Samantha Degges, and *Charles Watson* 
+To start up:  `npm start` or `nodemon`.  The server will be available at `localhost:3000`.

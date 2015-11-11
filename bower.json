@@ -1,0 +1,29 @@
+{
+  "name": "quora",
+  "version": "0.0.0",
+  "authors": [
+    "dlombardi <darien.lombardi@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.7",
+    "angular-ui-router": "~0.2.15",
+    "angular-bootstrap": "~0.14.1",
+    "lodash": "~3.10.1",
+    "stormpath-sdk-angularjs": "~0.8.0",
+    "foundation": "~5.5.3",
+    "bootstrap": "~3.3.5",
+    "angular-foundation": "~0.8.0"
+  }
+}

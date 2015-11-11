@@ -1,4 +1,4 @@
 .env
 .env~
-.git
-node_modules
+public/vendor/
+node_modules/
