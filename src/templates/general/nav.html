@@ -26,8 +26,8 @@
 
     <!-- Right Nav Section -->
     <ul class="right">
-      <li><a ui-sref="users.login">Login</a></li>
-      <li><a ng-click='logout()'>Logout</a></li>
+      <li><a ui-sref="users.login" if-not-user>Login</a></li>
+      <li><a ng-click='logout()' if-user>Logout</a></li>
     </ul>
 
     <!-- Left Nav Section -->

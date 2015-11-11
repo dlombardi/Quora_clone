@@ -6,7 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var ExpressStormpath = require('express-stormpath');
+var stormpath = require('express-stormpath');
 
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI || process.env.MONGO_URL);
@@ -17,7 +17,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(ExpressStormpath.init(app,{
+app.use(stormpath.init(app,{
   website: true,
   web: {
     spaRoot: path.join(__dirname,'views','index.jade')
