@@ -1,0 +1,7 @@
+<h1>{{formState}}</h1>
+
+<div id="loginForm">
+  <div ng-if="Login" sp-login-form></div>
+  <div ng-if="!Login" sp-registration-form></div>
+  <button class="btn" ng-click="switchState()">{{currentState}}</button>
+</div>

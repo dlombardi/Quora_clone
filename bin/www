@@ -1,12 +1,15 @@
 #!/usr/bin/env node
+'use strict';
+
+// Load environment variables from .env file
+require('dotenv').load();
 
 /**
  * Module dependencies.
  */
- require('dotenv').load();
 
 var app = require('../app');
-var debug = require('debug')('generator:server');
+var debug = require('debug')('APP_NAME:server');
 var http = require('http');
 
 /**
