@@ -1,4 +1,5 @@
 .env
+.env~
 public/vendor/
 node_modules/
 bower_components/

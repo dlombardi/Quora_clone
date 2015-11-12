@@ -1,7 +1,7 @@
 <nav class="top-bar" data-topbar role="navigation" ng-controller='navCtrl'>
   <ul class="title-area">
     <li class="name">
-      <h1><a href="#">My Site</a></h1>
+      <h1><a href="#">Quora</a></h1>
     </li>
      <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
     <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -10,8 +10,8 @@
   <section class="top-bar-section">
     <!-- Right Nav Section -->
     <ul class="right">
-      <li><a ui-sref="users.login">Login</a></li>
-      <li><a ng-click='logout()'>Logout</a></li>
+      <li><a ui-sref="users.login" if-not-user>Login</a></li>
+      <li><a ng-click='logout()' if-user>Logout</a></li>
     </ul>
 
     <!-- Left Nav Section -->

@@ -1,0 +1,113 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/foundation.css">
+  <style>
+  div.row.fullBody {
+    width: 100%;
+    margin: 0 !important;
+    display: block;
+  }
+  nav {
+    border-bottom: 1px solid #E1DBD8;
+  }
+  nav.top-bar {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #E1DBD8;
+  }
+  .profileActivity {
+    border-left: 1px solid #E1DBD8;
+    border-right: 1px solid #E1DBD8;
+  }
+  .top-bar-section li:not(.has-form) a:not(.button) {
+    background-color: white;
+    color: black;
+  }
+  .profileStats {
+    float: left;
+  }
+  .profileActivity {
+    text-align: center;
+  }
+  .profileAbout {
+    text-align: right;
+  }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+
+
+  <nav class="top-bar" data-topbar role="navigation" ng-controller='navCtrl'>
+    <ul class="title-area">
+      <li class="name">
+        <h1><a href="#">Quora</a></h1>
+      </li>
+      <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+
+    <section class="top-bar-section">
+      <!-- Right Nav Section -->
+      <ul class="right">
+        <li><a ui-sref="users.login" if-not-user>Login</a></li>
+        <li><a ng-click='logout()' if-user>Logout</a></li>
+      </ul>
+
+      <!-- Left Nav Section -->
+      <ul class="left">
+
+      </ul>
+    </section>
+  </nav>
+
+
+  <!-- NAVBAR -->
+
+
+
+
+
+
+
+
+
+  <div class="row fullBody">
+    <div class="medium-1 columns profileStats">
+      LEFT PANEL
+    </div>
+    <div class="medium-10 column profileActivity">
+      MAIN BODY
+    </div>
+    <div class="medium-1 columns profileAbout">
+      RIGHT PANEL
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/js/foundation.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Test -->
+=======
+<h1>Profile</h1>
+>>>>>>> 63418372fb6a802b5aff2856ce3733f9852a0792
