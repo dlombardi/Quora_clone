@@ -23,12 +23,8 @@
     "gulp": "^3.9.0",
     "mongoose": "^4.1.10",
     "morgan": "~1.6.1",
-<<<<<<< HEAD
-    "node-uuid": "^1.4.3",
     "passport": "^0.3.0",
     "passport-local": "^1.0.0",
-=======
->>>>>>> 89f78d7617cec42e660a06e7bc3df70681681b88
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
