@@ -11,7 +11,7 @@ var dirs = {
   src: {
     scss: './src/stylesheets/*.scss',
     js: "./src/javascripts/**/*.js",
-    html: "./src/templates/**/*.html"
+    html: "./src/templates/***/**/*.html"
   },
   dist: {
     css: './public/css',

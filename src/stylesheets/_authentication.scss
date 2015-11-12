@@ -11,6 +11,46 @@
 #authentication{
   height: 100%;
   width: 100%;
-  background-image: url(/assets/38234928-Hipster-Doodle-Monster-Collage-Background-Stock-Vector.jpg);
-  background-size: cover;
 }
+
+.btn.btn-social {
+   margin-right: 7px;
+   min-width: 100px;
+ }
+ .btn.btn-facebook {
+   color: white;
+   background-color: #3B5998;
+   border-color: #37528C;
+ }
+ .btn.btn-facebook:hover,
+ .btn.btn-facebook:focus {
+   color: white;
+   background-color: #2F487B;
+   border-color: #2F487B;
+ }
+ .btn.btn-google {
+   color: white;
+   background-color: #dc4e41;
+   border-color: #C1453A;
+ }
+ .btn.btn-google:hover,
+ .btn.btn-google:focus {
+   color: white;
+   background-color: #C74539;
+   border-color: #AF4138;
+ }
+
+ .title{
+   color: rgb(230, 86, 72);
+   text-align: center;
+ }
+
+ .buttons{
+   text-align: center;
+   .quora-red{
+      background-color: rgb(255, 119, 106);
+   }
+   .quora-green{
+     background-color: rgb(169, 209, 40);
+   }
+ }

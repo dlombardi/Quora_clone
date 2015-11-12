@@ -6,16 +6,20 @@ var jwt = require('jsonwebtoken');
 
 var UserSchema = new mongoose.Schema({
   username: {type: String, lowercase: true, unique: true},
+  fullName: {type: String, lowercase: true},
+  email: String,
+  hash: String,
+  salt: String,
   home: String,
   work: String,
   education: [String],
-  subscriptions: [{ type: mongoose.Schema.ObjectId}],
-  knowledge: [{ type: mongoose.Schema.ObjectId}],
-  followers: [{ type: mongoose.Schema.ObjectId}],
-  following: [{ type: mongoose.Schema.ObjectId}],
-  posts: [{ type: mongoose.Schema.ObjectId}],
+  subscriptions: [{ type: mongoose.Schema.ObjectId, ref: "Topic" }],
+  knowledge: [{ type: mongoose.Schema.ObjectId }],
+  followers: [{ type: mongoose.Schema.ObjectId }],
+  following: [{ type: mongoose.Schema.ObjectId }],
+  posts: [{ type: mongoose.Schema.ObjectId }],
   karma: Number,
-  views: Number
+  views: Number,
 });
 
 // used for registration

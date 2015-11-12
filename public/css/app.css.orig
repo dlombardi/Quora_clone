@@ -51,6 +51,14 @@
 
 div.row.fullBody {
   width: 100%;
+<<<<<<< HEAD
+  background-image: url(/assets/38234928-Hipster-Doodle-Monster-Collage-Background-Stock-Vector.jpg);
+  background-size: cover; }
+
+div.row.fullBody {
+  width: 100%;
+=======
+>>>>>>> f2530ac042cd5b8ea22fd1ddedc9935fc832795c
   margin: 0;
   max-width: none; }
 
@@ -91,3 +99,9 @@ nav.top-bar {
 
 hr {
   border-top: 1px solid #E1DBD8; }
+<<<<<<< HEAD
+
+.top-bar .name h1 a {
+  color: black; }
+=======
+>>>>>>> f2530ac042cd5b8ea22fd1ddedc9935fc832795c
