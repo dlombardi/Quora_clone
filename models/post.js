@@ -6,9 +6,9 @@ var PostSchema = new mongoose.Schema({
   author: {type: mongoose.Schema.ObjectId, required: true},
   topic: {type: mongoose.Schema.ObjectId, required: true},
   responseTo: {type: mongoose.Schema.ObjectId},
+  comments: [{type: mongoose.Schema.ObjectId}],
   created: Date.now(),
-  answer: Boolean,
-  comment: Boolean,
+  postType: {type: String, enum:["question", "answer", "comment"], require: true},
   content: String,
   likes: Number,
   views: Number

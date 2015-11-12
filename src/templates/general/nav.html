@@ -11,7 +11,7 @@
     <!-- Right Nav Section -->
     <ul class="right">
       <li><a ui-sref="users.login" if-not-user>Login</a></li>
-      <li><a ng-click='logout()' if-user>Logout</a></li>
+      <li><a sp-logout ui-sref="home" if-user>Logout</a></li>
     </ul>
 
     <!-- Left Nav Section -->

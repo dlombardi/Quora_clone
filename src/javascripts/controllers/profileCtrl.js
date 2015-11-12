@@ -1,5 +1,7 @@
 'use strict';
 
-app.controller('profileCtrl', function($scope, $state){
+var app = angular.module('APP_NAME');
+
+app.controller('profileCtrl', function($scope, $state, $auth, $user){
 
 });

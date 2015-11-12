@@ -9,11 +9,11 @@ var UserSchema = new mongoose.Schema({
   home: String,
   work: String,
   education: [String],
-  subscriptions: [{ type: mongoose.Schema.ObjectId}],
-  knowledge: [{ type: mongoose.Schema.ObjectId}],
-  followers: [{ type: mongoose.Schema.ObjectId}],
-  following: [{ type: mongoose.Schema.ObjectId}],
-  posts: [{ type: mongoose.Schema.ObjectId}],
+  subscriptions: [{ type: mongoose.Schema.ObjectId, ref: "Topic" }],
+  knowledge: [{ type: mongoose.Schema.ObjectId }],
+  followers: [{ type: mongoose.Schema.ObjectId }],
+  following: [{ type: mongoose.Schema.ObjectId }],
+  posts: [{ type: mongoose.Schema.ObjectId }],
   karma: Number,
   views: Number
 });

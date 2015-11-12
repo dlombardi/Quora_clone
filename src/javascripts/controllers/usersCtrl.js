@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('usersCtrl', function($scope, $state){
+app.controller('usersCtrl', function($scope, $state, $auth, $user, auth, $modal){
   $scope.Login = false;
 
   ($scope.switchState = function(){
@@ -9,4 +9,13 @@ app.controller('usersCtrl', function($scope, $state){
     $scope.Login ? $scope.formState = "Login" : $scope.formState = "Register"
   })();
 
+  $scope.submit = function(user) {
+    var submitFunc = $scope.Login ? auth.login : auth.register;
+    submitFunc(user).success(function(res){
+      $state.go('home');
+    }).error(function(res){
+      $scope.user = {};
+      alert(res.message);
+    });
+  };
 });
