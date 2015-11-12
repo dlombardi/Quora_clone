@@ -1,45 +1,45 @@
-<style>
-div.row.fullBody {
-  width: 100%;
-  margin: 0 !important;
-  display: block;
-}
-nav {
-  border-bottom: 1px solid #E1DBD8;
-}
-nav.top-bar {
-  background-color: #FFFFFF;
-  border-bottom: 1px solid #E1DBD8;
-}
-.profileActivity {
-  border-left: 1px solid #E1DBD8;
-  border-right: 1px solid #E1DBD8;
-}
-.top-bar-section li:not(.has-form) a:not(.button) {
-  background-color: white;
-  color: black;
-}
-.profileStats {
-  float: left;
-}
-.profileActivity {
-  text-align: center;
-}
-.profileAbout {
-  text-align: right;
-}
-</style>
-
 
 <div class="row fullBody">
-  <div class="medium-1 columns profileStats">
-    LEFT PANEL
+  <div class="medium-2 columns filler">
+    &nbsp;
   </div>
-  <div class="medium-10 column profileActivity">
-    MAIN BODY
+
+  <!-- FULL HEIGHT PRIMARY COLUMN -->
+
+  <div class="medium-6 columns primaryColumn">
+    <div class="row">
+      <div class="medium-3 column">
+        <img class="profilePicture" src="http://www.lorempixel.com/150/150/people" alt="Profile Picture">
+      </div>
+      <div class="medium-9 column bioColumn">
+        <h3>Charles Watson<br>
+          <small>Add Profile Bio <br>
+                Profile Description
+          </small></h3>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="medium-3 column profileStats">
+        <h5>Feeds</h5>
+        <hr>
+      </div>
+      <div class="medium-9 column profileActivity">
+        PRIMARY ACTIVITY FEED
+      </div>
+    </div>
   </div>
-  <div class="medium-1 columns profileAbout">
+
+  <!-- INDEPENDENT FULL HEIGHT ABOUT COLUMN -->
+
+  <div class="medium-2 column profileAbout">
     RIGHT PANEL
+  </div>
+
+
+  <div class="medium-2 columns filler">
+    &nbsp;
   </div>
 </div>
 
