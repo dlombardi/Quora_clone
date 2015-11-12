@@ -39,3 +39,18 @@
    background-color: #C74539;
    border-color: #AF4138;
  }
+
+ .title{
+   color: rgb(230, 86, 72);
+   text-align: center;
+ }
+
+ .buttons{
+   text-align: center;
+   .quora-red{
+      background-color: rgb(255, 119, 106);
+   }
+   .quora-green{
+     background-color: rgb(169, 209, 40);
+   }
+ }

@@ -1,6 +1,5 @@
 'use strict';
 
-
 app.factory('auth', function($window, $http, tokenStorageKey) {
   var auth = {};
 

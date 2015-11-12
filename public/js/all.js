@@ -5,8 +5,8 @@ var app = angular.module('quora', ['ui.router']);
 app.constant('tokenStorageKey', 'my-token');
 
 app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
-
   $stateProvider
+
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
@@ -54,6 +54,7 @@ app.controller('usersCtrl', function($scope, $state, auth){
 
   $scope.submit = function(user) {
     var submitFunc = $scope.Login ? auth.login : auth.register;
+    console.log("user", user);
     submitFunc(user).success(function(res){
       $state.go('home');
     }).error(function(res){
@@ -61,29 +62,9 @@ app.controller('usersCtrl', function($scope, $state, auth){
       alert(res.message);
     });
   };
-
-  $scope.open = function () {
-
-    var modalInstance = $modal.open({
-      templateUrl: 'myModalContent.html',
-      controller: 'ModalInstanceCtrl',
-      resolve: {
-        items: function () {
-          return $scope.items;
-        }
-      }
-    });
-
-    modalInstance.result.then(function (selectedItem) {
-      $scope.selected = selectedItem;
-    }, function () {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
 });
 
 'use strict';
-
 
 app.factory('auth', function($window, $http, tokenStorageKey) {
   var auth = {};

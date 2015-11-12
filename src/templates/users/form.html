@@ -1,55 +1,41 @@
 <div id="loginForm">
   <div class="row">
-    <div class="col-sm-offset-4 col-xs-12 col-sm-4">
-      <p class="alert alert-success" ng-show="created && !enabled">Your account has been created.  Please check your email for a verification link.</p>
-      <p ng-show="created && !enabled" class="pull-right">
-        <a href="/login">Back to Login</a>
-      </p>
-      <p class="alert alert-success" ng-show="created && enabled && !authenticating">Your account has been created.  <a href="/login">Login Now</a>.</p>
-    </div>
-  </div>
-  <div class="row">
     <div class="col-xs-12">
-      <form class="form-horizontal" ng-hide="created && !authenticating" ng-submit="submit()">
-        <div class="form-group">
-          <label for="spFirstName" class="col-xs-12 col-sm-4 control-label">First Name</label>
-          <div class="col-xs-12 col-sm-4">
-            <input class="form-control" id="spFirstName" ng-model="formModel.givenName" placeholder="First Name" ng-disabled="creating">
-          </div>
+      <h1 class="title">{{formState}}</h1>
+      <div ng-show="!Login">
+        <label class="col-xs-12 col-sm-4 control-label">Full Name</label>
+        <div class="col-xs-12 col-sm-4">
+          <input type="text" ng-model="user.fullName" placeholder="Full Name">
         </div>
-        <div class="form-group">
-          <label for="spLastName" class="col-xs-12 col-sm-4 control-label">Last Name</label>
-          <div class="col-xs-12 col-sm-4">
-            <input class="form-control" id="spLastName" ng-model="formModel.surname" placeholder="Last Name" ng-disabled="creating">
-          </div>
+      </div>
+      <div>
+        <label  class="col-xs-12 col-sm-4 control-label">Username</label>
+        <div class="col-xs-12 col-sm-4">
+          <input type="text" ng-model="user.username" placeholder="Username">
         </div>
-        <div class="form-group">
-          <label for="spEmail" class="col-xs-12 col-sm-4 control-label">Email</label>
-          <div class="col-xs-12 col-sm-4">
-            <input class="form-control" id="spEmail" ng-model="formModel.email" placeholder="Email" ng-disabled="creating">
-          </div>
+      </div>
+      <div ng-show="!Login">
+        <label class="col-xs-12 col-sm-4 control-label">Email</label>
+        <div class="col-xs-12 col-sm-4">
+          <input type="text" ng-model="user.email" placeholder="Email">
         </div>
-        <div class="form-group">
-          <label for="spPassword" class="col-xs-12 col-sm-4 control-label">Password</label>
-          <div class="col-xs-12 col-sm-4">
-            <input type="password" class="form-control" id="spPassword" ng-model="formModel.password" placeholder="Password" ng-disabled="creating">
-          </div>
+      </div>
+      <div>
+        <label class="col-xs-12 col-sm-4">Password</label>
+        <div class="col-xs-12 col-sm-4">
+          <input type="password" ng-model="user.password" placeholder="Password">
         </div>
-        <div class="form-group">
-          <div class="col-sm-offset-4 col-sm-4">
-            <p class="alert alert-danger" ng-show="error" ng-bind="error"></p>
-            <button type="submit" class="btn btn-primary" ng-disabled="creating">Register</button>
-          </div>
+      </div>
+      <div>
+        <div class="col-sm-offset-4 col-sm-4 buttons">
+          <button class="button quora-red" ng-click="submit(user)">{{formState}}</button>
         </div>
-        <div class="form-group" ng-show="socialLoginProviders">
-          <div class="col-sm-offset-4 col-sm-4">
-            <p>Or register with:</p>
-            <button ng-repeat="provider in socialLoginProviders" type="button" class="btn btn-social btn-{{provider.name}}" sp-social-login="{{provider.name}}">
-              {{provider.service.name}}
-            </button>
-          </div>
+      </div>
+      <div>
+        <div class="col-sm-offset-4 col-sm-4 buttons">
+          <button class="button quora-green" ng-click="switchState()">{{currentState}}</button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>

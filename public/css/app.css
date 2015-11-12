@@ -38,6 +38,17 @@
   background-color: #C74539;
   border-color: #AF4138; }
 
+.title {
+  color: #e65648;
+  text-align: center; }
+
+.buttons {
+  text-align: center; }
+  .buttons .quora-red {
+    background-color: #ff776a; }
+  .buttons .quora-green {
+    background-color: #a9d128; }
+
 div.row.fullBody {
   width: 100%;
   margin: 0;
