@@ -24,6 +24,7 @@
     "stormpath-sdk-angularjs": "~0.8.0",
     "foundation": "~5.5.3",
     "bootstrap": "~3.3.5",
-    "angular-foundation": "~0.8.0"
+    "angular-foundation": "~0.8.0",
+    "animate.css": "~3.4.0"
   }
 }

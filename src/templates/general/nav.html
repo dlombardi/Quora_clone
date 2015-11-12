@@ -1,4 +1,4 @@
-<nav class="top-bar" data-topbar role="navigation" ng-controller='navCtrl'>
+<nav class="top-bar" data-topbar role="navigation" ng-controller='usersCtrl'>
   <ul class="title-area">
     <li class="name">
       <h1><a href="#">Quora</a></h1>
@@ -10,8 +10,8 @@
   <section class="top-bar-section">
     <!-- Right Nav Section -->
     <ul class="right">
-      <li><a ui-sref="users.login" ng-if"Login">Login</a></li>
-      <li><a ui-sref="home">Logout</a></li>
+      <li><a ui-sref="users.login" ng-hide="LoggedIn">Login</a></li>
+      <li><a ui-sref="home" ng-show="LoggedIn" ng-click="logout()">Logout</a></li>
     </ul>
 
     <!-- Left Nav Section -->

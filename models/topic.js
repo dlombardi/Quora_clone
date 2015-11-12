@@ -3,10 +3,10 @@
 var mongoose = require('mongoose');
 
 var TopicSchema = new mongoose.Schema({
-  name: String,
+  name: {type: String, required: true},
+  about: {type: String, required: true},
   subscribers: [{type: mongoose.Schema.ObjectId}],
-  posts: [{type: mongoose.Schema.ObjectId}],
-  about: String
+  posts: [{type: mongoose.Schema.ObjectId}]
 });
 
 
