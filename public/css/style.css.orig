@@ -1,13 +1,17 @@
-#loginForm {
-  width: 400px;
-  margin: 0 auto;
-  padding: 10px;
-  background-color: white;
-  -webkit-box-shadow: 0px 14px 23px 1px rgba(112, 112, 112, 0.86);
-  -moz-box-shadow: 0px 14px 23px 1px rgba(112, 112, 112, 0.86);
-  box-shadow: 0px 14px 23px 1px rgba(112, 112, 112, 0.86);
-  margin-top: 50px; }
+div.row.fullBody {
+  width: 100%;
+  margin: 0;
+  max-width: none; }
 
+nav.top-bar {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E1DBD8; }
+
+.top-bar-section li:not(.has-form) a:not(.button) {
+  background-color: white;
+  color: black; }
+
+<<<<<<< HEAD
 #authentication {
   height: 100%;
   width: 100%; }
@@ -37,20 +41,7 @@
   color: white;
   background-color: #C74539;
   border-color: #AF4138; }
-
-div.row.fullBody {
-  width: 100%;
-  margin: 0;
-  max-width: none; }
-
-nav.top-bar {
-  background-color: #FFFFFF;
-  border-bottom: 1px solid #E1DBD8; }
-
-.top-bar-section li:not(.has-form) a:not(.button) {
-  background-color: white;
-  color: black; }
-
+=======
 .primaryColumn {
   background: red; }
 
@@ -80,3 +71,4 @@ nav.top-bar {
 
 hr {
   border-top: 1px solid #E1DBD8; }
+>>>>>>> d06c9732ed384c6487537392612270a8488a3e6c

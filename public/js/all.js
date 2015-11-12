@@ -5,10 +5,6 @@ var app = angular.module('quora', ['ui.router']);
 app.constant('tokenStorageKey', 'my-token');
 
 app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
-  $locationProvider.html5Mode({
-    enabled: true,
-    requireBase: false
-  });
 
   $stateProvider
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
@@ -21,15 +17,13 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 
 'use strict';
 
-var app = angular.module('quora');
 
-app.controller('homeCtrl', function($scope, $state, $auth, $user) {
+app.controller('homeCtrl', function($scope, $state) {
 
 });
 
 'use strict';
 
-var app = angular.module('quora');
 
 app.controller('navCtrl', function($scope, $state, auth) {
   $scope.logout = function() {
@@ -40,15 +34,16 @@ app.controller('navCtrl', function($scope, $state, auth) {
 
 'use strict';
 
-var app = angular.module('APP_NAME');
 
-app.controller('profileCtrl', function($scope, $state, $auth, $user){
+app.controller('profileCtrl', function($scope, $state){
 
 });
 
 'use strict';
 
-app.controller('usersCtrl', function($scope, $state, $auth, $user, auth, $modal){
+
+
+app.controller('usersCtrl', function($scope, $state, auth){
   $scope.Login = false;
 
   ($scope.switchState = function(){
@@ -70,7 +65,6 @@ app.controller('usersCtrl', function($scope, $state, $auth, $user, auth, $modal)
 
 'use strict';
 
-var app = angular.module('APP_NAME');
 
 app.factory('auth', function($window, $http, tokenStorageKey) {
   var auth = {};

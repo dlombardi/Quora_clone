@@ -9,7 +9,7 @@ require('dotenv').load();
  */
 
 var app = require('../app');
-var debug = require('debug')('APP_NAME:server');
+var debug = require('debug')('quora:server');
 var http = require('http');
 
 /**

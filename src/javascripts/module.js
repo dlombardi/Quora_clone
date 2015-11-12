@@ -5,10 +5,6 @@ var app = angular.module('quora', ['ui.router']);
 app.constant('tokenStorageKey', 'my-token');
 
 app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
-  $locationProvider.html5Mode({
-    enabled: true,
-    requireBase: false
-  });
 
   $stateProvider
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })

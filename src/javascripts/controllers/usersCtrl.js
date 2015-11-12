@@ -1,6 +1,8 @@
 'use strict';
 
-app.controller('usersCtrl', function($scope, $state, $auth, $user, auth, $modal){
+
+
+app.controller('usersCtrl', function($scope, $state, auth){
   $scope.Login = false;
 
   ($scope.switchState = function(){
