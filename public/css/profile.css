@@ -1,0 +1,42 @@
+div.row.fullBody {
+  width: 100%;
+  margin: 0;
+  max-width: none; }
+
+nav.top-bar {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E1DBD8; }
+
+.top-bar-section li:not(.has-form) a:not(.button) {
+  background-color: white;
+  color: black; }
+
+.primaryColumn {
+  background: red; }
+
+.profileAbout {
+  text-align: right;
+  background-color: blue; }
+
+.filler {
+  background-color: yellow; }
+
+.profileStats {
+  background: orange; }
+
+.profileActivity {
+  background-color: black; }
+
+.profilePicture {
+  margin: 20px 20px 20px 30px;
+  border-radius: 50%; }
+
+.bioColumn {
+  margin-top: 20px; }
+  .bioColumn h3 {
+    font-weight: bold; }
+  .bioColumn small {
+    margin-top: 0; }
+
+hr {
+  border-top: 1px solid #E1DBD8; }
