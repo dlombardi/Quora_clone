@@ -1,3 +1,4 @@
+/* Main Primary color */
 #loginForm {
   width: 400px;
   margin: 0 auto;
@@ -39,15 +40,40 @@
   border-color: #AF4138; }
 
 .title {
-  color: #e65648;
+  color: #B92B27;
   text-align: center; }
 
 .buttons {
   text-align: center; }
-  .buttons .quora-red {
-    background-color: #ff776a; }
-  .buttons .quora-green {
-    background-color: #a9d128; }
+  .buttons .quora-submit {
+    background-color: #B92B27; }
+  .buttons .quora-change {
+    background-color: #B92B27;
+    border-bottom: 4px solid #c8c8c8;
+    border-right: 1px solid #c8c8c8;
+    border-left: 1px solid #c8c8c8;
+    outline: none; }
+  .buttons .quora-change:hover {
+    border-bottom: 0px solid #c8c8c8;
+    border-right: 0px solid #c8c8c8;
+    border-left: 0px solid #c8c8c8; }
+  .buttons .quora-change:active {
+    border-bottom: 0px solid #c8c8c8;
+    border-right: 0px solid #c8c8c8;
+    border-left: 0px solid #c8c8c8;
+    outline: none; }
+  .buttons .animated {
+    -webkit-transition: all .1s ease;
+    -moz-transition: all .1s ease;
+    -ms-transition: all .1s ease;
+    -o-transition: all .1s ease;
+    transition: all .1s ease; }
+  .buttons .animated:active {
+    -webkit-transition: all 0s ease;
+    -moz-transition: all 0s ease;
+    -ms-transition: all 0s ease;
+    -o-transition: all 0s ease;
+    transition: all 0s ease; }
 
 div.row.fullBody {
   width: 100%;
@@ -93,12 +119,14 @@ hr {
   border-top: 1px solid #E1DBD8; }
 
 .top-bar .name h1 a {
-  color: black; }
+  color: #B92B27; }
 
 nav.top-bar li.has-form {
   background-color: #FFFFFF;
-  border-bottom: 1px solid #E1DBD8; }
+  border-bottom: 1px solid #E1DBD8;
+  color: #B92B27; }
 
 nav.top-bar a {
   background-color: #FFFFFF;
-  border-bottom: 1px solid #E1DBD8; }
+  border-bottom: 1px solid #E1DBD8;
+  color: #B92B27; }

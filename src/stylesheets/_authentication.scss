@@ -41,16 +41,46 @@
  }
 
  .title{
-   color: rgb(230, 86, 72);
+   color: $quora-base;
    text-align: center;
  }
 
  .buttons{
    text-align: center;
-   .quora-red{
-      background-color: rgb(255, 119, 106);
+   .quora-submit{
+      background-color: $quora-base;
    }
-   .quora-green{
-     background-color: rgb(169, 209, 40);
+   .quora-change{
+     background-color: $quora-base;
+     border-bottom: 4px solid #c8c8c8;
+     border-right: 1px solid #c8c8c8;
+     border-left: 1px solid #c8c8c8;
+    outline: none;
    }
+   .quora-change:hover{
+     border-bottom: 0px solid #c8c8c8;
+     border-right: 0px solid #c8c8c8;
+     border-left: 0px solid #c8c8c8;
+  }
+  .quora-change:active {
+    border-bottom: 0px solid #c8c8c8;
+    border-right: 0px solid #c8c8c8;
+    border-left: 0px solid #c8c8c8;
+    outline: none;
+  }
+  .animated {
+      -webkit-transition: all .1s ease;
+      -moz-transition: all .1s ease;
+      -ms-transition: all .1s ease;
+      -o-transition: all .1s ease;
+      transition: all .1s ease;
+  }
+  .animated:active {
+      -webkit-transition: all 0s ease;
+      -moz-transition: all 0s ease;
+      -ms-transition: all 0s ease;
+      -o-transition: all 0s ease;
+      transition: all 0s ease;
+  }
+
  }
