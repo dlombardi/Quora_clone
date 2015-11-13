@@ -22,14 +22,12 @@
     </ul>
   </div>
   <div class="medium-4 columns primaryColumn">
-    Top Stories For You
-    <hr>
-    <div class="post" ng-repeat="post in posts">
-      <!-- <img src="{{user.img}}" alt="Profile Picture"> -->
-      <!-- <p>{{user.name}}</p> -->
-      <!-- {{post.img}} -->
-      <!-- {{post.}} -->
-    </div>
+    <form action="submit">
+      <input ng-model="postTitle">
+      <textarea ng-model="postBody">
+      <button type="button"></button>
+    </form>
+
   </div>
 
 
