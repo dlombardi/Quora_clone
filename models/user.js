@@ -8,10 +8,9 @@ var UserSchema = new mongoose.Schema({
   username: {type: String, lowercase: true, unique: true},
   fullName: {type: String, lowercase: true},
   email: String,
-  hash: String,
-  salt: String,
   home: String,
   work: String,
+  about: String,
   education: [String],
   subscriptions: [{ type: mongoose.Schema.ObjectId, ref: "Topic" }],
   knowledge: [{ type: mongoose.Schema.ObjectId }],
@@ -20,6 +19,8 @@ var UserSchema = new mongoose.Schema({
   posts: [{ type: mongoose.Schema.ObjectId }],
   karma: Number,
   views: Number,
+  hash: String,
+  salt: String
 });
 
 // used for registration
