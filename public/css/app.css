@@ -91,14 +91,3 @@ nav.top-bar {
 
 hr {
   border-top: 1px solid #E1DBD8; }
-
-.top-bar .name h1 a {
-  color: black; }
-
-nav.top-bar li.has-form {
-  background-color: #FFFFFF;
-  border-bottom: 1px solid #E1DBD8; }
-
-nav.top-bar a {
-  background-color: #FFFFFF;
-  border-bottom: 1px solid #E1DBD8; }
