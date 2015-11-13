@@ -1,14 +1,16 @@
 .top-bar .name h1 a {
-  color: black;
+  color: $quora-base;
 }
 
 nav.top-bar li.has-form {
   background-color: #FFFFFF;
   border-bottom: $lineGrey;
+  color: $quora-base;
 }
 
 nav.top-bar a {
   background-color: #FFFFFF;
   border-bottom: $lineGrey;
+  color: $quora-base;
   // border-bottom-style: $lineGrey;
 }

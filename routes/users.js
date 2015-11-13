@@ -8,10 +8,11 @@ var User = require('../models/user');
 var Topic = require('../models/topic');
 
 var UserEmitter = require("../observer/UserEmitter");
+var TopicEmitter = require("../observer/TopicEmitter");
+var PostEmitter = require("../observer/PostEmitter");
 
 
 router.post('/register', function(req, res, next){
-  console.log('req.body:', req.body);
   if(!req.body.username || !req.body.password){
     return res.status(400).json({message: 'Missing required fields username and password.'});
   }
@@ -26,6 +27,24 @@ router.post('/knowledge', function(req, res, next){
   }
   UserEmitter.emit("addKnowledge", req.body);
   res.send("added topic of expertise to user profile");
+});
+
+
+
+router.post('/updateInfo', function(req, res, next){
+  if(!req.body){
+    return res.send("no entry");
+  }
+  UserEmitter.emit("updateInfo", req.body);
+  res.send("Updated User Info");
+});
+
+router.post('/following', function(req, res, next){
+  if(!req.body){
+    return res.send("no entry");
+  }
+  UserEmitter.emit("following", req.body);
+  res.send("Updated following and follower Info for users");
 });
 
 

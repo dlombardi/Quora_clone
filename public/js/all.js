@@ -36,9 +36,10 @@ app.controller('profileCtrl', function($scope, $state){
 app.controller('usersCtrl', function($scope, $state, auth){
   $scope.Login = false;
   $scope.LoggedIn = true;
-
+  
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
+    $scope.LoggedIn = false;
     $scope.Login ? $scope.currentState = "Create Account" : $scope.currentState = "Go to Login"
     $scope.Login ? $scope.formState = "Login" : $scope.formState = "Register"
   })();

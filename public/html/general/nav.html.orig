@@ -15,17 +15,28 @@
             <input type="text" placeholder="Search Here">
           </div>
           <div class="large-4 small-3 columns">
+<<<<<<< HEAD
+          <a href="#" class="alert button expand">Search</a>
+        </div>
+=======
             <a href="#" class="alert button expand">Search</a>
           </div>
+>>>>>>> 241fc36cefdb6bd8107b3382fd7330464995d350
         </div>
       </li>
     </ul>
 
     <!-- Right Nav Section -->
     <ul class="right">
+<<<<<<< HEAD
       <li><a ui-sref="home"><i class="fi-home"></i> Home</a></li>
       <li><a ui-sref="post"><i class="fi-pencil"></i>Write</a></li>
       <li><a ui-sref="#"><i class="fi-results"></i> Notifications</a></li>
+=======
+      <li><a ui-sref="/"><i class="fi-home"></i> Home</a></li>
+      <li><a ui-sref="post"><i class="fi-pencil"></i> Write</a></li>
+      <li><a ui-sref=""><i class="fi-results"></i> Notifications</a></li>
+>>>>>>> 241fc36cefdb6bd8107b3382fd7330464995d350
       <li><a ui-sref="users.login" ng-hide="LoggedIn">Login</a></li>
       <li><a ui-sref="home" ng-show="LoggedIn" ng-click="logout()">Logout</a></li>
     </ul>
@@ -37,4 +48,3 @@
 
   </section>
 </nav>
-<hr class="navBar">

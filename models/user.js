@@ -8,18 +8,19 @@ var UserSchema = new mongoose.Schema({
   username: {type: String, lowercase: true, unique: true},
   fullName: {type: String, lowercase: true},
   email: String,
-  hash: String,
-  salt: String,
   home: String,
   work: String,
+  about: String,
   education: [String],
   subscriptions: [{ type: mongoose.Schema.ObjectId, ref: "Topic" }],
-  knowledge: [{ type: mongoose.Schema.ObjectId }],
-  followers: [{ type: mongoose.Schema.ObjectId }],
-  following: [{ type: mongoose.Schema.ObjectId }],
-  posts: [{ type: mongoose.Schema.ObjectId }],
+  knowledge: [{ type: mongoose.Schema.ObjectId, ref: "Topic" }],
+  followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+  following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+  posts: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
   karma: Number,
   views: Number,
+  hash: String,
+  salt: String
 });
 
 // used for registration
