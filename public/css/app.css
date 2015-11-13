@@ -81,8 +81,7 @@ div.row.fullBody {
   max-width: none; }
 
 nav.top-bar {
-  background-color: #FFFFFF;
-  border-bottom: 1px solid #E1DBD8; }
+  background-color: #FFFFFF; }
 
 .top-bar-section li:not(.has-form) a:not(.button) {
   background-color: white;
@@ -117,19 +116,19 @@ nav.top-bar {
 
 hr {
   border-top: 1px solid #E1DBD8; }
-<<<<<<< HEAD
-=======
 
 .top-bar .name h1 a {
   color: #B92B27; }
 
 nav.top-bar li.has-form {
   background-color: #FFFFFF;
-  border-bottom: 1px solid #E1DBD8;
   color: #B92B27; }
 
 nav.top-bar a {
   background-color: #FFFFFF;
-  border-bottom: 1px solid #E1DBD8;
   color: #B92B27; }
->>>>>>> 54fc680f85f605f27452770051ae06a0df51cde2
+
+.navBarLine {
+  top: 0;
+  border-top: 1px solid #E1DBD8;
+  margin: 0; }
