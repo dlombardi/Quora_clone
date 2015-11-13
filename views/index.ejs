@@ -49,7 +49,7 @@
       }
     })
     (document,window.mixpanel||[]);
-    mixpanel.init("YOUR TOKEN");
+    mixpanel.init(process.env.MIXPANEL_TOKEN);
     </script>
     <!-- end Mixpanel -->
     <!-- MIXPANEL TRACKING SCRIPT -->
