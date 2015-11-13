@@ -35,10 +35,13 @@ UserEmitter.on("updateInfo", function(data){
   updateInfo(data.uid, infoDataType, data.content);
 });
 
-UserEmitter.on("addToFollowing", function(data){
+UserEmitter.on("following", function(data){
   User.findById(data.uid, function (err, follower) {
     User.findById(data.rid, function(err, receiver){
-      follower.push()
+      follower.following.push(data.rid);
+      receiver.followers.push(data.uid);
+      receiver.save();
+      follower.save();
     })
   });
 });

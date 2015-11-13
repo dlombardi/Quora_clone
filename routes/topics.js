@@ -6,22 +6,23 @@ var router = express.Router();
 var Topic = require('../models/topic');
 var User = require('../models/user');
 
-router.get('/', function(req, res, next) {
+var UserEmitter = require("../observer/UserEmitter");
+var TopicEmitter = require("../observer/TopicEmitter");
+var PostEmitter = require("../observer/PostEmitter");
 
+router.get('/', function(req, res, next) {
+  if(!req.body){
+    return res.send("no entry");
+  }
+  TopicEmitter.emit("createUser", req.body);
+  TopicEmitter.on("successfullyCreatedUser", function(data){
+    
+  })
+  res.send(req.body)
 });
 
 router.post('/addTopic', function(req, res, next) {
   console.log(req.body);
-  var topic = new Topic();
-  topic.name = req.body.name;
-  topic.about = req.body.about;
-  topic.save(function(err){
-    if(err){
-      return res.status(400);
-    } else {
-      res.send("successfully added Topic");
-    }
-  });
 });
 
 router.post('/addSubscriber', function(req, res, next){
