@@ -1,0 +1,41 @@
+<div id="loginForm" class="animated fadeInDown">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1 class="title">{{formState}}</h1>
+      <div ng-show="!Login">
+        <label class="col-xs-12 col-sm-4 control-label">Full Name</label>
+        <div class="col-xs-12 col-sm-4">
+          <input type="text" ng-model="user.fullName" placeholder="Full Name">
+        </div>
+      </div>
+      <div>
+        <label  class="col-xs-12 col-sm-4 control-label">Username</label>
+        <div class="col-xs-12 col-sm-4">
+          <input type="text" ng-model="user.username" placeholder="Username">
+        </div>
+      </div>
+      <div ng-show="!Login">
+        <label class="col-xs-12 col-sm-4 control-label">Email</label>
+        <div class="col-xs-12 col-sm-4">
+          <input type="text" ng-model="user.email" placeholder="Email">
+        </div>
+      </div>
+      <div>
+        <label class="col-xs-12 col-sm-4">Password</label>
+        <div class="col-xs-12 col-sm-4">
+          <input type="password" ng-model="user.password" placeholder="Password">
+        </div>
+      </div>
+      <div>
+        <div class="col-sm-offset-4 col-sm-4 buttons">
+          <button class="button quora-red" ng-click="submit(user)">{{formState}}</button>
+        </div>
+      </div>
+      <div>
+        <div class="col-sm-offset-4 col-sm-4 buttons">
+          <button class="button quora-green" ng-click="switchState()">{{currentState}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

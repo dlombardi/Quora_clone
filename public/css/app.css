@@ -10,9 +10,44 @@
 
 #authentication {
   height: 100%;
-  width: 100%;
-  background-image: url(/assets/38234928-Hipster-Doodle-Monster-Collage-Background-Stock-Vector.jpg);
-  background-size: cover; }
+  width: 100%; }
+
+.btn.btn-social {
+  margin-right: 7px;
+  min-width: 100px; }
+
+.btn.btn-facebook {
+  color: white;
+  background-color: #3B5998;
+  border-color: #37528C; }
+
+.btn.btn-facebook:hover,
+.btn.btn-facebook:focus {
+  color: white;
+  background-color: #2F487B;
+  border-color: #2F487B; }
+
+.btn.btn-google {
+  color: white;
+  background-color: #dc4e41;
+  border-color: #C1453A; }
+
+.btn.btn-google:hover,
+.btn.btn-google:focus {
+  color: white;
+  background-color: #C74539;
+  border-color: #AF4138; }
+
+.title {
+  color: #e65648;
+  text-align: center; }
+
+.buttons {
+  text-align: center; }
+  .buttons .quora-red {
+    background-color: #ff776a; }
+  .buttons .quora-green {
+    background-color: #a9d128; }
 
 div.row.fullBody {
   width: 100%;
@@ -43,3 +78,6 @@ nav.top-bar {
 
 hr {
   border-top: 1px solid #E1DBD8; }
+
+.top-bar .name h1 a {
+  color: black; }
