@@ -1,3 +1,14 @@
 .top-bar .name h1 a {
   color: black;
 }
+
+nav.top-bar li.has-form {
+  background-color: #FFFFFF;
+  border-bottom: $lineGrey;
+}
+
+nav.top-bar a {
+  background-color: #FFFFFF;
+  border-bottom: $lineGrey;
+  // border-bottom-style: $lineGrey;
+}
