@@ -8,8 +8,24 @@
   </ul>
 
   <section class="top-bar-section">
+    <ul class="left">
+      <li class="has-form">
+        <div class="row collapse">
+          <div class="large-8 small-9 columns">
+            <input type="text" placeholder="Search Here">
+          </div>
+          <div class="large-4 small-3 columns">
+          <a href="#" class="alert button expand">Search</a>
+        </div>
+        </div>
+      </li>
+    </ul>
+
     <!-- Right Nav Section -->
     <ul class="right">
+      <li><a ui-sref="/"><i class="fi-home"></i> Home</a></li>
+      <li><a ui-sref="post"><i class="fi-pencil"></i> Write</a></li>
+      <li><a ui-sref=""><i class="fi-results"></i> Notifications</a></li>
       <li><a ui-sref="users.login" ng-hide="LoggedIn">Login</a></li>
       <li><a ui-sref="home" ng-show="LoggedIn" ng-click="logout()">Logout</a></li>
     </ul>
