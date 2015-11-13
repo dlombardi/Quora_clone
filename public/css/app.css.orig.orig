@@ -81,14 +81,28 @@ div.row.fullBody {
   max-width: none; }
 
 nav.top-bar {
-  background-color: #FFFFFF; }
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E1DBD8; }
 
 .top-bar-section li:not(.has-form) a:not(.button) {
   background-color: white;
   color: black; }
 
+.primaryColumn {
+  background: red; }
+
 .profileAbout {
-  text-align: right; }
+  text-align: right;
+  background-color: blue; }
+
+.filler {
+  background-color: yellow; }
+
+.profileStats {
+  background: orange; }
+
+.profileActivity {
+  background-color: black; }
 
 .profilePicture {
   margin: 20px 20px 20px 30px;
@@ -105,17 +119,26 @@ hr {
   border-top: 1px solid #E1DBD8; }
 
 .top-bar .name h1 a {
+<<<<<<< HEAD
   color: #B92B27; }
 
 nav.top-bar li.has-form {
   background-color: #FFFFFF;
+  border-bottom: 1px solid #E1DBD8;
   color: #B92B27; }
 
 nav.top-bar a {
   background-color: #FFFFFF;
+  border-bottom: 1px solid #E1DBD8;
   color: #B92B27; }
+=======
+  color: black; }
 
-.navBarLine {
-  top: 0;
-  border-top: 1px solid #E1DBD8;
-  margin: 0; }
+nav.top-bar li.has-form {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E1DBD8; }
+
+nav.top-bar a {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E1DBD8; }
+>>>>>>> 241fc36cefdb6bd8107b3382fd7330464995d350
