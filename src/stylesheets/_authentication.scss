@@ -50,15 +50,13 @@
  }
 
  .buttons{
-   text-align: center;
+
    button {
+    text-align: center;
     padding: .5rem 1rem 0.5rem;
-   }
-   .quora-submit{
-      background-color: $quora-base;
+    background-color: $quora-base;
    }
    .quora-change{
-     background-color: $quora-base;
      border-bottom: 4px solid #c8c8c8;
      border-right: 1px solid #c8c8c8;
      border-left: 1px solid #c8c8c8;
