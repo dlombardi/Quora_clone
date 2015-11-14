@@ -11,31 +11,21 @@ var TopicEmitter = require("../observer/TopicEmitter");
 var PostEmitter = require("../observer/PostEmitter");
 
 router.get('/', function(req, res, next) {
-  if(!req.body){
-    return res.send("no entry");
-  }
-  TopicEmitter.emit("createUser", req.body);
-  TopicEmitter.on("successfullyCreatedUser", function(data){
-    
+  Topic.find({}, function(err, topics){
+    res.send(topics);
   })
-  res.send(req.body)
 });
 
-router.post('/addTopic', function(req, res, next) {
-  console.log(req.body);
+router.post('/add', function(req, res, next){
+  var topic = new Topic(req.body);
+  topic.save(function(err, topic){
+    res.send(topic);
+  });
 });
 
-router.post('/addSubscriber', function(req, res, next){
-  console.log(req.body);
-  Topic.find({name: req.body.name}, function(err, topic){
-    User.findById(req.body.uid, function(err, user){
-      console.log("topic", topic[0]);
-      console.log("user", user);
-      topic[0].subscribers.push(user._id);
-      topic[0].save(function(err){
-        err ? res.status(400) : res.send("added subscriber to topic");
-      });
-    });
+router.delete('/delete', function(req, res, next){
+  topic.findByIdAndRemove({name: req.body.name}, function(err, topic){
+    res.send(topic);
   });
 });
 

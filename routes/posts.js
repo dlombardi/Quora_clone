@@ -3,9 +3,52 @@
 var express = require('express');
 var router = express.Router();
 
-// Serve out Angular
+var User = require('../models/user');
+var Topic = require('../models/topic');
+var Post = require('../models/post');
+
+
+var UserEmitter = require("../observer/UserEmitter");
+var TopicEmitter = require("../observer/TopicEmitter");
+var PostEmitter = require("../observer/PostEmitter");
+
+
 router.get('/', function(req, res, next) {
-  console.log("in posts router")
+
 });
+
+router.post('/add', function(req, res, next){
+  var post = new Post(req.body);
+  post.save(function(err, post){
+    PostEmitter.emit("addPostToTopic", post)
+    res.send(post);
+  });
+});
+
+router.delete('/delete', function(req, res, next){
+  Post.findByIdAndRemove(req.body.pid, function(err, post){
+    PostEmitter.emit("removePostFromTopic", post)
+    res.send(post);
+  })
+});
+
+router.post('/visit', function(req, res, next){
+  Post.findById(req.body.pid).populate("author").exec(function(err, post){
+    var viewBool = req.body.type === "views";
+    viewBool ? post.views += 1 : post.likes += 1;
+    viewBool ? post.author.views += 1 : post.author.likes += 1;
+    post.save();
+    post.author.save();
+    viewBool ? PostEmitter.emit("viewPost", post, post.author) : PostEmitter.emit("likePost", post, post.author);
+    res.send(post);
+  })
+});
+
+router.get('/viewAndLikeRanked', function(req, res, next){
+  Post.findById(req.body.pid).populate("author").exec(function(err, post){
+
+  })
+});
+
 
 module.exports = router;

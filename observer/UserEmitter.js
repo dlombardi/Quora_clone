@@ -7,42 +7,28 @@ var Topic = require('../models/topic');
 var UserEmitter = new emitter();
 
 UserEmitter.on("createUser", function(data){
-  var user = new User(data);
-  user.save();
+  console.log(data);
 });
 
 UserEmitter.on("addKnowledge", function(data){
-  User.findById(data.uid, function(err, user){
-    Topic.find({name: data.topic}, function(err, topic){
-      user.knowledge.push(topic[0]._id);
-      user.save();
-    })
-  });
+  console.log(data);
 });
 
-UserEmitter.on("updateInfo", function(data){
-  var infoDataType = data.type.toLowerCase();
-  var uid = data.uid;
-  var content = data.content;
-  function updateInfo(uid, infotype, content){
-    var infoObj = {};
-    var type = infotype;
-    infoObj[type] = content;
-    User.findByIdAndUpdate(uid, { $set: infoObj }, function(err, user){
-      user.save();
-    });
-  }
-  updateInfo(data.uid, infoDataType, data.content);
+UserEmitter.on("updateInfo", function(user){
+  console.log(user);
 });
 
-UserEmitter.on("following", function(data){
-  User.findById(data.uid, function (err, follower) {
-    User.findById(data.rid, function(err, receiver){
-      follower.following.push(data.rid);
-      receiver.followers.push(data.uid);
+UserEmitter.on("following", function(receiver, uid){
+  receiver.followers.push(uid)
+  receiver.save();
+});
+
+UserEmitter.on("removeFollowing", function(receiver, uid){
+  receiver.followers.forEach(function(person, i){
+    if(person.toString() === uid.toString()){
+      receiver.followers.splice(i, 1);
       receiver.save();
-      follower.save();
-    })
+    }
   });
 });
 
