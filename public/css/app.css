@@ -36,44 +36,57 @@
 .btn.btn-google:hover,
 .btn.btn-google:focus {
   color: white;
-  background-color: #C74539;
+  background-color: #B92B27;
   border-color: #AF4138; }
+
+h1.title {
+  font-size: 1.7rem; }
 
 .title {
   color: #B92B27;
   text-align: center; }
 
-.buttons {
-  text-align: center; }
-  .buttons .quora-submit {
-    background-color: #B92B27; }
-  .buttons .quora-change {
-    background-color: #B92B27;
-    border-bottom: 4px solid #c8c8c8;
-    border-right: 1px solid #c8c8c8;
-    border-left: 1px solid #c8c8c8;
-    outline: none; }
-  .buttons .quora-change:hover {
-    border-bottom: 0px solid #c8c8c8;
-    border-right: 0px solid #c8c8c8;
-    border-left: 0px solid #c8c8c8; }
-  .buttons .quora-change:active {
-    border-bottom: 0px solid #c8c8c8;
-    border-right: 0px solid #c8c8c8;
-    border-left: 0px solid #c8c8c8;
-    outline: none; }
-  .buttons .animated {
-    -webkit-transition: all .1s ease;
-    -moz-transition: all .1s ease;
-    -ms-transition: all .1s ease;
-    -o-transition: all .1s ease;
-    transition: all .1s ease; }
-  .buttons .animated:active {
-    -webkit-transition: all 0s ease;
-    -moz-transition: all 0s ease;
-    -ms-transition: all 0s ease;
-    -o-transition: all 0s ease;
-    transition: all 0s ease; }
+.buttons button {
+  text-align: center;
+  padding: .5rem 1rem 0.5rem;
+  background-color: #B92B27; }
+
+.buttons .quora-change {
+  border-bottom: 4px solid #c8c8c8;
+  border-right: 1px solid #c8c8c8;
+  border-left: 1px solid #c8c8c8;
+  outline: none; }
+
+.buttons .quora-change:hover {
+  border-bottom: 0px solid #c8c8c8;
+  border-right: 0px solid #c8c8c8;
+  border-left: 0px solid #c8c8c8; }
+
+.buttons .quora-change:active {
+  border-bottom: 0px solid #c8c8c8;
+  border-right: 0px solid #c8c8c8;
+  border-left: 0px solid #c8c8c8;
+  outline: none; }
+
+.buttons .animated {
+  -webkit-transition: all .1s ease;
+  -moz-transition: all .1s ease;
+  -ms-transition: all .1s ease;
+  -o-transition: all .1s ease;
+  transition: all .1s ease; }
+
+.buttons .animated:active {
+  -webkit-transition: all 0s ease;
+  -moz-transition: all 0s ease;
+  -ms-transition: all 0s ease;
+  -o-transition: all 0s ease;
+  transition: all 0s ease; }
+
+.buttons .button:focus, .buttons .button:hover {
+  background-color: #6D0300; }
+
+.button.alert:focus, .button.alert:hover, .button.alert:focus, .button.alert:hover {
+  background-color: #6D0300; }
 
 div.row.fullBody {
   width: 100%;
@@ -119,3 +132,9 @@ nav.top-bar a {
   top: 0;
   border-top: 1px solid #E1DBD8;
   margin: 0; }
+
+.button.alert {
+  background-color: #B92B27; }
+
+.top-bar-section li:not(.has-form) a:not(.button):hover {
+  background-color: #B92B27; }

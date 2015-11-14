@@ -18,61 +18,6 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 
 'use strict';
 
-
-app.controller('homeCtrl', function($scope, $state) {
-
-});
-
-'use strict';
-
-
-app.controller('postCtrl', function($scope, $state){
-  console.log("POST CTRL WORKING");
-
-});
-
-'use strict';
-
-
-app.controller('profileCtrl', function($scope, $state){
-  console.log("PROFILE CTRL WORKING");
-});
-
-'use strict';
-
-
-
-app.controller('usersCtrl', function($scope, $state, auth){
-  $scope.Login = false;
-  $scope.LoggedIn = true;
-  
-  ($scope.switchState = function(){
-    $scope.Login = !$scope.Login;
-    $scope.LoggedIn = false;
-    $scope.Login ? $scope.currentState = "Create Account" : $scope.currentState = "Go to Login"
-    $scope.Login ? $scope.formState = "Login" : $scope.formState = "Register"
-  })();
-
-  $scope.submit = function(user) {
-    var submitFunc = $scope.Login ? auth.login : auth.register;
-    console.log("user", user);
-    submitFunc(user).success(function(res){
-      $scope.LoggedIn = true;
-      $state.go('home');
-    }).error(function(res){
-      $scope.user = {};
-      alert(res.message);
-    });
-  };
-
-  $scope.logout = function(){
-    auth.logout();
-    $scope.LoggedIn = false;
-  }
-});
-
-'use strict';
-
 app.factory('auth', function($window, $http, tokenStorageKey) {
   var auth = {};
 
@@ -119,4 +64,67 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
   };
 
   return auth;
+});
+
+'use strict';
+
+
+app.controller('homeCtrl', function($scope, $state) {
+
+});
+
+'use strict';
+
+
+app.controller('postCtrl', function($scope, $state){
+  console.log("POST CTRL WORKING");
+
+});
+
+'use strict';
+
+
+app.controller('profileCtrl', function($scope, $state){
+  console.log("PROFILE CTRL WORKING");
+});
+
+'use strict';
+
+
+app.controller('threadCtrl', function($scope, $state){
+  console.log("THREAD CTRL WORKING");
+
+});
+
+'use strict';
+
+
+
+app.controller('usersCtrl', function($scope, $state, auth){
+  $scope.Login = false;
+  $scope.LoggedIn = true;
+  
+  ($scope.switchState = function(){
+    $scope.Login = !$scope.Login;
+    $scope.LoggedIn = false;
+    $scope.Login ? $scope.currentState = "Create Account" : $scope.currentState = "Go to Login"
+    $scope.Login ? $scope.formState = "Login" : $scope.formState = "Register"
+  })();
+
+  $scope.submit = function(user) {
+    var submitFunc = $scope.Login ? auth.login : auth.register;
+    console.log("user", user);
+    submitFunc(user).success(function(res){
+      $scope.LoggedIn = true;
+      $state.go('home');
+    }).error(function(res){
+      $scope.user = {};
+      alert(res.message);
+    });
+  };
+
+  $scope.logout = function(){
+    auth.logout();
+    $scope.LoggedIn = false;
+  }
 });

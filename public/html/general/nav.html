@@ -1,11 +1,10 @@
 <div class="row navContainer">
-  <div class="medium-1 columns">&nbsp;</div>
 
-  <div class="medium-10 columns">
+  <div class="large-12 medium-12 columns">
     <nav class="top-bar" data-topbar role="navigation" ng-controller='usersCtrl'>
       <ul class="title-area">
         <li class="name">
-          <h1><a href="#">Quora</a></h1>
+          <h1><a ui-sref="home"><strong>Quora</strong></a></h1>
         </li>
         <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
         <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
@@ -29,20 +28,16 @@
         <ul class="right">
           <li><a ui-sref="home"><i class="fi-home"></i> Home</a></li>
           <li><a ui-sref="post"><i class="fi-pencil"></i>Write</a></li>
-          <li><a ui-sref="#"><i class="fi-results"></i> Notifications</a></li>
+          <li><a ui-sref="users.profile"><i class="fi-results"></i> Notifications</a></li>
           <li><a ui-sref="users.login" ng-hide="LoggedIn">Login</a></li>
           <li><a ui-sref="home" ng-show="LoggedIn" ng-click="logout()">Logout</a></li>
         </ul>
 
-        <!-- Left Nav Section -->
-        <!-- <ul class="left">
 
-      </ul> -->
 
     </section>
   </nav>
 </div>
 
 </div>
-<div class="medium-1 columns">&nbsp;</div>
 <hr class="navBarLine">
