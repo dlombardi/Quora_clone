@@ -87,5 +87,8 @@
       -o-transition: all 0s ease;
       transition: all 0s ease;
   }
+  .button:focus, .button:hover, {
+    background-color: $quora-dark;
+  }
 
  }
