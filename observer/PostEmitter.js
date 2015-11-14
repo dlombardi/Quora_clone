@@ -4,22 +4,35 @@ var emitter = require("events").EventEmitter;
 var User = require('../models/user');
 var Topic = require('../models/topic');
 
-var UserEmitter = new emitter();
+var PostEmitter = new emitter();
 
-UserEmitter.on("createUser", function(data){
-  var user = new User();
-  user.username = data.username;
-  user.setPassword(data.password);
-  user.save();
+PostEmitter.on("addPost", function(data){
+  console.log(data);
 });
 
-UserEmitter.on("addKnowledge", function(data){
-  User.findById(data.uid, function(err, user){
-    Topic.find({name: data.topic}, function(err, topic){
-      user.knowledge.push(topic[0]._id);
-      user.save();
-    })
+PostEmitter.on("viewPost", function(data){
+  console.log(data);
+});
+
+PostEmitter.on("likePost", function(data){
+  console.log(data);
+});
+
+PostEmitter.on("addPostToTopic", function(post){
+  Topic.findById(post.topic, function(err, topic){
+    topic.posts.push(post._id);
+    topic.save();
   });
 });
 
-module.exports = UserEmitter;
+PostEmitter.on("removePostFromTopic", function(post){
+  Topic.findById(post.topic, function(err, topic){
+    topic.posts.forEach(function(topicPosts, i){
+
+    });
+  });
+});
+
+
+
+module.exports = PostEmitter;

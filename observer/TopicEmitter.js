@@ -6,12 +6,12 @@ var Topic = require('../models/topic');
 
 var TopicEmitter = new emitter();
 
-TopicEmitter.on("createUser", function(data){
+TopicEmitter.on("addTopic", function(data){
   var topic = new Topic(data);
   topic.save();
 });
 
-TopicEmitter.on("addKnowledge", function(data){
+TopicEmitter.on("addTopic", function(data){
   User.findById(data.uid, function(err, user){
     Topic.find({name: data.topic}, function(err, topic){
       user.knowledge.push(topic[0]._id);
