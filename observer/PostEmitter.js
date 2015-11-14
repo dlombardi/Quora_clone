@@ -27,8 +27,11 @@ PostEmitter.on("addPostToTopic", function(post){
 
 PostEmitter.on("removePostFromTopic", function(post){
   Topic.findById(post.topic, function(err, topic){
-    topic.posts.forEach(function(topicPosts, i){
-
+    topic.posts.forEach(function(topicPost, i){
+      if(topicPost.toString() === post._id.toString()){
+        topic.posts.splice(i, 1)
+        topic.save();
+      }
     });
   });
 });
