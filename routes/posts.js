@@ -18,11 +18,21 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/add', function(req, res, next){
-  var post = new Post(req.body);
-  post.save(function(err, post){
-    PostEmitter.emit("addPostToTopicAndUser", post)
-    res.send(post);
+  Topic.findById(req.body.tid).populate("posts").exec(function(err, topic){
+    var repeated = topic.posts.every(isTitleFound);
+    if(repeated){
+      var post = new Post(req.body);
+      post.save(function(err, post){
+        PostEmitter.emit("addPostToTopicAndUser", post)
+        res.send(post);
+      });
+    } else {
+      res.send("attempting to submit an already existing post")
+    }
   });
+  function isTitleFound(post, index, array){
+    return post.title.toLowerCase() !== req.body.title.toLowerCase();
+  }
 });
 
 router.delete('/delete', function(req, res, next){
@@ -32,13 +42,14 @@ router.delete('/delete', function(req, res, next){
   })
 });
 
-router.put('/changeStat', function(req, res, next){
+router.put('/changeStats', function(req, res, next){
   Post.findById(req.body.pid).populate("author").exec(function(err, post){
     switch(req.body.type){
       case "views":
         post.views += 1;
         break;
       case "like":
+        // post.likers.push(req.body.uid);
         post.likes += 1;
         break;
       case "unlike":
@@ -75,9 +86,10 @@ router.put('/edit', function(req, res, next){
 });
 
 router.get('/viewAndLikeRanked', function(req, res, next){
+  var topPosts = [];
   Topic.find({}, function(err, topics){
     topics.forEach(function(topic, i){
-      topic.posts.sort(function(a, b){
+      topic.posts.views.sort(function(a, b){
 
       })
     })
