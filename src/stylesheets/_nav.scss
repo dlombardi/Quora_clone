@@ -20,3 +20,7 @@ nav.top-bar a {
   // border-color: #cf2a0e;
   // color: #FFF;
 }
+
+.top-bar-section li:not(.has-form) a:not(.button):hover{
+  background-color: $quora-base
+}
