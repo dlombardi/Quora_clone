@@ -27,19 +27,27 @@ router.post('/add', function(req, res, next){
 
 router.delete('/delete', function(req, res, next){
   Post.findByIdAndRemove(req.body.pid, function(err, post){
-    PostEmitter.emit("removePostFromTopic", post)
+    PostEmitter.emit("removePostFromTopicAndUser", post)
     res.send(post);
   })
 });
 
-router.post('/visit', function(req, res, next){
+router.put('/changeStat', function(req, res, next){
   Post.findById(req.body.pid).populate("author").exec(function(err, post){
-    var viewBool = req.body.type === "views";
-    viewBool ? post.views += 1 : post.likes += 1;
-    viewBool ? post.author.views += 1 : post.author.likes += 1;
+    switch(req.body.type){
+      case "views":
+        post.views += 1;
+        break;
+      case "like":
+        post.likes += 1;
+        break;
+      case "unlike":
+        post.likes -= 1;
+        break;
+    }
+    PostEmitter.emit("changePostStats", post, post.author);
     post.save();
     post.author.save();
-    viewBool ? PostEmitter.emit("viewPost", post, post.author) : PostEmitter.emit("likePost", post, post.author);
     res.send(post);
   })
 });
@@ -57,6 +65,7 @@ router.put('/edit', function(req, res, next){
           }
         });
       }
+      PostEmitter.emit("addPostToTopicAndUser", post);
       post.save();
       res.send(post);
     } else {
@@ -65,10 +74,14 @@ router.put('/edit', function(req, res, next){
   })
 });
 
-router.get('/viewAndLikeRanked/:tid', function(req, res, next){
-  Topic.findById(req.params.pid).populate("author").exec(function(err, post){
+router.get('/viewAndLikeRanked', function(req, res, next){
+  Topic.find({}, function(err, topics){
+    topics.forEach(function(topic, i){
+      topic.posts.sort(function(a, b){
 
-  })
+      })
+    })
+  });
 });
 
 

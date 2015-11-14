@@ -10,7 +10,7 @@ PostEmitter.on("addPost", function(data){
   console.log(data);
 });
 
-PostEmitter.on("viewPost", function(data){
+PostEmitter.on("changePostStats", function(data){
   console.log(data);
 });
 
@@ -44,12 +44,20 @@ PostEmitter.on("addPostToTopicAndUser", function(post){
 });
 
 
-PostEmitter.on("removePostFromTopic", function(post){
+PostEmitter.on("removePostFromTopicAndUser", function(post){
   Topic.findById(post.topic, function(err, topic){
     topic.posts.forEach(function(topicPost, i){
       if(topicPost.toString() === post._id.toString()){
         topic.posts.splice(i, 1)
         topic.save();
+      }
+    });
+  });
+  User.findById(post.author, function(err, user){
+    user.posts.forEach(function(userPost, i){
+      if(userPost.toString() === post._id.toString()){
+        user.posts.splice(i, 1)
+        user.save();
       }
     });
   });
