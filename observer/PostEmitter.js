@@ -18,12 +18,31 @@ PostEmitter.on("likePost", function(data){
   console.log(data);
 });
 
-PostEmitter.on("addPostToTopic", function(post){
+PostEmitter.on("addPostToTopicAndUser", function(post){
   Topic.findById(post.topic, function(err, topic){
-    topic.posts.push(post._id);
-    topic.save();
+    topic.posts.forEach(function(topicPost, i){
+      if(topicPost.toString() === post._id.toString()){
+        topic.posts.splice(i, post)
+        topic.save();
+      } else {
+        topic.posts.push(post._id);
+        topic.save();
+      }
+    });
+  });
+  User.findById(post.author, function(err, user){
+    user.posts.forEach(function(userPost, i){
+      if(userPost.toString() === post._id.toString()){
+        user.posts.splice(i, post)
+        user.save();
+      } else {
+        user.posts.push(post._id);
+        user.save();
+      }
+    });
   });
 });
+
 
 PostEmitter.on("removePostFromTopic", function(post){
   Topic.findById(post.topic, function(err, topic){

@@ -60,7 +60,7 @@ router.post('/knowledge', function(req, res, next){
   });
 });
 
-router.post('/updateInfo', function(req, res, next){
+router.put('/updateInfo', function(req, res, next){
   if(!req.body){
     return res.send("no entry");
   }

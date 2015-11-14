@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 router.post('/add', function(req, res, next){
   var post = new Post(req.body);
   post.save(function(err, post){
-    PostEmitter.emit("addPostToTopic", post)
+    PostEmitter.emit("addPostToTopicAndUser", post)
     res.send(post);
   });
 });
@@ -44,8 +44,29 @@ router.post('/visit', function(req, res, next){
   })
 });
 
-router.get('/viewAndLikeRanked', function(req, res, next){
-  Post.findById(req.body.pid).populate("author").exec(function(err, post){
+router.put('/edit', function(req, res, next){
+  Post.findById(req.body.pid, function(err, post){
+    if(post.author.toString() === req.body.uid.toString()){
+      post.content = req.body.content;
+      post.updated = Date.now();
+      if(req.body.tags){
+        var tags = req.body.tags.split(",");
+        tags.forEach(function(tag){
+          if(post.tags.indexOf(tag) === -1){
+            post.tags.push(tag.toLowerCase());
+          }
+        });
+      }
+      post.save();
+      res.send(post);
+    } else {
+      res.send("unauthorized edit; user not author")
+    }
+  })
+});
+
+router.get('/viewAndLikeRanked/:tid', function(req, res, next){
+  Topic.findById(req.params.pid).populate("author").exec(function(err, post){
 
   })
 });
