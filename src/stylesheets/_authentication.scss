@@ -36,7 +36,7 @@
  .btn.btn-google:hover,
  .btn.btn-google:focus {
    color: white;
-   background-color: #C74539;
+   background-color: $quora-base;
    border-color: #AF4138;
  }
 
@@ -47,6 +47,9 @@
 
  .buttons{
    text-align: center;
+   button {
+    padding: .5rem 1rem 0.5rem;
+   }
    .quora-submit{
       background-color: $quora-base;
    }
@@ -55,7 +58,7 @@
      border-bottom: 4px solid #c8c8c8;
      border-right: 1px solid #c8c8c8;
      border-left: 1px solid #c8c8c8;
-    outline: none;
+     outline: none;
    }
    .quora-change:hover{
      border-bottom: 0px solid #c8c8c8;
