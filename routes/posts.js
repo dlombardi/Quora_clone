@@ -18,19 +18,31 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/add', function(req, res, next){
-  Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
-    var repeated = topic.posts.every(isTitleFound);
-    if(repeated){
-      var post = new Post(req.body);
-      post.save(function(err, post){
-        console.log(post);
-        PostEmitter.emit("addPostToTopicAndUser", post);
-        res.send(post);
-      });
-    } else {
-      res.send("attempting to submit an already existing post")
-    }
-  });
+  if(!req.body.title){
+    var post = new Post(req.body);
+    post.save(function(err, post){
+      console.log(post);
+      PostEmitter.emit("addPostToTopicAndUser", post);
+      res.send(post);
+    });
+  } else {
+    Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
+      var repeated = topic.posts.every(isTitleFound);
+      if(repeated){
+        var post = new Post(req.body);
+        if(req.body.tags){
+          post.formatTags(req.body.tags, post)
+        }
+        post.save(function(err, post){
+          console.log(post);
+          PostEmitter.emit("addPostToTopicAndUser", post);
+          res.send(post);
+        });
+      } else {
+        res.send("attempting to submit an already existing post")
+      }
+    });
+  }
   function isTitleFound(post, index, array){
     return post.title.toLowerCase() !== req.body.title.toLowerCase();
   }
@@ -72,12 +84,7 @@ router.put('/edit', function(req, res, next){
       post.content = req.body.content;
       post.updated = Date.now();
       if(req.body.tags){
-        var tags = req.body.tags.split(",");
-        tags.forEach(function(tag){
-          if(post.tags.indexOf(tag) === -1){
-            post.tags.push(tag.toLowerCase());
-          }
-        });
+        post.formatTags(req.body.tags, post)
       }
       PostEmitter.emit("addPostToTopicAndUser", post);
       post.save();
@@ -114,9 +121,18 @@ router.get('/sorted/:tid/:sortingMethod', function(req, res, next){
 
 router.get('/filter/:tag', function(req, res, next){
   var tag = req.params.tag
+  var returnTopics = [];
   Topic.find().populate("posts").exec(function(err, topics){
-    res.send(topics);
+    topics.forEach(function(topic){
+      topic.posts.forEach(function(post){
+        console.log(post);
+        if(topic.posts.indexOf(tag) !== -1){
+          console.log(topic);
+        }
+      })
+    });
   })
+  // res.send(returnTopics);
   // var tag = req.params.sortingMethod;
   // switch(sortingMethod){
   //   case "newest":
