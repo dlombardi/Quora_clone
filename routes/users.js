@@ -45,7 +45,7 @@ router.post('/login', function(req, res, next){
   })(req, res, next);
 });
 
-router.post('/knowledge', function(req, res, next){
+router.post('/addknowledge', function(req, res, next){
   if(!req.body){
     return res.send("no entry");
   }
@@ -79,7 +79,7 @@ router.put('/updateInfo', function(req, res, next){
   }
 });
 
-router.post('/following', function(req, res, next){
+router.post('/follow', function(req, res, next){
   User.findById(req.body.uid, function (err, follower){
     User.findById(req.body.rid, function(err, receiver){
       if(follower.following.indexOf(req.body.rid) === -1){
@@ -94,7 +94,7 @@ router.post('/following', function(req, res, next){
   });
 });
 
-router.put('/removeFollowing', function(req, res, next){
+router.put('/unfollow', function(req, res, next){
   User.findById(req.body.uid, function (err, follower){
     User.findById(req.body.rid, function(err, receiver){
       follower.following.forEach(function(person, i){
@@ -110,12 +110,33 @@ router.put('/removeFollowing', function(req, res, next){
 });
 
 router.post('/subscribe', function(req, res, next){
-  Topic.find({name: req.body.name}, function(err, topic){
+  Topic.findById(req.body.tid, function(err, topic){
     User.findById(req.body.uid, function(err, user){
       topic[0].subscribers.push(user._id);
-      topic[0].save(function(err, topic){
-        res.send(topic);
-      });
+      user.subscriptions.push(topic._id);
+      topic.save();
+      user.save();
+      res.send(topic, user);
+    });
+  });
+});
+
+router.put('/unsubscribe', function(req, res, next){
+  Topic.find(req.body.tid, function(err, topic){
+    User.findById(req.body.uid, function(err, user){
+      user.subscriptions.forEach(function(topic){
+        if(topic._id.toString() === req.body.tid.toString()){
+          user.subscriptions.splice(i, 1);
+        }
+      })
+      topic.subscribers.forEach(function(user){
+        if(user._id.toString() === req.body.uid.toString()){
+          topic.subscribers.splice(i, 1);
+        }
+      })
+      topic.save();
+      user.save();
+      res.send(topic, user);
     });
   });
 });

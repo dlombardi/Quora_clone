@@ -12,11 +12,6 @@ var UserEmitter = require("../observer/UserEmitter");
 var TopicEmitter = require("../observer/TopicEmitter");
 var PostEmitter = require("../observer/PostEmitter");
 
-
-router.get('/', function(req, res, next) {
-
-});
-
 router.post('/add', function(req, res, next){
   if(!req.body.title){
     var post = new Post(req.body);

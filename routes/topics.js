@@ -25,7 +25,7 @@ router.post('/add', function(req, res, next){
 });
 
 router.delete('/delete', function(req, res, next){
-  topic.findByIdAndRemove({name: req.body.name}, function(err, topic){
+  topic.findByIdAndRemove(req.body.tid, function(err, topic){
     res.send(topic);
   });
 });
