@@ -26,6 +26,7 @@
     "bootstrap": "~3.3.5",
     "angular-foundation": "~0.8.0",
     "animate.css": "~3.4.0",
-    "foundation-icon-fonts": "*"
+    "foundation-icon-fonts": "*",
+    "ngInfiniteScroll": "~1.2.1"
   }
 }

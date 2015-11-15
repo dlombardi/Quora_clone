@@ -10,7 +10,6 @@ var PostSchema = new mongoose.Schema({
   updated: { type: Date, default: Date.now },
   postType: {type: String, enum: ['question', 'answer', 'comment'], required: true},
   title: String,
-  updated: { type: Date, default: Date.now },
   content: String,
   likers: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
   likes: {type: Number, default: 0},

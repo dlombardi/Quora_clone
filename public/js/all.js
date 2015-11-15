@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('quora', ['ui.router']);
+var app = angular.module('quora', ['ui.router', 'infinite-scroll']);
 
 app.constant('tokenStorageKey', 'my-token');
 
