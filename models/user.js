@@ -11,7 +11,6 @@ var UserSchema = new mongoose.Schema({
   home: String,
   work: String,
   about: String,
-  education: [String],
   subscriptions: [{ type: mongoose.Schema.ObjectId, ref: "Topic" }],
   knowledge: [{ type: mongoose.Schema.ObjectId, ref: "Topic" }],
   followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],

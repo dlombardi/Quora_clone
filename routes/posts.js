@@ -18,12 +18,13 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/add', function(req, res, next){
-  Topic.findById(req.body.tid).populate("posts").exec(function(err, topic){
+  Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
     var repeated = topic.posts.every(isTitleFound);
     if(repeated){
       var post = new Post(req.body);
       post.save(function(err, post){
-        PostEmitter.emit("addPostToTopicAndUser", post)
+        console.log(post);
+        PostEmitter.emit("addPostToTopicAndUser", post);
         res.send(post);
       });
     } else {
@@ -85,6 +86,57 @@ router.put('/edit', function(req, res, next){
       res.send("unauthorized edit; user not author")
     }
   })
+});
+
+router.get('/sorted/:tid/:sortingMethod', function(req, res, next){
+  var sortParams;
+  var sortingMethod = req.params.sortingMethod;
+  switch(sortingMethod){
+    case "newest":
+      sortParams = {"updated" : 'asc'};
+      break;
+    case "oldest":
+      sortParams = {"updated" : 'desc'};
+      break;
+    case "likes":
+      sortParams = {"likes" : 'desc'};
+      break;
+    case "views":
+      sortParams = {"views" : 'desc'};
+      break;
+    default:
+      sortParams = {"updated" : 'desc'};
+  }
+  Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
+    res.send(posts);
+  });
+});
+
+router.get('/filter/:tag', function(req, res, next){
+  var tag = req.params.tag
+  Topic.find().populate("posts").exec(function(err, topics){
+    res.send(topics);
+  })
+  // var tag = req.params.sortingMethod;
+  // switch(sortingMethod){
+  //   case "newest":
+  //     sortParams = {"updated" : 'asc'};
+  //     break;
+  //   case "oldest":
+  //     sortParams = {"updated" : 'desc'};
+  //     break;
+  //   case "likes":
+  //     sortParams = {"likes" : 'desc'};
+  //     break;
+  //   case "views":
+  //     sortParams = {"views" : 'desc'};
+  //     break;
+  //   default:
+  //     sortParams = {"updated" : 'desc'};
+  // }
+  // Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
+  //   res.send(posts);
+  // });
 });
 
 
