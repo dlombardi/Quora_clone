@@ -47,19 +47,21 @@ router.put('/changeStats', function(req, res, next){
     switch(req.body.type){
       case "views":
         post.views += 1;
+        post.author.views += 1;
         break;
       case "like":
-        // post.likers.push(req.body.uid);
         post.likes += 1;
+        post.author.likes += 1;
         break;
       case "unlike":
         post.likes -= 1;
+        post.author.likes -= 1;
         break;
     }
-    PostEmitter.emit("changePostStats", post, post.author);
+    PostEmitter.emit("changePostStats", post);
     post.save();
     post.author.save();
-    res.send(post);
+    res.send(post, post.author);
   })
 });
 
@@ -85,16 +87,6 @@ router.put('/edit', function(req, res, next){
   })
 });
 
-router.get('/viewAndLikeRanked', function(req, res, next){
-  var topPosts = [];
-  Topic.find({}, function(err, topics){
-    topics.forEach(function(topic, i){
-      topic.posts.views.sort(function(a, b){
-
-      })
-    })
-  });
-});
 
 
 module.exports = router;

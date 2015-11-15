@@ -10,8 +10,8 @@ PostEmitter.on("addPost", function(data){
   console.log(data);
 });
 
-PostEmitter.on("changePostStats", function(data){
-  console.log(data);
+PostEmitter.on("changePostStats", function(post, author){
+  User.findById(post.author)
 });
 
 PostEmitter.on("likePost", function(data){
