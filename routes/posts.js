@@ -21,20 +21,18 @@ router.post('/add', function(req, res, next){
   if(!req.body.title){
     var post = new Post(req.body);
     post.save(function(err, post){
-      console.log(post);
       PostEmitter.emit("addPostToTopicAndUser", post);
       res.send(post);
     });
   } else {
     Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
       var repeated = topic.posts.every(isTitleFound);
-      if(repeated){
+      if(!repeated){
         var post = new Post(req.body);
         if(req.body.tags){
           post.formatTags(req.body.tags, post)
         }
         post.save(function(err, post){
-          console.log(post);
           PostEmitter.emit("addPostToTopicAndUser", post);
           res.send(post);
         });
@@ -43,8 +41,8 @@ router.post('/add', function(req, res, next){
       }
     });
   }
-  function isTitleFound(post, index, array){
-    return post.title.toLowerCase() !== req.body.title.toLowerCase();
+  function isTitleFound(post){
+    return post.title === req.body.title;
   }
 });
 
@@ -86,24 +84,26 @@ router.put('/edit', function(req, res, next){
       if(req.body.tags){
         post.formatTags(req.body.tags, post)
       }
-      PostEmitter.emit("addPostToTopicAndUser", post);
-      post.save();
-      res.send(post);
+      post.save(function(err, post){
+        PostEmitter.emit("addPostToTopicAndUser", post);
+        res.send(post);
+      });
     } else {
       res.send("unauthorized edit; user not author")
     }
   })
 });
 
-router.get('/sorted/:tid/:sortingMethod', function(req, res, next){
-  var sortParams;
+router.get('/sorted/:tid?/:sortingMethod?/:tag?', function(req, res, next){
+  var tag = req.params.tag
   var sortingMethod = req.params.sortingMethod;
+  var sortParams;
   switch(sortingMethod){
     case "newest":
-      sortParams = {"updated" : 'asc'};
+      sortParams = {"updated" : 'desc'};
       break;
     case "oldest":
-      sortParams = {"updated" : 'desc'};
+      sortParams = {"updated" : 'asc'};
       break;
     case "likes":
       sortParams = {"likes" : 'desc'};
@@ -114,47 +114,20 @@ router.get('/sorted/:tid/:sortingMethod', function(req, res, next){
     default:
       sortParams = {"updated" : 'desc'};
   }
-  Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
-    res.send(posts);
-  });
-});
-
-router.get('/filter/:tag', function(req, res, next){
-  var tag = req.params.tag
-  var returnTopics = [];
-  Topic.find().populate("posts").exec(function(err, topics){
-    topics.forEach(function(topic){
-      topic.posts.forEach(function(post){
-        console.log(post);
-        if(topic.posts.indexOf(tag) !== -1){
-          console.log(topic);
-        }
-      })
+  if(tag){
+    Post.find({topic : req.params.tid, tags: {$in: [tag]}}).sort(sortParams).exec(function(err, posts){
+      res.send(posts);
     });
-  })
-  // res.send(returnTopics);
-  // var tag = req.params.sortingMethod;
-  // switch(sortingMethod){
-  //   case "newest":
-  //     sortParams = {"updated" : 'asc'};
-  //     break;
-  //   case "oldest":
-  //     sortParams = {"updated" : 'desc'};
-  //     break;
-  //   case "likes":
-  //     sortParams = {"likes" : 'desc'};
-  //     break;
-  //   case "views":
-  //     sortParams = {"views" : 'desc'};
-  //     break;
-  //   default:
-  //     sortParams = {"updated" : 'desc'};
-  // }
-  // Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
-  //   res.send(posts);
-  // });
+  } else if(req.params.tid){
+    Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
+      res.send(posts);
+    });
+  } else {
+    Post.find({}).sort(sortParams).exec(function(err, posts){
+      res.send(posts);
+    });
+  }
 });
-
 
 
 module.exports = router;

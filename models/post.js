@@ -15,7 +15,7 @@ var PostSchema = new mongoose.Schema({
   likes: {type: Number, default: 0},
   views: {type: Number, default: 0},
   tags: [{type: String}]
-});
+})
 
 PostSchema.methods.formatTags = function(tags, post) {
   tags.split(",").forEach(function(tag){
@@ -24,7 +24,5 @@ PostSchema.methods.formatTags = function(tags, post) {
     }
   });
 }
-
-
 
 module.exports = mongoose.model('Post', PostSchema);
