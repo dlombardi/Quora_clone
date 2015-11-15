@@ -22,6 +22,7 @@
     "express-stormpath": "^2.2.0",
     "gulp": "^3.9.0",
     "mongoose": "^4.1.10",
+    "mongoose-deep-populate": "^2.0.3",
     "morgan": "~1.6.1",
     "passport": "^0.3.2",
     "serve-favicon": "~2.3.0"

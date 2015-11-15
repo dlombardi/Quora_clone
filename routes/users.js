@@ -109,7 +109,6 @@ router.put('/removeFollowing', function(req, res, next){
   });
 });
 
-
 router.post('/subscribe', function(req, res, next){
   Topic.find({name: req.body.name}, function(err, topic){
     User.findById(req.body.uid, function(err, user){

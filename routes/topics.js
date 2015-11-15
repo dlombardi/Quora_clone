@@ -30,29 +30,6 @@ router.delete('/delete', function(req, res, next){
   });
 });
 
-router.get('/sorted/:tid/:sortingMethod', function(req, res, next){
-  var sortParams;
-  var sortingMethod = req.params.sortingMethod;
-  switch(sortingMethod){
-    case "newest":
-      sortParams = {"updated" : 'asc'};
-      break;
-    case "oldest":
-      sortParams = {"updated" : 'desc'};
-      break;
-    case "likes":
-      sortParams = {"likes" : 'desc'};
-      break;
-    case "views":
-      sortParams = {"views" : 'desc'};
-      break;
-    default:
-      sortParams = {"updated" : 'desc'};
-  }
-  Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
-    res.send(posts);
-  });
-});
 
 
 

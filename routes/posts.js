@@ -18,20 +18,31 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/add', function(req, res, next){
-  Topic.findById(req.body.tid).populate("posts").exec(function(err, topic){
-    var repeated = topic.posts.every(isTitleFound);
-    if(repeated){
-      var post = new Post(req.body);
-      post.save(function(err, post){
-        PostEmitter.emit("addPostToTopicAndUser", post)
-        res.send(post);
-      });
-    } else {
-      res.send("attempting to submit an already existing post")
-    }
-  });
-  function isTitleFound(post, index, array){
-    return post.title.toLowerCase() !== req.body.title.toLowerCase();
+  if(!req.body.title){
+    var post = new Post(req.body);
+    post.save(function(err, post){
+      PostEmitter.emit("addPostToTopicAndUser", post);
+      res.send(post);
+    });
+  } else {
+    Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
+      var repeated = topic.posts.every(isTitleFound);
+      if(!repeated){
+        var post = new Post(req.body);
+        if(req.body.tags){
+          post.formatTags(req.body.tags, post)
+        }
+        post.save(function(err, post){
+          PostEmitter.emit("addPostToTopicAndUser", post);
+          res.send(post);
+        });
+      } else {
+        res.send("attempting to submit an already existing post")
+      }
+    });
+  }
+  function isTitleFound(post){
+    return post.title === req.body.title;
   }
 });
 
@@ -71,22 +82,52 @@ router.put('/edit', function(req, res, next){
       post.content = req.body.content;
       post.updated = Date.now();
       if(req.body.tags){
-        var tags = req.body.tags.split(",");
-        tags.forEach(function(tag){
-          if(post.tags.indexOf(tag) === -1){
-            post.tags.push(tag.toLowerCase());
-          }
-        });
+        post.formatTags(req.body.tags, post)
       }
-      PostEmitter.emit("addPostToTopicAndUser", post);
-      post.save();
-      res.send(post);
+      post.save(function(err, post){
+        PostEmitter.emit("addPostToTopicAndUser", post);
+        res.send(post);
+      });
     } else {
       res.send("unauthorized edit; user not author")
     }
   })
 });
 
+router.get('/sorted/:tid?/:sortingMethod?/:tag?', function(req, res, next){
+  var tag = req.params.tag
+  var sortingMethod = req.params.sortingMethod;
+  var sortParams;
+  switch(sortingMethod){
+    case "newest":
+      sortParams = {"updated" : 'desc'};
+      break;
+    case "oldest":
+      sortParams = {"updated" : 'asc'};
+      break;
+    case "likes":
+      sortParams = {"likes" : 'desc'};
+      break;
+    case "views":
+      sortParams = {"views" : 'desc'};
+      break;
+    default:
+      sortParams = {"updated" : 'desc'};
+  }
+  if(tag){
+    Post.find({topic : req.params.tid, tags: {$in: [tag]}}).sort(sortParams).exec(function(err, posts){
+      res.send(posts);
+    });
+  } else if(req.params.tid){
+    Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
+      res.send(posts);
+    });
+  } else {
+    Post.find({}).sort(sortParams).exec(function(err, posts){
+      res.send(posts);
+    });
+  }
+});
 
 
 module.exports = router;
