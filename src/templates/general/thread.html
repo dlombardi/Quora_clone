@@ -25,16 +25,32 @@
     Question Thread Appears Here
     <hr>
     <div>
-      <h1><strong>Question</strong></h1>
+      <h4><strong>Question</strong></h4>
     </div>
     <div>
-      Detailed question appears here.
+      <h3>How can I develop a better accent in my spoken Latin?</h3>
     </div>
     <div>
-        <h1><strong>Answer</strong></h1>
+      <button>Comment</button>
+      <button>Like</button>
+      <button>Answer</button>
+    </div>
+    <div>
+        <h4><strong>Answer</strong></h4>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi inventore aliquid nulla omnis molestiae sed maiores doloremque totam animi, cumque fugit impedit cum laborum esse error repudiandae, placeat tempora ipsa.</p>
+
+        <!-- IMAGE EXAMPLE -->
+            <div infinite-scroll='loadMore()' infinite-scroll-distance='0'>
+              <p ng-repeat="comment in comments track by $index">{{comment}}</p>
+            </div>
     </div>
   </div>
+
+  <!-- TRADITIONAL EXAMPLE
+  <div infinite-scroll="addMoreItems()">
+    <div ng-repeat="comment in comments">Item number {{$index}}: {{$comment}}</div>
+  </div> -->
+
 
 
   <!-- INDEPENDENT FULL HEIGHT ABOUT COLUMN -->
