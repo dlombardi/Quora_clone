@@ -140,7 +140,6 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
     var submitFunc = $scope.Login ? auth.login : auth.register;
     console.log("user", user);
     submitFunc(user).success(function(data){
-      auth.saveToken(data.token);
       $scope.LoggedIn = true;
       $state.go('home');
     }).error(function(err){
@@ -204,7 +203,9 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
   };
 
   auth.register = function(user){
-    return $http.post('/users/register', user);
+    return $http.post('/users/register', user).success(function(data){
+      auth.saveToken(data.token);
+    });
   };
 
   auth.login = function(user){

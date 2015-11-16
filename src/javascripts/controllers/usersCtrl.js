@@ -18,7 +18,6 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
     var submitFunc = $scope.Login ? auth.login : auth.register;
     console.log("user", user);
     submitFunc(user).success(function(data){
-      auth.saveToken(data.token);
       $scope.LoggedIn = true;
       $state.go('home');
     }).error(function(err){
