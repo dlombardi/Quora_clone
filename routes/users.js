@@ -20,7 +20,7 @@ router.post('/register', function(req, res, next){
   user.username = req.body.username;
   user.setPassword(req.body.password)
 
-  user.save(function (err, user){
+  user.save(function (err){
    if(err){
      return res.status(400).json({error: err});
    }
@@ -52,7 +52,7 @@ router.post('/addknowledge', function(req, res, next){
   User.findById(req.body.uid, function(err, user){
     Topic.find({name: req.body.topic}, function(err, topic){
       user.knowledge.push(topic[0]._id);
-      user.save(function(err, user){
+      user.save(function(err){
         UserEmitter.emit("addKnowledge", user);
         res.send(user);
       });

@@ -13,7 +13,7 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
-    .state('post', { url: '/post', templateUrl: '/html/general/post.html', controller: 'writeCtrl'})
+    .state('post', { url: '/post', templateUrl: '/html/general/write.html', controller: 'writeCtrl'})
     .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
     .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
@@ -24,9 +24,25 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, topicFactory, auth, $rootScope) {
+app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, auth) {
   var currentUser = $rootScope.getCurrentUser;
-  
+  $scope.posts;
+
+  (function getPosts(){
+    $scope.posts = [];
+    var sorting = {
+      sortingMethod: "views"
+    }
+    postFactory.getTopStories(sorting)
+    .success(function(posts){
+      $scope.posts = posts;
+      console.log(posts);
+    })
+    .error(function(err){
+      console.log(err);
+    })
+  })();
+
 });
 
 'use strict';
@@ -43,7 +59,7 @@ app.controller('threadCtrl', function($scope, $state, $rootScope, postFactory){
   $scope.displayComments = false;
   $scope.displayAnswerForm = false;
   var currentUser = $rootScope.getCurrentUser;
-
+ 
 
   $scope.showComments = function(){
     $scope.displayComments = !$scope.displayComments;
@@ -188,8 +204,8 @@ app.factory('postFactory', function($window, $http){
     return $http.put('/posts/edit', editObject);
   };
 
-  postFactory.getSorted = function(sortedObject){
-    return $http.get('/posts/sorted/' + sortedObject.tid + '/' + sortedObject.sortingMethod + '/' + sortedObject.tag);
+  postFactory.getTopStories = function(sorting){
+    return $http.get('/posts/sorted/'+ sorting.sortingMethod +'/user/topic/tag');
   };
 
   return postFactory;
