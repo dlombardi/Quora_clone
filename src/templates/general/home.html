@@ -4,7 +4,7 @@
 
   <!-- FEEDS COLUMN -->
   <div class="small-10 small-offset-1 large-1 large-offset-1 columns">
-    <h6>FEEDS</h6>
+    <h6>FEEDS Topics you are subscribed to</h6>
     <hr>
     <ul>
       <li ng-repeat="topic in topicFeed"><a href="">{{topic.name}}</a></li>
@@ -20,8 +20,8 @@
       <h4>{{post.title}}</h4>
       <p>Author: {{post.author.username}}, {{post.author.work}}</p>
       <p>{{post.content}}</p>
-      <button ng-click="likePost(post)">Likes | <span>{{post.likes}}</span></button>
-      <a ng-click="dislike(post)" href="">Dislike</a> |
+      <button ng-show="!post.liked" ng-click="likePost($index)">Like | <span>{{post.likes}}</span></button>
+      <button ng-show="post.liked" ng-click="unlikePost($index)">Unlike | <span>{{post.likes}}</span></button>
       <a href="">Comments <span>{{post.comments.length}}</span></a>
       <hr>
     </div>
@@ -29,7 +29,7 @@
 
   <!-- TOPICS COLUMN -->
   <div class="small-10 small-offset-1 large-3 large-offset-1 columns end">
-    RANDOM TOPICS
+    A random topic to reccomend
     <hr>
   </div>
 

@@ -27,6 +27,7 @@
     "angular-foundation": "~0.8.0",
     "animate.css": "~3.4.0",
     "foundation-icon-fonts": "*",
-    "ngInfiniteScroll": "~1.2.1"
+    "ngInfiniteScroll": "~1.2.1",
+    "textAngular": "~1.4.6"
   }
 }
