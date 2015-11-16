@@ -2,10 +2,10 @@
 
 
 
-app.controller('usersCtrl', function($scope, $state, auth){
+app.controller('usersCtrl', function($scope, $state, auth, userFactory){
   $scope.Login = false;
   $scope.LoggedIn = true;
-  
+
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
     $scope.LoggedIn = false;
