@@ -18,7 +18,7 @@
     <div class="post" ng-repeat="post in posts track by $index">
       <p><span></span>{{post.topic.name}}</p>
       <h4>{{post.title}}</h4>
-      <p>{{post.author.username}}, {{post.author.work}}</p>
+      <p>Author: {{post.author.username}}, {{post.author.work}}</p>
       <p>{{post.content}}</p>
       <button ng-click="likePost(post)">Likes | <span>{{post.likes}}</span></button>
       <a ng-click="dislike(post)" href="">Dislike</a> |

@@ -3,6 +3,7 @@
 var express = require('express');
 var shuffle = require('knuth-shuffle').knuthShuffle
 var router = express.Router();
+var passport = require("passport");
 
 var User = require('../models/user');
 var Topic = require('../models/topic');
@@ -12,6 +13,7 @@ var Post = require('../models/post');
 var UserEmitter = require("../observer/UserEmitter");
 var TopicEmitter = require("../observer/TopicEmitter");
 var PostEmitter = require("../observer/PostEmitter");
+
 
 router.get('/:pid', function(req, res, next){
   Post.findById(req.params.pid).populate('author comments.comments topic responseTo').exec(function (err, post){
@@ -88,7 +90,7 @@ router.put('/changeStats', function(req, res, next){
   })
 });
 
-router.put('/edit', function(req, res, next){
+router.put('/edit', passport.authenticate('local', { failureRedirect: '/home' }), function(req, res, next){
   Post.findById(req.body.pid, function(err, post){
     if(post.author.toString() === req.body.uid.toString()){
       post.content = req.body.content;
