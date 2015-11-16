@@ -3,6 +3,8 @@
 var emitter = require("events").EventEmitter;
 var User = require('../models/user');
 var Topic = require('../models/topic');
+var Mixpanel = require('mixpanel');
+var mixpanel = Mixpanel.init('66b2b8969a8e0b1d6694945c0259ac12');
 
 var TopicEmitter = new emitter();
 
