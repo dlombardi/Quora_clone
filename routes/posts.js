@@ -76,7 +76,7 @@ router.put('/changeStats', function(req, res, next){
         post.likes += 1;
         post.author.likes += 1;
         break;
-      case "unlike":
+      case "dislike":
         post.likes -= 1;
         post.author.likes -= 1;
         break;
@@ -84,7 +84,7 @@ router.put('/changeStats', function(req, res, next){
     PostEmitter.emit("changePostStats", post);
     post.save();
     post.author.save();
-    res.send(post, post.author);
+    res.send(post);
   })
 });
 
@@ -106,10 +106,11 @@ router.put('/edit', function(req, res, next){
   })
 });
 
-router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?', function(req, res, next){
+router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:postType?', function(req, res, next){
   var tag = req.params.tag
   var sortingMethod = req.params.sortingMethod;
   var sortParams;
+  var postType;
   switch(sortingMethod){
     case "newest":
       sortParams = {"updated" : 'desc'};
@@ -118,15 +119,22 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?', function(
       sortParams = {"updated" : 'asc'};
       break;
     case "likes":
+      sortParams = {"likes" : 'asc'};
+      break;
+    case "dislikes":
       sortParams = {"likes" : 'desc'};
       break;
     case "views":
-      sortParams = {"views" : 'desc'};
+      sortParams = {"views" : 'asc'};
       break;
     default:
-      sortParams = {"updated" : 'desc'};
+      sortParams = {"likes" : 'desc'};
   }
-  if(tag) {
+  if(req.params.postType){
+    Post.find({postType: req.params.postType}).populate("topic author").sort(sortParams).exec(function(err, posts){
+      res.send(posts);
+    });
+  } else if (tag) {
     Post.find({topic : req.params.tid, tags: {$in: [tag]}}).sort(sortParams).exec(function(err, posts){
       res.send(posts);
     });

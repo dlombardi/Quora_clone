@@ -20,7 +20,7 @@ app.factory('postFactory', function($window, $http){
   };
 
   postFactory.getTopStories = function(sorting){
-    return $http.get('/posts/sorted/'+ sorting.sortingMethod +'/user/topic/tag');
+    return $http.get('/posts/sorted/user/topic/tag/postType/'+ sorting.postType +'');
   };
 
   return postFactory;

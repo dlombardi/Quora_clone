@@ -24,25 +24,63 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, auth) {
+app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, topicFactory, auth) {
   var currentUser = $rootScope.getCurrentUser;
   $scope.posts;
+  $scope.topicFeed;
 
-  (function getPosts(){
+  function getPosts(){
     $scope.posts = [];
+    $scope.topicFeed = [];
     var sorting = {
-      sortingMethod: "views"
+      postType: "question"
     }
     postFactory.getTopStories(sorting)
     .success(function(posts){
       $scope.posts = posts;
-      console.log(posts);
     })
     .error(function(err){
-      console.log(err);
-    })
-  })();
+      console.log("error: ", err)
+    });
 
+    topicFactory.get7Topics()
+    .success(function(topics){
+      $scope.topicFeed = topics;
+      console.log(topics);
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
+  }
+  getPosts();
+
+  $scope.likePost = function(post){
+    var statsObject = {
+      pid: post._id,
+      type: "like"
+    }
+    postFactory.changeStats(statsObject)
+    .success(function(post){
+      getPosts();
+    })
+    .error(function(post){
+      console.log("error: ", err);
+    })
+  }
+
+  $scope.dislike = function(post){
+    var statsObject = {
+      pid: post._id,
+      type: "dislike"
+    }
+    postFactory.changeStats(statsObject)
+    .success(function(post){
+      getPosts();
+    })
+    .error(function(post){
+      console.log("error: ", err);
+    })
+  }
 });
 
 'use strict';
@@ -69,9 +107,6 @@ app.controller('threadCtrl', function($scope, $state, $rootScope, postFactory){
     $scope.displayAnswerForm = !$scope.displayAnswerForm;
   }
 
-  $scope.showAnswerForm = function(){
-    $scope.displayAnswerForm = !$scope.displayAnswerForm;
-  }
 
   $scope.comments = [{author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", likes: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", views: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}];
 
@@ -208,7 +243,7 @@ app.factory('postFactory', function($window, $http){
   };
 
   postFactory.getTopStories = function(sorting){
-    return $http.get('/posts/sorted/'+ sorting.sortingMethod +'/user/topic/tag');
+    return $http.get('/posts/sorted/user/topic/tag/postType/'+ sorting.postType +'');
   };
 
   return postFactory;
@@ -221,6 +256,10 @@ app.factory('topicFactory', function($window, $http) {
 
   topicFactory.getTopics = function(){
     return $http.get('/topics');
+  };
+
+  topicFactory.get7Topics = function(){
+    return $http.get('/topics/limit7');
   };
 
   topicFactory.createTopic = function(topicInput){

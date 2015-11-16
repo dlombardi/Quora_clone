@@ -11,6 +11,7 @@ var PostSchema = new mongoose.Schema({
   comments: [{type: mongoose.Schema.ObjectId, ref: 'Post'}],
   updated: { type: Date, default: Date.now },
   postType: {type: String, enum: ['question', 'answer', 'comment'], required: true},
+  answerWritten: {type: Boolean, default: false},
   title: String,
   content: String,
   likers: [{type: mongoose.Schema.ObjectId, ref: 'User'}],

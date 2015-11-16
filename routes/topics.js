@@ -17,6 +17,12 @@ router.get('/', function(req, res, next) {
   })
 });
 
+router.get('/limit7', function(req, res, next) {
+  Topic.find().limit(7).exec(function(err, topics){
+    res.send(topics);
+  })
+});
+
 router.post('/add', function(req, res, next){
   var topic = new Topic(req.body);
   topic.save(function(err){

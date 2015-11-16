@@ -1,23 +1,61 @@
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, auth) {
+app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, topicFactory, auth) {
   var currentUser = $rootScope.getCurrentUser;
   $scope.posts;
+  $scope.topicFeed;
 
-  (function getPosts(){
+  function getPosts(){
     $scope.posts = [];
+    $scope.topicFeed = [];
     var sorting = {
-      sortingMethod: "views"
+      postType: "question"
     }
     postFactory.getTopStories(sorting)
     .success(function(posts){
       $scope.posts = posts;
-      console.log(posts);
     })
     .error(function(err){
-      console.log(err);
-    })
-  })();
+      console.log("error: ", err)
+    });
 
+    topicFactory.get7Topics()
+    .success(function(topics){
+      $scope.topicFeed = topics;
+      console.log(topics);
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
+  }
+  getPosts();
+
+  $scope.likePost = function(post){
+    var statsObject = {
+      pid: post._id,
+      type: "like"
+    }
+    postFactory.changeStats(statsObject)
+    .success(function(post){
+      getPosts();
+    })
+    .error(function(post){
+      console.log("error: ", err);
+    })
+  }
+
+  $scope.dislike = function(post){
+    var statsObject = {
+      pid: post._id,
+      type: "dislike"
+    }
+    postFactory.changeStats(statsObject)
+    .success(function(post){
+      getPosts();
+    })
+    .error(function(post){
+      console.log("error: ", err);
+    })
+  }
 });
