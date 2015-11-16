@@ -143,6 +143,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
       $scope.LoggedIn = true;
       $state.go('home');
     }).error(function(err){
+      console.log(err);
       $scope.user = {};
       alert(err);
     });
