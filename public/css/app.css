@@ -143,3 +143,13 @@ nav.top-bar a {
 
 quora-title {
   font-weight: strong; }
+
+form h6 {
+  font-weight: bold; }
+
+#submitInput input {
+  width: 80%; }
+
+#submitInput button {
+  margin-bottom: 0;
+  bottom: 0px; }

@@ -24,142 +24,6 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 
 'use strict';
 
-app.factory('auth', function($window, $http, tokenStorageKey) {
-  var auth = {};
-
-  auth.saveToken = function(token) {
-    $window.localStorage[tokenStorageKey] = token;
-  };
-
-  auth.getToken = function() {
-    return $window.localStorage[tokenStorageKey];
-  };
-
-  auth.isLoggedIn = function(){
-    var token = auth.getToken(function(token){
-      if(token){
-        var payload = JSON.parse($window.atob(token.split('.')[1]));
-        return payload.exp > Date.now() / 1000;
-      } else {
-        return false;
-      }
-    })
-  };
-
-  auth.currentUser = function(){
-    if(auth.isLoggedIn()){
-      var token = auth.getToken(function(token){
-        var payload = JSON.parse($window.atob(token.split('.')[1]));
-        return payload;
-      })
-    }
-  };
-
-  auth.register = function(user){
-    return $http.post('/users/register', user).success(function(data){
-      auth.saveToken(data.token);
-    });
-  };
-
-  auth.login = function(user){
-    return $http.post('/users/login', user).success(function(data){
-      auth.saveToken(data.token);
-    });
-  };
-
-  auth.logout = function(){
-    $window.localStorage.removeItem(tokenStorageKey);
-  };
-
-  return auth;
-});
-
-'use strict';
-
-app.factory('postFactory', function($window, $http){
-  var postFactory= {};
-
-  postFactory.createPost = function(postInput) {
-    return $http.post('/posts/add', newPost);
-  };
-
-  postFactory.deletePost = function(pid){
-    return $http.delete('/posts/delete', pid);
-  };
-
-  postFactory.changeStats = function(statObject){
-    return $http.put('/posts/changeStats', statObject);
-  };
-
-  postFactory.editPost = function(editObject){
-    return $http.put('/posts/edit', editObject);
-  };
-
-  postFactory.getTopStories = function(sorting){
-    return $http.get('/posts/sorted/user/topic/tag/postType/'+ sorting.postType +'');
-  };
-
-  return postFactory;
-});
-
-'use strict';
-
-app.factory('topicFactory', function($window, $http) {
-  var topicFactory = {};
-
-  topicFactory.getTopics = function(){
-    return $http.get('/topics');
-  };
-
-  topicFactory.get7Topics = function(){
-    return $http.get('/topics/limit7');
-  };
-
-  topicFactory.createTopic = function(topicInput){
-    return $http.post('/topics/add', topicInput);
-  };
-
-  topicFactory.deleteTopic = function(tid){
-    return $http.delete('/topics/delete', tid);
-  };
-
-  return topicFactory;
-});
-
-'use strict';
-
-app.factory('userFactory', function($window, $http){
-  var userFactory= {};
-
-  userFactory.addKnowledge = function(knowledgeObject) {
-    return $http.post('/users/addKnowledge', knowledgeObject);
-  };
-
-  userFactory.updateInfo = function(updateObject){
-    return $http.put('/users/updateInfo', updateObject);
-  };
-
-  userFactory.follow = function(followObject){
-    return $http.post('/posts/follow', followObject);
-  };
-
-  userFactory.unfollow = function(unfollowObject){
-    return $http.put('/posts/unfollow', unfollowObject);
-  };
-
-  userFactory.subscribe = function(subscribeOject){
-    return $http.post('/posts/subscribe', subscribeObject);
-  };
-
-  userFactory.unsubscribe = function(unsubscribeObject){
-    return $http.put('/posts/unsubscribe', unsubscribeObject);
-  };
-
-  return userFactory;
-});
-
-'use strict';
-
 
 app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, topicFactory, auth) {
   var currentUser = $rootScope.getCurrentUser;
@@ -302,16 +166,143 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
 'use strict';
 
 app.controller('writeCtrl', function($scope, $state, postFactory, auth){
-  console.log("post CTRL WORKING");
+  console.log("WRITE CTRL WORKING");
 
-  $scope.comments = ['test comment 1','test comment 2','test comment 3','test comment 4','test comment 5','test comment 6','test comment 7','test comment 8'];
 
-  $scope.loadMore = function() {
-    var last = $scope.comments[$scope.comments.length - 1]; //'test 8'
-    var showComments = 8;
-    for(var count = 1; count <= showComments; count++) {
-      console.log('count is '+ count);
-      $scope.comments.push(last + '');//replace last with data.
+});
+
+'use strict';
+
+app.factory('auth', function($window, $http, tokenStorageKey) {
+  var auth = {};
+
+  auth.saveToken = function(token) {
+    $window.localStorage[tokenStorageKey] = token;
+  };
+
+  auth.getToken = function() {
+    return $window.localStorage[tokenStorageKey];
+  };
+
+  auth.isLoggedIn = function(){
+    var token = auth.getToken(function(token){
+      if(token){
+        var payload = JSON.parse($window.atob(token.split('.')[1]));
+        return payload.exp > Date.now() / 1000;
+      } else {
+        return false;
+      }
+    })
+  };
+
+  auth.currentUser = function(){
+    if(auth.isLoggedIn()){
+      var token = auth.getToken(function(token){
+        var payload = JSON.parse($window.atob(token.split('.')[1]));
+        return payload;
+      })
     }
   };
+
+  auth.register = function(user){
+    return $http.post('/users/register', user).success(function(data){
+      auth.saveToken(data.token);
+    });
+  };
+
+  auth.login = function(user){
+    return $http.post('/users/login', user).success(function(data){
+      auth.saveToken(data.token);
+    });
+  };
+
+  auth.logout = function(){
+    $window.localStorage.removeItem(tokenStorageKey);
+  };
+
+  return auth;
+});
+
+'use strict';
+
+app.factory('postFactory', function($window, $http){
+  var postFactory= {};
+
+  postFactory.createPost = function(postInput) {
+    return $http.post('/posts/add', newPost);
+  };
+
+  postFactory.deletePost = function(pid){
+    return $http.delete('/posts/delete', pid);
+  };
+
+  postFactory.changeStats = function(statObject){
+    return $http.put('/posts/changeStats', statObject);
+  };
+
+  postFactory.editPost = function(editObject){
+    return $http.put('/posts/edit', editObject);
+  };
+
+  postFactory.getTopStories = function(sorting){
+    return $http.get('/posts/sorted/user/topic/tag/postType/'+ sorting.postType +'');
+  };
+
+  return postFactory;
+});
+
+'use strict';
+
+app.factory('topicFactory', function($window, $http) {
+  var topicFactory = {};
+
+  topicFactory.getTopics = function(){
+    return $http.get('/topics');
+  };
+
+  topicFactory.get7Topics = function(){
+    return $http.get('/topics/limit7');
+  };
+
+  topicFactory.createTopic = function(topicInput){
+    return $http.post('/topics/add', topicInput);
+  };
+
+  topicFactory.deleteTopic = function(tid){
+    return $http.delete('/topics/delete', tid);
+  };
+
+  return topicFactory;
+});
+
+'use strict';
+
+app.factory('userFactory', function($window, $http){
+  var userFactory= {};
+
+  userFactory.addKnowledge = function(knowledgeObject) {
+    return $http.post('/users/addKnowledge', knowledgeObject);
+  };
+
+  userFactory.updateInfo = function(updateObject){
+    return $http.put('/users/updateInfo', updateObject);
+  };
+
+  userFactory.follow = function(followObject){
+    return $http.post('/posts/follow', followObject);
+  };
+
+  userFactory.unfollow = function(unfollowObject){
+    return $http.put('/posts/unfollow', unfollowObject);
+  };
+
+  userFactory.subscribe = function(subscribeOject){
+    return $http.post('/posts/subscribe', subscribeObject);
+  };
+
+  userFactory.unsubscribe = function(unsubscribeObject){
+    return $http.put('/posts/unsubscribe', unsubscribeObject);
+  };
+
+  return userFactory;
 });
