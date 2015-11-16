@@ -62,6 +62,7 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
+      $scope.posts[index].liked = true;
       getPosts();
     })
     .error(function(post){
@@ -69,19 +70,21 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
     })
   }
 
-  $scope.dislike = function(post){
+  $scope.unlike = function(post){
     var statsObject = {
       pid: post._id,
       type: "dislike"
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
+      $scope.posts[index].liked = false;
       getPosts();
     })
     .error(function(post){
       console.log("error: ", err);
     })
   }
+
 });
 
 app.controller('navCtrl', function($scope, $state, auth, $rootScope){
