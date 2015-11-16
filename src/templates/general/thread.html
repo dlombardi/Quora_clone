@@ -18,13 +18,15 @@
     {{question}}
     <hr>
 
-    <div id="question">
+    <div class="buttons" id="question">
       <div class="row">
-        <h4><strong>{{question.title}}</strong></h4>
+        <h4><strong>{{question.title}}What is your favorite way to eat rice?</strong></h4>
       </div>
       <div class="row">
-        <button ng-click="showAnswerForm()">Write Answer</button>
-        <a ng-click="showComments()" href="">Comments</a><span>{{question.comments}}</span>
+        <button ng-click="showAnswerForm()">Answer</button>
+        <button class="right" ng-click="showComments()">Comment</button>
+        <hr>
+        <span>{{question.comments}}</span>
       </div>
       <div class="row" id="answerForm" ng-show="displayAnswerForm">
         <textarea name="" id="answer" cols="30" rows="8" ng-model="answerText" placeholder="answer..."></textarea>
@@ -33,7 +35,7 @@
       <div class="row" ng-show="displayComments">
         <input type="text" ng-model="comment" placeholder="comment...">
         <button ng-click="postComment(comment)">Comment</button>
-        <div class="row" ng-repeat="comment in comments">
+        <div class="row" ng-repeat="comment in comments track by $index">
           <p>{{comment.author}}</p>
           <div class="row">
             <p>{{comment.content}}</p>
@@ -48,20 +50,13 @@
       </div>
     </div>
     <div>
-      <h4><strong>Answer</strong></h4>
+      <h6><strong>Answer</strong></h6>
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi inventore aliquid nulla omnis molestiae sed maiores doloremque totam animi, cumque fugit impedit cum laborum esse error repudiandae, placeat tempora ipsa.</p>
       <div infinite-scroll='loadMore()' infinite-scroll-distance='0'>
         <p ng-repeat="comment in comments track by $index">{{comment}}</p>
       </div>
     </div>
   </div>
-
-  <!-- TRADITIONAL EXAMPLE
-  <div infinite-scroll="addMoreItems()">
-    <div ng-repeat="comment in comments">Item number {{$index}}: {{$comment}}</div>
-  </div> -->
-
-
 
   <!-- INDEPENDENT FULL HEIGHT ABOUT COLUMN -->
 

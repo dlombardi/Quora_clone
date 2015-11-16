@@ -55,6 +55,7 @@
     text-align: center;
     padding: .5rem 1rem 0.5rem;
     background-color: $quora-base;
+    font-size: .875rem;
    }
    .quora-change{
      border-bottom: 4px solid #c8c8c8;
@@ -90,7 +91,6 @@
   .button:focus, .button:hover, {
     background-color: $quora-dark;
   }
-
  }
 
 .button.alert:focus, .button.alert:hover, .button.alert:focus, .button.alert:hover {
