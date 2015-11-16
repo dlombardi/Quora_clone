@@ -4,12 +4,10 @@
 
 app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootScope){
   $scope.Login = false;
-  $scope.LoggedIn = true;
   var currentUser = $rootScope.getCurrentUser;
 
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
-    $scope.LoggedIn = false;
     $scope.Login ? $scope.currentState = "Create Account" : $scope.currentState = "Go to Login"
     $scope.Login ? $scope.formState = "Login" : $scope.formState = "Register"
   })();
@@ -18,7 +16,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
     var submitFunc = $scope.Login ? auth.login : auth.register;
     console.log("user", user);
     submitFunc(user).success(function(data){
-      $scope.LoggedIn = !$scope.LoggedIn;
+      $rootScope.loggedIn = !$rootScope.loggedIn;
       $state.go('home');
     }).error(function(err){
       console.log(err);
@@ -26,9 +24,4 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
       alert(err);
     });
   };
-
-  $scope.logout = function(){
-    auth.logout();
-    $scope.LoggedIn = false;
-  }
 });

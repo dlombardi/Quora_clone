@@ -4,6 +4,7 @@ var app = angular.module('quora', ['ui.router', 'infinite-scroll']);
 
 app.run(function($rootScope, auth) {
     $rootScope.getCurrentUser = auth.currentUser();
+    $rootScope.loggedIn = false;
 })
 
 app.constant('tokenStorageKey', 'my-token');
