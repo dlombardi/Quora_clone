@@ -22,7 +22,6 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
       $state.go('home');
     }).error(function(res){
       $scope.user = {};
-      alert(res.message);
     });
   };
 
