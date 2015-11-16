@@ -10,22 +10,20 @@ nav.top-bar {
   background-color: white;
   color: black;
 }
-.profileAbout {
-  text-align: right;
-}
+
 .profilePicture {
   margin: 20px 20px 20px 30px;
   border-radius: 50%;
 }
 .bioColumn {
-  margin-top: 20px;
-  h3 {
-    font-weight: bold;
-  }
+  margin-top: 1em;
   small {
-    margin-top: 0;
+    margin-top: -.5em;
   }
 }
 hr {
   border-top: $lineGrey;
+}
+#rightColumn {
+  margin-top: 1em;
 }
