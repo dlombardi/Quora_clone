@@ -10,39 +10,49 @@
     FEEDS
     <hr>
     <ul>
-      <li>Lorem</li>
-      <li>ipsum</li>
-      <li>dolor</li>
-      <li>sit</li>
-      <li>amet</li>
-      <li>consectetur</li>
-      <li>adipisicing</li>
-      <li>elit</li>
+      <li ng-repeat="questions in topic"><a href="">{{topic.name}}</a></li>
     </ul>
   </div>
 
   <div class="medium-4 columns primaryColumn">
-    Question Thread Appears Here
+    {{question}}
     <hr>
-    <div>
-      <h4><strong>Question</strong></h4>
-    </div>
-    <div>
-      <h3>How can I develop a better accent in my spoken Latin?</h3>
-    </div>
-    <div>
-      <button>Comment</button>
-      <button>Like</button>
-      <button>Answer</button>
-    </div>
-    <div>
-        <h4><strong>Answer</strong></h4>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi inventore aliquid nulla omnis molestiae sed maiores doloremque totam animi, cumque fugit impedit cum laborum esse error repudiandae, placeat tempora ipsa.</p>
 
-        <!-- IMAGE EXAMPLE -->
-            <div infinite-scroll='loadMore()' infinite-scroll-distance='0'>
-              <p ng-repeat="comment in comments track by $index">{{comment}}</p>
-            </div>
+    <div id="question">
+      <div class="row">
+        <h4><strong>{{question.title}}</strong></h4>
+      </div>
+      <div class="row">
+        <button ng-click="showAnswerForm()">Write Answer</button>
+        <a ng-click="showComments()" href="">Comments</a><span>{{question.comments}}</span>
+      </div>
+      <div class="row" id="answerForm" ng-show="displayAnswerForm">
+        <textarea name="" id="answer" cols="30" rows="8" ng-model="answerText" placeholder="answer..."></textarea>
+        <button>Submit</button>
+      </div>
+      <div class="row" ng-show="displayComments">
+        <input type="text" ng-model="comment" placeholder="comment...">
+        <button ng-click="postComment(comment)">Comment</button>
+        <div class="row" ng-repeat="comment in comments">
+          <p>{{comment.author}}</p>
+          <div class="row">
+            <p>{{comment.content}}</p>
+          </div>
+          <div class="row">
+            <input type="text" ng-model="reply" placeholder="reply...">
+            <button ng-click="postReply(reply)">Reply</button>
+            <p>likes: <span>{{comment.likes}}</span></p>
+            <p>views: <span>{{comment.views}}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h4><strong>Answer</strong></h4>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi inventore aliquid nulla omnis molestiae sed maiores doloremque totam animi, cumque fugit impedit cum laborum esse error repudiandae, placeat tempora ipsa.</p>
+      <div infinite-scroll='loadMore()' infinite-scroll-distance='0'>
+        <p ng-repeat="comment in comments track by $index">{{comment}}</p>
+      </div>
     </div>
   </div>
 

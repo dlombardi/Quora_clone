@@ -2,8 +2,20 @@
 
 app.controller('threadCtrl', function($scope, $state, postFactory){
   console.log("THREAD CTRL WORKING");
+  $scope.displayComments = false;
+  $scope.displayAnswerForm = false;
 
-  $scope.comments = ['test comment 1','test comment 2','test comment 3','test comment 4','test comment 5','test comment 6','test comment 7','test comment 8'];
+
+  $scope.showComments = function(){
+    $scope.displayComments = !$scope.displayComments;
+  }
+
+  $scope.showAnswerForm = function(){
+    $scope.displayAnswerForm = !$scope.displayAnswerForm;
+  }
+
+
+  $scope.comments = [{author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", likes: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", views: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}];
 
   $scope.loadMore = function() {
     var last = $scope.comments[$scope.comments.length - 1];
