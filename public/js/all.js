@@ -9,7 +9,8 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
-    .state('post', { url: '/post', templateUrl: '/html/general/post.html', controller: 'postCtrl'})
+    .state('post', { url: '/post', templateUrl: '/html/general/post.html', controller: 'writeCtrl'})
+    .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
     .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
 
@@ -19,15 +20,7 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state) {
-
-});
-
-'use strict';
-
-
-app.controller('postCtrl', function($scope, $state){
-  console.log("POST CTRL WORKING");
+app.controller('homeCtrl', function($scope, $state, topicFactory) {
 
 });
 
@@ -40,20 +33,41 @@ app.controller('profileCtrl', function($scope, $state){
 
 'use strict';
 
-
-app.controller('threadCtrl', function($scope, $state){
+app.controller('threadCtrl', function($scope, $state, postFactory){
   console.log("THREAD CTRL WORKING");
+  $scope.displayComments = false;
+  $scope.displayAnswerForm = false;
 
+
+  $scope.showComments = function(){
+    $scope.displayComments = !$scope.displayComments;
+  }
+
+  $scope.showAnswerForm = function(){
+    $scope.displayAnswerForm = !$scope.displayAnswerForm;
+  }
+
+
+  $scope.comments = [{author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", likes: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", views: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}];
+
+  $scope.loadMore = function() {
+    var last = $scope.comments[$scope.comments.length - 1];
+    var showComments = 8;
+    for(var count = 1; count <= showComments; count++) {
+      console.log('count is '+ count);
+      $scope.comments.push(last + '');//replace last with data.
+    }
+  };
 });
 
 'use strict';
 
 
 
-app.controller('usersCtrl', function($scope, $state, auth){
+app.controller('usersCtrl', function($scope, $state, auth, userFactory){
   $scope.Login = false;
   $scope.LoggedIn = true;
-  
+
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
     $scope.LoggedIn = false;
@@ -77,6 +91,23 @@ app.controller('usersCtrl', function($scope, $state, auth){
     auth.logout();
     $scope.LoggedIn = false;
   }
+});
+
+'use strict';
+
+app.controller('writeCtrl', function($scope, $state, postFactory){
+  console.log("post CTRL WORKING");
+
+  $scope.comments = ['test comment 1','test comment 2','test comment 3','test comment 4','test comment 5','test comment 6','test comment 7','test comment 8'];
+
+  $scope.loadMore = function() {
+    var last = $scope.comments[$scope.comments.length - 1]; //'test 8'
+    var showComments = 8;
+    for(var count = 1; count <= showComments; count++) {
+      console.log('count is '+ count);
+      $scope.comments.push(last + '');//replace last with data.
+    }
+  };
 });
 
 'use strict';
@@ -127,4 +158,84 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
   };
 
   return auth;
+});
+
+'use strict';
+
+app.factory('postFactory', function($window, $http){
+  var postFactory= {};
+
+  postFactory.createPost = function(postInput) {
+    return $http.post('/posts/add', newPost);
+  };
+
+  postFactory.deletePost = function(pid){
+    return $http.delete('/posts/delete', pid);
+  };
+
+  postFactory.changeStats = function(statObject){
+    return $http.put('/posts/changeStats', statObject);
+  };
+
+  postFactory.editPost = function(editObject){
+    return $http.put('/posts/edit', editObject);
+  };
+
+  postFactory.getSorted = function(sortedObject){
+    return $http.get('/posts/sorted/' + sortedObject.tid + '/' + sortedObject.sortingMethod + '/' + sortedObject.tag);
+  };
+
+  return postFactory;
+});
+
+'use strict';
+
+app.factory('topicFactory', function($window, $http) {
+  var topicFactory = {};
+
+  topicFactory.getTopics = function(){
+    return $http.get('/topics');
+  };
+
+  topicFactory.createTopic = function(topicInput){
+    return $http.post('/topics/add', topicInput);
+  };
+
+  topicFactory.deleteTopic = function(tid){
+    return $http.delete('/topics/delete', tid);
+  };
+
+  return topicFactory;
+});
+
+'use strict';
+
+app.factory('userFactory', function($window, $http){
+  var userFactory= {};
+
+  userFactory.addKnowledge = function(knowledgeObject) {
+    return $http.post('/users/addKnowledge', knowledgeObject);
+  };
+
+  userFactory.updateInfo = function(updateObject){
+    return $http.put('/users/updateInfo', updateObject);
+  };
+
+  userFactory.follow = function(followObject){
+    return $http.post('/posts/follow', followObject);
+  };
+
+  userFactory.unfollow = function(unfollowObject){
+    return $http.put('/posts/unfollow', unfollowObject);
+  };
+
+  userFactory.subscribe = function(subscribeOject){
+    return $http.post('/posts/subscribe', subscribeObject);
+  };
+
+  userFactory.unsubscribe = function(unsubscribeObject){
+    return $http.put('/posts/unsubscribe', unsubscribeObject);
+  };
+
+  return userFactory;
 });

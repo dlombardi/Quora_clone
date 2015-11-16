@@ -49,7 +49,8 @@ h1.title {
 .buttons button {
   text-align: center;
   padding: .5rem 1rem 0.5rem;
-  background-color: #B92B27; }
+  background-color: #B92B27;
+  font-size: .875rem; }
 
 .buttons .quora-change {
   border-bottom: 4px solid #c8c8c8;
@@ -100,22 +101,20 @@ nav.top-bar {
   background-color: white;
   color: black; }
 
-.profileAbout {
-  text-align: right; }
-
 .profilePicture {
   margin: 20px 20px 20px 30px;
   border-radius: 50%; }
 
 .bioColumn {
-  margin-top: 20px; }
-  .bioColumn h3 {
-    font-weight: bold; }
+  margin-top: 1em; }
   .bioColumn small {
-    margin-top: 0; }
+    margin-top: -.5em; }
 
 hr {
   border-top: 1px solid #E1DBD8; }
+
+#rightColumn {
+  margin-top: 1em; }
 
 .top-bar .name h1 a {
   color: #B92B27; }
@@ -138,3 +137,9 @@ nav.top-bar a {
 
 .top-bar-section li:not(.has-form) a:not(.button):hover {
   background-color: #B92B27; }
+
+.top-bar .toggle-topbar span {
+  color: #B92B27; }
+
+quora-title {
+  font-weight: strong; }
