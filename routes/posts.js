@@ -12,38 +12,54 @@ var UserEmitter = require("../observer/UserEmitter");
 var TopicEmitter = require("../observer/TopicEmitter");
 var PostEmitter = require("../observer/PostEmitter");
 
+router.get('/:pid', function(req, res, next){
+  Post.findById(req.params.pid).populate('author comments.comments topic responseTo').exec(function (err, post){
+    res.send(post);
+  });
+})
+
 router.post('/add', function(req, res, next){
-  if(!req.body.title){
-    var post = new Post(req.body);
-    post.save(function(err, post){
-      PostEmitter.emit("addPostToTopicAndUser", post);
-      res.send(post);
-    });
-  } else {
-    Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
-      var repeated = topic.posts.every(isTitleFound);
-      if(!repeated){
-        var post = new Post(req.body);
-        if(req.body.tags){
-          post.formatTags(req.body.tags, post)
+  switch(req.body.postType){
+    case "question":
+      Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
+        var repeated = topic.posts.every(isTitleFound);
+        if(repeated){
+          var post = new Post(req.body);
+          if(req.body.tags){
+            post.formatTags(req.body.tags, post)
+          }
+          post.save(function(err, post){
+            PostEmitter.emit("addQuestionToTopicAndUser", post);
+            res.send(post);
+          });
+        } else {
+          res.send("attempting to submit an already existing post")
         }
-        post.save(function(err, post){
-          PostEmitter.emit("addPostToTopicAndUser", post);
-          res.send(post);
-        });
-      } else {
-        res.send("attempting to submit an already existing post")
-      }
-    });
+      });
+      break;
+    case "answer":
+      var post = new Post(req.body);
+      post.save(function(err, post){
+        PostEmitter.emit("addAnswerToQuestionAndUser", post);
+        res.send(post);
+      });
+      break;
+    case "comment":
+      var post = new Post(req.body);
+      post.save(function(err, post){
+        PostEmitter.emit("addCommentToPostAndUser", post);
+        res.send(post);
+      });
+      break;
   }
   function isTitleFound(post){
-    return post.title === req.body.title;
+    return post.title !== req.body.title;
   }
 });
 
 router.delete('/delete', function(req, res, next){
   Post.findByIdAndRemove(req.body.pid, function(err, post){
-    PostEmitter.emit("removePostFromTopicAndUser", post)
+    PostEmitter.emit("removePost", post)
     res.send(post);
   })
 });
@@ -89,7 +105,7 @@ router.put('/edit', function(req, res, next){
   })
 });
 
-router.get('/sorted/:tid?/:sortingMethod?/:tag?', function(req, res, next){
+router.get('/sorted/:uid?/:tid?/:sortingMethod?/:tag?', function(req, res, next){
   var tag = req.params.tag
   var sortingMethod = req.params.sortingMethod;
   var sortParams;
@@ -117,6 +133,13 @@ router.get('/sorted/:tid?/:sortingMethod?/:tag?', function(req, res, next){
     Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
       res.send(posts);
     });
+  } else if (req.params.uid){
+    User.findById(req.params.uid).deepPopulate("subscriptions.posts").exec(function(err, user){
+      var subscribedPosts = [];
+      user.subscriptions.posts.forEach(function(post){
+        console.log(post);
+      })
+    })
   } else {
     Post.find({}).sort(sortParams).exec(function(err, posts){
       res.send(posts);
