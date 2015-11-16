@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/add', function(req, res, next){
   var topic = new Topic(req.body);
-  topic.save(function(err, topic){
+  topic.save(function(err){
     res.send(topic);
   });
 });

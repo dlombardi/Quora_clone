@@ -20,7 +20,7 @@ router.post('/register', function(req, res, next){
   user.username = req.body.username;
   user.setPassword(req.body.password)
 
-  user.save(function (err, user){
+  user.save(function (err){
    if(err){
      return res.status(400).json({error: err});
    }
@@ -52,7 +52,7 @@ router.post('/addknowledge', function(req, res, next){
   User.findById(req.body.uid, function(err, user){
     Topic.find({name: req.body.topic}, function(err, topic){
       user.knowledge.push(topic[0]._id);
-      user.save(function(err, user){
+      user.save(function(err){
         UserEmitter.emit("addKnowledge", user);
         res.send(user);
       });
@@ -112,7 +112,7 @@ router.put('/unfollow', function(req, res, next){
 router.post('/subscribe', function(req, res, next){
   Topic.findById(req.body.tid, function(err, topic){
     User.findById(req.body.uid, function(err, user){
-      topic[0].subscribers.push(user._id);
+      topic.subscribers.push(user._id);
       user.subscriptions.push(topic._id);
       topic.save();
       user.save();
@@ -122,21 +122,23 @@ router.post('/subscribe', function(req, res, next){
 });
 
 router.put('/unsubscribe', function(req, res, next){
-  Topic.find(req.body.tid, function(err, topic){
+  Topic.findById(req.body.tid, function(err, topic){
     User.findById(req.body.uid, function(err, user){
-      user.subscriptions.forEach(function(topic){
-        if(topic._id.toString() === req.body.tid.toString()){
+      console.log(typeof(topic._id.toString()))
+      console.log(typeof(req.body.tid));
+      user.subscriptions.forEach(function(topic, i){
+        if(topic.toString() === req.body.tid.toString()){
           user.subscriptions.splice(i, 1);
         }
       })
-      topic.subscribers.forEach(function(user){
-        if(user._id.toString() === req.body.uid.toString()){
+      topic.subscribers.forEach(function(user, i){
+        if(user.toString() === req.body.uid.toString()){
           topic.subscribers.splice(i, 1);
         }
       })
       topic.save();
       user.save();
-      res.send(topic, user);
+      res.send(user);
     });
   });
 });

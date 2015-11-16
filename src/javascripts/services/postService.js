@@ -19,8 +19,8 @@ app.factory('postFactory', function($window, $http){
     return $http.put('/posts/edit', editObject);
   };
 
-  postFactory.getSorted = function(sortedObject){
-    return $http.get('/posts/sorted/' + sortedObject.tid + '/' + sortedObject.sortingMethod + '/' + sortedObject.tag);
+  postFactory.getTopStories = function(sorting){
+    return $http.get('/posts/sorted/'+ sorting.sortingMethod +'/user/topic/tag');
   };
 
   return postFactory;

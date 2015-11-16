@@ -2,6 +2,10 @@
 
 var app = angular.module('quora', ['ui.router', 'infinite-scroll']);
 
+app.run(function($rootScope, auth) {
+    $rootScope.getCurrentUser = auth.currentUser();
+})
+
 app.constant('tokenStorageKey', 'my-token');
 
 app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
@@ -9,7 +13,7 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
-    .state('post', { url: '/post', templateUrl: '/html/general/post.html', controller: 'writeCtrl'})
+    .state('post', { url: '/post', templateUrl: '/html/general/write.html', controller: 'writeCtrl'})
     .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
     .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
@@ -20,24 +24,42 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, topicFactory) {
+app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, auth) {
+  var currentUser = $rootScope.getCurrentUser;
+  $scope.posts;
+
+  (function getPosts(){
+    $scope.posts = [];
+    var sorting = {
+      sortingMethod: "views"
+    }
+    postFactory.getTopStories(sorting)
+    .success(function(posts){
+      $scope.posts = posts;
+      console.log(posts);
+    })
+    .error(function(err){
+      console.log(err);
+    })
+  })();
 
 });
 
 'use strict';
 
 
-app.controller('profileCtrl', function($scope, $state){
+app.controller('profileCtrl', function($scope, $state, auth, $rootScope){
+  var currentUser = $rootScope.getCurrentUser;
   console.log("PROFILE CTRL WORKING");
 });
 
 'use strict';
 
-app.controller('threadCtrl', function($scope, $state, postFactory){
-  console.log("THREAD CTRL WORKING");
+app.controller('threadCtrl', function($scope, $state, $rootScope, postFactory){
   $scope.displayComments = false;
   $scope.displayAnswerForm = false;
-
+  var currentUser = $rootScope.getCurrentUser;
+ 
 
   $scope.showComments = function(){
     $scope.displayComments = !$scope.displayComments;
@@ -47,6 +69,9 @@ app.controller('threadCtrl', function($scope, $state, postFactory){
     $scope.displayAnswerForm = !$scope.displayAnswerForm;
   }
 
+  $scope.showAnswerForm = function(){
+    $scope.displayAnswerForm = !$scope.displayAnswerForm;
+  }
 
   $scope.comments = [{author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", likes: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", views: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}];
 
@@ -64,9 +89,10 @@ app.controller('threadCtrl', function($scope, $state, postFactory){
 
 
 
-app.controller('usersCtrl', function($scope, $state, auth, userFactory){
+app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootScope){
   $scope.Login = false;
   $scope.LoggedIn = true;
+  var currentUser = $rootScope.getCurrentUser;
 
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
@@ -95,7 +121,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory){
 
 'use strict';
 
-app.controller('writeCtrl', function($scope, $state, postFactory){
+app.controller('writeCtrl', function($scope, $state, postFactory, auth){
   console.log("post CTRL WORKING");
 
   $scope.comments = ['test comment 1','test comment 2','test comment 3','test comment 4','test comment 5','test comment 6','test comment 7','test comment 8'];
@@ -137,7 +163,7 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
     if(auth.isLoggedIn()){
       var token = auth.getToken();
       var payload = JSON.parse($window.atob(token.split('.')[1]));
-      return payload.username;
+      return payload;
     }
   };
 
@@ -181,8 +207,8 @@ app.factory('postFactory', function($window, $http){
     return $http.put('/posts/edit', editObject);
   };
 
-  postFactory.getSorted = function(sortedObject){
-    return $http.get('/posts/sorted/' + sortedObject.tid + '/' + sortedObject.sortingMethod + '/' + sortedObject.tag);
+  postFactory.getTopStories = function(sorting){
+    return $http.get('/posts/sorted/'+ sorting.sortingMethod +'/user/topic/tag');
   };
 
   return postFactory;

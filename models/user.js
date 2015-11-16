@@ -3,6 +3,7 @@
 var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var UserSchema = new mongoose.Schema({
   username: {type: String, lowercase: true, unique: true},
@@ -21,6 +22,8 @@ var UserSchema = new mongoose.Schema({
   hash: String,
   salt: String
 });
+
+UserSchema.plugin(deepPopulate);
 
 // used for registration
 UserSchema.methods.setPassword = function(password){

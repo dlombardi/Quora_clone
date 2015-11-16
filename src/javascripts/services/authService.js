@@ -25,7 +25,7 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
     if(auth.isLoggedIn()){
       var token = auth.getToken();
       var payload = JSON.parse($window.atob(token.split('.')[1]));
-      return payload.username;
+      return payload;
     }
   };
 

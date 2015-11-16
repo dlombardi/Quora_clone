@@ -2,9 +2,10 @@
 
 
 
-app.controller('usersCtrl', function($scope, $state, auth, userFactory){
+app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootScope){
   $scope.Login = false;
   $scope.LoggedIn = true;
+  var currentUser = $rootScope.getCurrentUser;
 
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
