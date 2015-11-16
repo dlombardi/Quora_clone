@@ -12,20 +12,22 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
   };
 
   auth.isLoggedIn = function(){
-    var token = auth.getToken();
-    if(token){
-      var payload = JSON.parse($window.atob(token.split('.')[1]));
-      return payload.exp > Date.now() / 1000;
-    } else {
-      return false;
-    }
+    var token = auth.getToken(function(token){
+      if(token){
+        var payload = JSON.parse($window.atob(token.split('.')[1]));
+        return payload.exp > Date.now() / 1000;
+      } else {
+        return false;
+      }
+    })
   };
 
   auth.currentUser = function(){
     if(auth.isLoggedIn()){
-      var token = auth.getToken();
-      var payload = JSON.parse($window.atob(token.split('.')[1]));
-      return payload;
+      var token = auth.getToken(function(token){
+        var payload = JSON.parse($window.atob(token.split('.')[1]));
+        return payload;
+      })
     }
   };
 
