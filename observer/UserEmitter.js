@@ -7,7 +7,7 @@ var Topic = require('../models/topic');
 var UserEmitter = new emitter();
 
 UserEmitter.on("createUser", function(data){
-  console.log(data);
+  mixpanel.track("New User Created");
 });
 
 UserEmitter.on("addKnowledge", function(data){
