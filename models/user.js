@@ -16,7 +16,7 @@ var UserSchema = new mongoose.Schema({
   followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
   following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
   posts: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
-  karma: {type: Number, default: 0},
+  likes: {type: Number, default: 0},
   views: {type: Number, default: 0},
   hash: String,
   salt: String
