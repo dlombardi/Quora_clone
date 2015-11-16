@@ -17,11 +17,13 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
   $scope.submit = function(user) {
     var submitFunc = $scope.Login ? auth.login : auth.register;
     console.log("user", user);
-    submitFunc(user).success(function(res){
+    submitFunc(user).success(function(data){
+      auth.saveToken(data.token);
       $scope.LoggedIn = true;
       $state.go('home');
-    }).error(function(res){
+    }).error(function(err){
       $scope.user = {};
+      alert(res);
     });
   };
 

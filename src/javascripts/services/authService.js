@@ -30,9 +30,7 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
   };
 
   auth.register = function(user){
-    return $http.post('/users/register', user).success(function(data){
-      auth.saveToken(data.token);
-    });
+    return $http.post('/users/register', user);
   };
 
   auth.login = function(user){
