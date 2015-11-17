@@ -1,7 +1,6 @@
 'use strict';
 
 
-app.controller('profileCtrl', function($scope, $state, auth, $rootScope){
-  var currentUser = $rootScope.getCurrentUser;
+app.controller('profileCtrl', function($scope, $state, auth){
   console.log("PROFILE CTRL WORKING");
 });

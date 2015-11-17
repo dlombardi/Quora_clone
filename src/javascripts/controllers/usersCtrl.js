@@ -1,10 +1,8 @@
 'use strict';
 
-
-
-app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootScope){
+app.controller('usersCtrl', function($scope, $state, auth, userFactory){
   $scope.Login = false;
-  var currentUser = $rootScope.getCurrentUser;
+  $scope.loggedIn = auth.isLoggedIn();
 
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
@@ -16,7 +14,8 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
     var submitFunc = $scope.Login ? auth.login : auth.register;
     console.log("user", user);
     submitFunc(user).success(function(data){
-      $rootScope.loggedIn = !$rootScope.loggedIn;
+      console.log(data);
+      $scope.loggedIn = true;
       $state.go('home');
     }).error(function(err){
       console.log(err);
@@ -24,4 +23,10 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
       alert(err);
     });
   };
+
+  $scope.logout = function(){
+    auth.logout();
+    $scope.loggedIn = false;
+    $state.go('home');
+  }
 });

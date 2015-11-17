@@ -23,5 +23,20 @@ app.factory('postFactory', function($window, $http){
     return $http.get('/posts/sorted/user/topic/tag/postType/'+ sorting.postType +'');
   };
 
+  postFactory.formatLikedPosts = function(posts, currentUser){
+    var formattedPosts = posts.map(function(post){
+        return post.likers.forEach(function(liker){
+         if(liker.toString() === currentUser._id.toString()){
+           var likedPost = post;
+           likedPost.liked = true;
+           return likedPost;
+         } else {
+           return post;
+         }
+       })
+    });
+    return formattedPosts;
+  };
+
   return postFactory;
 });

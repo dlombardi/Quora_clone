@@ -1,10 +1,9 @@
-app.controller('navCtrl', function($scope, $state, auth, $rootScope){
-  var currentUser = $rootScope.getCurrentUser;
-  var loggedIn = $rootScope.loggedIn;
+app.controller('navCtrl', function($scope, $state, auth){
+  $scope.loggedIn = auth.isLoggedIn();
 
   $scope.logout = function(){
     auth.logout();
-    $rootScope.loggedIn = false;
+    $scope.loggedIn = false;
     $state.go('home');
   }
 });

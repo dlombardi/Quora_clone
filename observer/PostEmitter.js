@@ -13,8 +13,10 @@ PostEmitter.on("addPost", function(data){
   console.log(data);
 });
 
-PostEmitter.on("changePostStats", function(post, author){
-  User.findById(post.author)
+PostEmitter.on("viewPost", function(post, author){
+  User.findById(post.uid, function(err, user){
+
+  })
 });
 
 PostEmitter.on("likePost", function(data){

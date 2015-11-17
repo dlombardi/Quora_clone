@@ -1,10 +1,11 @@
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, topicFactory, auth) {
-  var currentUser = $rootScope.getCurrentUser;
+app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth) {
   $scope.posts;
   $scope.topicFeed;
+  var currentUser = auth.currentUser();
+  $scope.loggedIn = auth.isLoggedIn();
 
   (function getPosts(){
     $scope.posts = [];
@@ -14,7 +15,12 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
     }
     postFactory.getTopStories(sorting)
     .success(function(posts){
-      $scope.posts = posts;
+      if(currentUser){
+        postFactory.formatLikedPosts(posts, currentUser);
+        $scope.posts = posts;
+      } else {
+        $scope.posts = posts;
+      }
     })
     .error(function(err){
       console.log("error: ", err)
@@ -33,6 +39,7 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
   $scope.likePost = function(index){
     var statsObject = {
       pid: $scope.posts[index]._id,
+      uid: currentUser._id,
       type: "like"
     }
     postFactory.changeStats(statsObject)
@@ -40,15 +47,15 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
       $scope.posts[index].liked = true;
       $scope.posts[index].likes += 1;
     })
-    .error(function(post){
+    .error(function(err){
       console.log("error: ", err);
     })
   }
 
   $scope.unlikePost = function(index){
-    console.log("in unlike");
     var statsObject = {
       pid: $scope.posts[index]._id,
+      uid: currentUser._id,
       type: "dislike"
     }
     postFactory.changeStats(statsObject)
@@ -56,9 +63,20 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
       $scope.posts[index].liked = false;
       $scope.posts[index].likes -= 1;
     })
-    .error(function(post){
+    .error(function(err){
       console.log("error: ", err);
     })
+  }
+
+  $scope.showComments = function(index){
+    $scope.posts[index].showComments = true;
+    $scope.comments = $scope.posts[index].comments;
+    console.log($scope.comments);
+  }
+
+  $scope.hideComments = function(index){
+    $scope.posts[index].showComments = false;
+    console.log($scope.comments);
   }
 
 });
