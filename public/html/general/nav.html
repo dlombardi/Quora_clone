@@ -1,28 +1,26 @@
 <div class="row navContainer">
 
   <div class="large-12 medium-12 columns">
-    <nav class="top-bar" data-topbar role="navigation" ng-controller='navCtrl'>
+    <nav class="top-bar" data-topbar role="navigation" ng-controller='usersCtrl'>
       <ul class="title-area">
         <li class="name">
           <h1 id="quora-title"><a ui-sref="home">Quora</a></h1>
         </li>
         <li class="toggle-topbar"><a href="#"><span>Menu</span></a></li>
       </ul>
-
       <section class="top-bar-section">
         <ul class="left">
           <li class="has-form">
             <div class="row collapse">
               <div class="medium-8 small-9 columns">
-                <input type="text" placeholder="Search Here">
+                <input type="text" ng-model="tag" placeholder="Search By Tag">
               </div>
               <div class="medium-4 small-3 columns">
-                <a href="#" type="submit" class="alert button expand">Search</a>
+                <a href="#" ng-click="filterByTag(tag)" class="alert button expand">Search</a>
               </div>
             </div>
           </li>
         </ul>
-
         <!-- Right Nav Section -->
         <ul class="right">
           <li><a ui-sref="home"><i class="fi-home"></i> Home</a></li>
@@ -31,9 +29,6 @@
           <li><a ui-sref="users.login" ng-if="!loggedIn">Login</a></li>
           <li><a ui-sref="home" ng-if="loggedIn" ng-click="logout()">Logout</a></li>
         </ul>
-
-
-
     </section>
   </nav>
 </div>

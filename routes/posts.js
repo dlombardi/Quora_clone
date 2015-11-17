@@ -24,6 +24,7 @@ router.post('/add', function(req, res, next){
   switch(req.body.postType){
     case "question":
       Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
+        if(err){res.send("error: ",err)};
         var notRepeated = topic.posts.every(isTitleFound);
         if(notRepeated){
           var post = new Post(req.body);
@@ -31,6 +32,7 @@ router.post('/add', function(req, res, next){
             post.formatTags(req.body.tags, post);
           }
           post.save(function(err){
+            if(err){res.send("error: ",err)};
             PostEmitter.emit("addQuestionToTopicAndUser", post);
             res.send(post);
           });
@@ -42,6 +44,7 @@ router.post('/add', function(req, res, next){
     case "answer":
       var post = new Post(req.body);
       post.save(function(err){
+        if(err){res.send("error: ",err)};
         PostEmitter.emit("addAnswerToQuestionAndUser", post);
         res.send(post);
       });
@@ -49,6 +52,7 @@ router.post('/add', function(req, res, next){
     case "comment":
       var post = new Post(req.body);
       post.save(function(err){
+        if(err){res.send("error: ",err)};
         PostEmitter.emit("addCommentToPostAndUser", post);
         res.send(post);
       });
@@ -61,35 +65,36 @@ router.post('/add', function(req, res, next){
 
 router.delete('/delete', function(req, res, next){
   Post.findByIdAndRemove(req.body.pid, function(err, post){
+    if(err){res.send("error: ",err)};
     PostEmitter.emit("removePost", post)
     res.send(post);
   })
 });
 
 router.put('/changeStats', function(req, res, next){
-  var likersObject = {
+  var EmitObject = {
     pid : req.body.pid,
     uid : req.body.uid
   }
   Post.findById(req.body.pid).populate("author").exec(function(err, post){
-    console.log(post);
+    if(err){res.send("error: ",err)};
     switch(req.body.type){
       case "views":
         post.views += 1;
         post.author.views += 1;
+        PostEmitter.emit("viewPost", EmitObject);
         break;
       case "like":
         post.likes += 1;
         post.author.likes += 1;
-        PostEmitter.emit("likePost", likersObject);
+        PostEmitter.emit("likePost", EmitObject);
         break;
       case "dislike":
         post.likes -= 1;
         post.author.likes -= 1;
-        PostEmitter.emit("unlikePost", likersObject);
+        PostEmitter.emit("unlikePost", EmitObject);
         break;
     }
-    PostEmitter.emit("changePostStats", post);
     post.save();
     post.author.save();
     res.send(post);
@@ -98,6 +103,7 @@ router.put('/changeStats', function(req, res, next){
 
 router.put('/edit', function(req, res, next){
   Post.findById(req.body.pid, function(err, post){
+    if(err)res.send("error: ",err);
     if(post.author.toString() === req.body.uid.toString()){
       post.content = req.body.content;
       post.updated = Date.now();
@@ -139,19 +145,23 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       sortParams = {"likes" : 'desc'};
   }
   if(req.params.postType){
-    Post.find({postType: req.params.postType}).populate("topic author").sort(sortParams).exec(function(err, posts){
+    Post.find({postType: req.params.postType}).deepPopulate("topic comments.author answers author").sort(sortParams).exec(function(err, posts){
+      if(err)res.send("error: ",err);
       res.send(posts);
     });
   } else if (tag) {
     Post.find({topic : req.params.tid, tags: {$in: [tag]}}).sort(sortParams).exec(function(err, posts){
+      if(err)res.send("error: ",err);
       res.send(posts);
     });
   } else if(req.params.tid){
     Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
+      if(err)res.send("error: ",err);
       res.send(posts);
     });
   } else if(req.params.uid){
     User.findById(req.params.uid).deepPopulate('subscriptions.posts').exec(function(err, user){
+      if(err)res.send("error: ",err);
       var subscribedPosts = [];
       user.subscriptions.forEach(function(subscription){
         subscription.posts.forEach(function(post){
@@ -164,7 +174,8 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       res.send(rankedSubscribedPosts);
     });
   } else {
-    Post.find().sort(sortParams).exec(function(err, posts){
+    Post.find().deepPopulate("author comments.comments likers").sort(sortParams).exec(function(err, posts){
+      if(err)res.send("error: ",err);
       res.send(posts);
     });
   }

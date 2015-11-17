@@ -12,17 +12,38 @@
   </div>
 
   <!-- MAIN COLUMN -->
-  <div class="small-10 small-offset-1 large-4 large-offset-1 columns primaryColumn">
-    <h4>Top Stories For You</h4>
+  <div class="small-10 small-offset-1 large-4 large-offset-1 columns primaryColumn buttons">
+    <div class="row">
+      <h4>Top Stories For You</h4>
+    </div>
     <hr>
     <div class="post" ng-repeat="post in posts track by $index">
-      <p><span></span>{{post.topic.name}}</p>
-      <h4>{{post.title}}</h4>
-      <p>Author: {{post.author.username}}, {{post.author.work}}</p>
+      <p><a href="">{{post.topic.name}}</a></p>
+      <h4><a href="">{{post.title}}</a></h4>
+      <p><a href="">{{post.author.username}}</a>, {{post.author.work}}</p>
       <p>{{post.content}}</p>
       <button ng-show="!post.liked" ng-click="likePost($index)">Like | <span>{{post.likes}}</span></button>
       <button ng-show="post.liked" ng-click="unlikePost($index)">Unlike | <span>{{post.likes}}</span></button>
-      <a href="">Comments <span>{{post.comments.length}}</span></a>
+      <a class='right' href="" ng-if="!post.showComments" ng-click="showComments($index)">Comments<span> {{post.comments.length}}</span></a>
+      <a class='right' href="" ng-if="post.showComments" ng-click="hideComments($index)">Comments<span> {{post.comments.length}}</span></a>
+      <div class="commentsChain" ng-if="post.showComments">
+        <hr>
+        <div class="commentSection">
+          <div class="row">
+            <div class="columns small-11">
+              <input type="text" ng-model="comment" style="width: 80%;" placeholder="comment...">
+            </div>
+            <div class="columns small-1">
+              <button class="right" ng-click="submitComment(comment, post)">Submit</button>
+            </div>
+          </div>
+          <div class="comments" ng-repeat="comment in comments">
+            <h6><a href="">{{comment.author.username}}</a></h6>
+            <h6>{{comment.content}}</h6>
+          </div>
+          <hr>
+        </div>
+      </div>
       <hr>
     </div>
   </div>

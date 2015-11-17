@@ -143,3 +143,8 @@ nav.top-bar a {
 
 quora-title {
   font-weight: strong; }
+
+.commentSection {
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 5px; }
