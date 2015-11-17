@@ -79,4 +79,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     console.log($scope.comments);
   }
 
+  postFactory.getPostsByTag();
+
 });

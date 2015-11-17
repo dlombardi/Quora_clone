@@ -29,4 +29,8 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory){
     $scope.loggedIn = false;
     $state.go('home');
   }
+
+  $scope.filterByTag = function(tag){
+    postFactory.getPostsByTag(tag);
+  }
 });

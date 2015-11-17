@@ -98,9 +98,11 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     console.log($scope.comments);
   }
 
+  postFactory.getPostsByTag();
+
 });
 
-app.controller('navCtrl', function($scope, $state, auth){
+app.controller('navCtrl', function($scope, $state, auth, postFactory){
   $scope.loggedIn = auth.isLoggedIn();
 
   $scope.logout = function(){
@@ -108,6 +110,7 @@ app.controller('navCtrl', function($scope, $state, auth){
     $scope.loggedIn = false;
     $state.go('home');
   }
+
 });
 
 'use strict';
@@ -176,6 +179,10 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory){
     auth.logout();
     $scope.loggedIn = false;
     $state.go('home');
+  }
+
+  $scope.filterByTag = function(tag){
+    postFactory.getPostsByTag(tag);
   }
 });
 
@@ -270,6 +277,12 @@ app.factory('postFactory', function($window, $http){
   postFactory.getTopStories = function(sorting){
     return $http.get('/posts/sorted/user/topic/tag/postType/'+ sorting.postType +'');
   };
+
+  postFactory.getPostsByTag = function(tag){
+    return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
+  };
+
+  
 
   postFactory.formatLikedPosts = function(posts, currentUser){
     var formattedPosts = posts.map(function(post){

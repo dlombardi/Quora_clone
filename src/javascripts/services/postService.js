@@ -23,6 +23,12 @@ app.factory('postFactory', function($window, $http){
     return $http.get('/posts/sorted/user/topic/tag/postType/'+ sorting.postType +'');
   };
 
+  postFactory.getPostsByTag = function(tag){
+    return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
+  };
+
+  
+
   postFactory.formatLikedPosts = function(posts, currentUser){
     var formattedPosts = posts.map(function(post){
         return post.likers.forEach(function(liker){
