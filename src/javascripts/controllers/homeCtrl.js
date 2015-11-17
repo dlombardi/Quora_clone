@@ -6,7 +6,7 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
   $scope.posts;
   $scope.topicFeed;
 
-  function getPosts(){
+  (function getPosts(){
     $scope.posts = [];
     $scope.topicFeed = [];
     var sorting = {
@@ -28,33 +28,33 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
     .error(function(err){
       console.log("error: ", err)
     })
-  }
-  getPosts();
+  })();
 
-  $scope.likePost = function(post){
+  $scope.likePost = function(index){
     var statsObject = {
-      pid: post._id,
+      pid: $scope.posts[index]._id,
       type: "like"
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
       $scope.posts[index].liked = true;
-      getPosts();
+      $scope.posts[index].likes += 1;
     })
     .error(function(post){
       console.log("error: ", err);
     })
   }
 
-  $scope.unlike = function(post){
+  $scope.unlikePost = function(index){
+    console.log("in unlike");
     var statsObject = {
-      pid: post._id,
+      pid: $scope.posts[index]._id,
       type: "dislike"
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
       $scope.posts[index].liked = false;
-      getPosts();
+      $scope.posts[index].likes -= 1;
     })
     .error(function(post){
       console.log("error: ", err);

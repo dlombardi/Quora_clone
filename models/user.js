@@ -17,6 +17,7 @@ var UserSchema = new mongoose.Schema({
   followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
   following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
   posts: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
+  postLikes: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
   likes: {type: Number, default: 0},
   views: {type: Number, default: 0},
   hash: String,
