@@ -80,13 +80,14 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   $scope.submitComment = function(comment, post){
     var commentObject = {
       content: comment,
-      uid: currentUser._id,
+      author: currentUser._id,
       responseTo: post._id,
       postType: "comment"
     }
     postFactory.createPost(commentObject)
     .success(function(post){
       $scope.comments.unshift(post);
+      console.log(post);
     })
     .error(function(err){
       console.log("error: ", err)

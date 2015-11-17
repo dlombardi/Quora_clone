@@ -52,7 +52,8 @@ router.post('/add', function(req, res, next){
     case "comment":
       var post = new Post(req.body);
       post.save(function(err){
-        if(err){res.send("error: ",err)};
+        if(err){console.log("error: ",err)};
+        console.log(post);
         PostEmitter.emit("addCommentToPostAndUser", post);
         res.send(post);
       });

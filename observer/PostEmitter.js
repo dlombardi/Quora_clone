@@ -78,9 +78,9 @@ PostEmitter.on("addAnswerToQuestionAndUser", function(post){
 });
 
 PostEmitter.on("addCommentToPostAndUser", function(post){
-  Post.findById(post.responseTo, function(err, post){
-    post.comments.push(post._id);
-    post.save();
+  Post.findById(post.responseTo, function(err, parentPost){
+    parentPost.comments.push(post._id);
+    parentPost.save();
   });
   User.findById(post.author, function(err, user){
     if(user.posts.indexOf(post._id) === -1){

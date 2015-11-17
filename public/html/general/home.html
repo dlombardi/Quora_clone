@@ -37,11 +37,12 @@
               <button class="right" ng-click="submitComment(comment, post)">Submit</button>
             </div>
           </div>
+          <hr>
           <div class="comments" ng-repeat="comment in comments">
             <h6><a href="">{{comment.author.username}}</a></h6>
             <h6>{{comment.content}}</h6>
+            <hr>
           </div>
-          <hr>
         </div>
       </div>
       <hr>
