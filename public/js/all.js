@@ -30,7 +30,7 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
   $scope.posts;
   $scope.topicFeed;
 
-  function getPosts(){
+  (function getPosts(){
     $scope.posts = [];
     $scope.topicFeed = [];
     var sorting = {
@@ -52,33 +52,33 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
     .error(function(err){
       console.log("error: ", err)
     })
-  }
-  getPosts();
+  })();
 
-  $scope.likePost = function(post){
+  $scope.likePost = function(index){
     var statsObject = {
-      pid: post._id,
+      pid: $scope.posts[index]._id,
       type: "like"
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
       $scope.posts[index].liked = true;
-      getPosts();
+      $scope.posts[index].likes += 1;
     })
     .error(function(post){
       console.log("error: ", err);
     })
   }
 
-  $scope.unlike = function(post){
+  $scope.unlikePost = function(index){
+    console.log("in unlike");
     var statsObject = {
-      pid: post._id,
+      pid: $scope.posts[index]._id,
       type: "dislike"
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
       $scope.posts[index].liked = false;
-      getPosts();
+      $scope.posts[index].likes -= 1;
     })
     .error(function(post){
       console.log("error: ", err);
@@ -167,19 +167,19 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
 
 
 
-app.controller('writeCtrl', function($scope, $http, $rootScope, postFactory){
-  var currentUser = $rootScope.getCurrentUser;
+app.controller('writeCtrl', function($scope, $http, auth, postFactory){
+  var currentUser = auth.getCurrentUser;
   $(document).foundation();
 
-  $scope.submitQuestion = function(question){
+  $scope.submitQuestion = function(question, currentUser){
     console.log("SUBMIT POST FUNCTION STARTS");
-    $scope.question = {
-      pid: $scope.posts[index]._id,
-      uid: currentUser._id,
-      title: title,
-      tags: tags,
-      content: content,
-      topic: topic
+    var questionObject = {
+      author: currentUser._id,
+      title: question.title,
+      tags: question.tags,
+      content: question.content,
+      topic: question.topic,
+      postType: "question"
     }
   };
 });

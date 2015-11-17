@@ -9,7 +9,6 @@ var User = require('../models/user');
 var Topic = require('../models/topic');
 var Post = require('../models/post');
 
-
 var UserEmitter = require("../observer/UserEmitter");
 var TopicEmitter = require("../observer/TopicEmitter");
 var PostEmitter = require("../observer/PostEmitter");
@@ -68,7 +67,12 @@ router.delete('/delete', function(req, res, next){
 });
 
 router.put('/changeStats', function(req, res, next){
+  var likersObject = {
+    pid : req.body.pid,
+    uid : req.body.uid
+  }
   Post.findById(req.body.pid).populate("author").exec(function(err, post){
+    console.log(post);
     switch(req.body.type){
       case "views":
         post.views += 1;
@@ -77,10 +81,12 @@ router.put('/changeStats', function(req, res, next){
       case "like":
         post.likes += 1;
         post.author.likes += 1;
+        PostEmitter.emit("likePost", likersObject);
         break;
       case "dislike":
         post.likes -= 1;
         post.author.likes -= 1;
+        PostEmitter.emit("unlikePost", likersObject);
         break;
     }
     PostEmitter.emit("changePostStats", post);
@@ -90,7 +96,7 @@ router.put('/changeStats', function(req, res, next){
   })
 });
 
-router.put('/edit', passport.authenticate('local', { failureRedirect: '/home' }), function(req, res, next){
+router.put('/edit', function(req, res, next){
   Post.findById(req.body.pid, function(err, post){
     if(post.author.toString() === req.body.uid.toString()){
       post.content = req.body.content;

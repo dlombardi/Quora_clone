@@ -18,7 +18,33 @@ PostEmitter.on("changePostStats", function(post, author){
 });
 
 PostEmitter.on("likePost", function(data){
-  console.log(data);
+  Post.findById(data.pid, function(err, post){
+    User.findById(data.uid, function(err, user){
+      user.postLikes.push(post._id);
+      post.likers.push(user._id);
+      user.save();
+      post.save();
+    });
+  });
+});
+
+PostEmitter.on("unlikePost", function(data){
+  Post.findById(data.pid, function(err, post){
+    User.findById(data.uid, function(err, user){
+      user.postLikes.forEach(function(likedPost, i){
+        if(post._id.toString() === likedPost.toString()){
+          user.postLikes.splice(i, 1);
+        }
+      });
+      post.likers.forEach(function(liker, i){
+        if(user._id.toString() === liker.toString()){
+          post.likers.splice(i, 1);
+        }
+      })
+      user.save();
+      post.save();
+    });
+  });
 });
 
 PostEmitter.on("addQuestionToTopicAndUser", function(post){

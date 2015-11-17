@@ -2,19 +2,19 @@
 
 
 
-app.controller('writeCtrl', function($scope, $http, $rootScope, postFactory){
-  var currentUser = $rootScope.getCurrentUser;
+app.controller('writeCtrl', function($scope, $http, auth, postFactory){
+  var currentUser = auth.getCurrentUser;
   $(document).foundation();
 
-  $scope.submitQuestion = function(question){
+  $scope.submitQuestion = function(question, currentUser){
     console.log("SUBMIT POST FUNCTION STARTS");
-    $scope.question = {
-      pid: $scope.posts[index]._id,
-      uid: currentUser._id,
-      title: title,
-      tags: tags,
-      content: content,
-      topic: topic
+    var questionObject = {
+      author: currentUser._id,
+      title: question.title,
+      tags: question.tags,
+      content: question.content,
+      topic: question.topic,
+      postType: "question"
     }
   };
 });
