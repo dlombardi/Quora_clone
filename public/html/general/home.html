@@ -31,10 +31,10 @@
         <div class="commentSection">
           <div class="row">
             <div class="columns small-11">
-              <input type="text" style="width: 80%;" placeholder="comment...">
+              <input type="text" ng-model="comment" style="width: 80%;" placeholder="comment...">
             </div>
             <div class="columns small-1">
-              <button class="right">Submit</button>
+              <button class="right" ng-click="submitComment(comment, post)">Submit</button>
             </div>
           </div>
           <div class="comments" ng-repeat="comment in comments">

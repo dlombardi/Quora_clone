@@ -24,6 +24,7 @@ router.post('/add', function(req, res, next){
   switch(req.body.postType){
     case "question":
       Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
+        if(err){res.send("error: ",err)};
         var notRepeated = topic.posts.every(isTitleFound);
         if(notRepeated){
           var post = new Post(req.body);
@@ -31,7 +32,7 @@ router.post('/add', function(req, res, next){
             post.formatTags(req.body.tags, post);
           }
           post.save(function(err){
-            if(err)res.send("error: ",err)
+            if(err){res.send("error: ",err)};
             PostEmitter.emit("addQuestionToTopicAndUser", post);
             res.send(post);
           });
@@ -43,7 +44,7 @@ router.post('/add', function(req, res, next){
     case "answer":
       var post = new Post(req.body);
       post.save(function(err){
-        if(err)res.send("error: ",err);
+        if(err){res.send("error: ",err)};
         PostEmitter.emit("addAnswerToQuestionAndUser", post);
         res.send(post);
       });
@@ -51,7 +52,7 @@ router.post('/add', function(req, res, next){
     case "comment":
       var post = new Post(req.body);
       post.save(function(err){
-        if(err)res.send("error: ",err);
+        if(err){res.send("error: ",err)};
         PostEmitter.emit("addCommentToPostAndUser", post);
         res.send(post);
       });
@@ -64,7 +65,7 @@ router.post('/add', function(req, res, next){
 
 router.delete('/delete', function(req, res, next){
   Post.findByIdAndRemove(req.body.pid, function(err, post){
-    if(err)res.send("error: ",err);
+    if(err){res.send("error: ",err)};
     PostEmitter.emit("removePost", post)
     res.send(post);
   })
@@ -76,7 +77,7 @@ router.put('/changeStats', function(req, res, next){
     uid : req.body.uid
   }
   Post.findById(req.body.pid).populate("author").exec(function(err, post){
-    if(err)res.send("error: ",err);
+    if(err){res.send("error: ",err)};
     switch(req.body.type){
       case "views":
         post.views += 1;

@@ -3,7 +3,7 @@
 app.factory('postFactory', function($window, $http){
   var postFactory= {};
 
-  postFactory.createPost = function(postInput) {
+  postFactory.createPost = function(newPost) {
     return $http.post('/posts/add', newPost);
   };
 
@@ -27,7 +27,7 @@ app.factory('postFactory', function($window, $http){
     return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
   };
 
-  
+
 
   postFactory.formatLikedPosts = function(posts, currentUser){
     var formattedPosts = posts.map(function(post){

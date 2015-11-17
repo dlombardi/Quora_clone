@@ -71,12 +71,26 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   $scope.showComments = function(index){
     $scope.posts[index].showComments = true;
     $scope.comments = $scope.posts[index].comments;
-    console.log($scope.comments);
   }
 
   $scope.hideComments = function(index){
     $scope.posts[index].showComments = false;
-    console.log($scope.comments);
+  }
+
+  $scope.submitComment = function(comment, post){
+    var commentObject = {
+      content: comment,
+      uid: currentUser._id,
+      responseTo: post._id,
+      postType: "comment"
+    }
+    postFactory.createPost(commentObject)
+    .success(function(post){
+      $scope.comments.unshift(post);
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
   }
 
   postFactory.getPostsByTag();

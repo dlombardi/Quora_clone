@@ -90,12 +90,26 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   $scope.showComments = function(index){
     $scope.posts[index].showComments = true;
     $scope.comments = $scope.posts[index].comments;
-    console.log($scope.comments);
   }
 
   $scope.hideComments = function(index){
     $scope.posts[index].showComments = false;
-    console.log($scope.comments);
+  }
+
+  $scope.submitComment = function(comment, post){
+    var commentObject = {
+      content: comment,
+      uid: currentUser._id,
+      responseTo: post._id,
+      postType: "comment"
+    }
+    postFactory.createPost(commentObject)
+    .success(function(post){
+      $scope.comments.unshift(post);
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
   }
 
   postFactory.getPostsByTag();
@@ -258,7 +272,7 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
 app.factory('postFactory', function($window, $http){
   var postFactory= {};
 
-  postFactory.createPost = function(postInput) {
+  postFactory.createPost = function(newPost) {
     return $http.post('/posts/add', newPost);
   };
 
@@ -282,7 +296,7 @@ app.factory('postFactory', function($window, $http){
     return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
   };
 
-  
+
 
   postFactory.formatLikedPosts = function(posts, currentUser){
     var formattedPosts = posts.map(function(post){
