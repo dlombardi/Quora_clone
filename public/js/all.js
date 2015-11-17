@@ -167,39 +167,21 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
 
 
 
-app.controller('writeCtrl', function($scope, $http){
-  var posts = [];
+app.controller('writeCtrl', function($scope, $http, $rootScope, postFactory){
+  var currentUser = $rootScope.getCurrentUser;
   $(document).foundation();
 
-  $http({
-    method: 'GET',
-    url: '/topics'
-  }).then(function(data){
-    var specialdata = [{myButt: 'data'}, {myButt: 'butt'}, {myButt: 'rocks'}, {myButt: 'salt'}, {myButt: 'bathsalt'}];
-    console.log('data is: ', data);
-    $scope.topics = specialdata;
-  }).catch(function(err){
-    console.error('errthang is wrong.', err, status);
-  });
-
-
   $scope.submitQuestion = function(question){
-    $http({
-      method: 'POST',
-      url: '/posts/add'
-    }).then(function(data){
-      $scope.question = {
-        title: title,
-        tags: tags,
-        content: content,
-        topic: topic
-      }
-      $scope.question = {}
-    })
-    .catch(function(err){
-      console.error("Error saving question.");
-    });
-  }
+    console.log("SUBMIT POST FUNCTION STARTS");
+    $scope.question = {
+      pid: $scope.posts[index]._id,
+      uid: currentUser._id,
+      title: title,
+      tags: tags,
+      content: content,
+      topic: topic
+    }
+  };
 });
 
 'use strict';
@@ -281,6 +263,18 @@ app.factory('postFactory', function($window, $http){
 
   return postFactory;
 });
+
+
+
+// $http({
+//   method: 'GET',
+//   url: '/topics'
+// }).then(function(data){
+//   var specialdata = [{myButt: 'data'}, {myButt: 'butt'}, {myButt: 'rocks'}, {myButt: 'salt'}, {myButt: 'bathsalt'}];
+//   $scope.topics = specialdata;
+// }).catch(function(err){
+//   console.error('errthang is wrong.', err, status);
+// });
 
 'use strict';
 

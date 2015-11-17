@@ -25,3 +25,15 @@ app.factory('postFactory', function($window, $http){
 
   return postFactory;
 });
+
+
+
+// $http({
+//   method: 'GET',
+//   url: '/topics'
+// }).then(function(data){
+//   var specialdata = [{myButt: 'data'}, {myButt: 'butt'}, {myButt: 'rocks'}, {myButt: 'salt'}, {myButt: 'bathsalt'}];
+//   $scope.topics = specialdata;
+// }).catch(function(err){
+//   console.error('errthang is wrong.', err, status);
+// });
