@@ -19,21 +19,19 @@ app.controller('writeCtrl', function($scope, $http){
 
 
   $scope.submitQuestion = function(question){
-    posts.push({
-      title: question.title,
-      tags: question.tags,
-      details: question.content,
-      topic: question.topic
-    });
-    $scope.question = {};
-    console.log(posts);
-
     $http({
       method: 'POST',
       url: '/posts/add'
     }).then(function(data){
-      console.log(data);
-    }).catch(function(err){
+      $scope.question = {
+        title: title,
+        tags: tags,
+        content: content,
+        topic: topic
+      }
+      $scope.question = {}
+    })
+    .catch(function(err){
       console.error("Error saving question.");
     });
   }

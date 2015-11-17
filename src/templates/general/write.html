@@ -13,22 +13,16 @@
 
     <input ng-model="question.title" placeholder="Question title">
     <input ng-model="question.tags" placeholder="Tags (comma separated)">
-    <textarea ng-model="questions.content" cols="30" rows="10" placeholder="Add extra details..."></textarea>
+    <textarea ng-model="question.content" cols="30" rows="10" placeholder="Add extra details..."></textarea>
     <div id="submitInput">
       <label>Select Topic
         <select>
           <option ng-model="question.topic" ng-repeat="topic in topics track by $index">{{topic.myButt}}</option>
         </select>
       </label>
-      <!--
-      <select data-dropdown="drop1" aria-controls="drop1" aria-expanded="false">Select Topic </select>
-      <ul id="drop1" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
-      <li ng-repeat="topic in topics track by $index"><a href="#" ng-model="question.topic">{{topic.myButt}}</a></li>
-    </ul> -->
 
     <button class="right button-submit" ng-click="submitQuestion(question)">Post</button>
   </div>
-
 </div>
 
 <!-- TOPICS COLUMN -->
