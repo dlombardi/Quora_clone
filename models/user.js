@@ -6,7 +6,7 @@ var jwt = require('jsonwebtoken');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var UserSchema = new mongoose.Schema({
-  username: {type: String, lowercase: true, unique: true},
+  username: {type: String, unique: true},
   fullName: {type: String, lowercase: true},
   email: String,
   home: String,
