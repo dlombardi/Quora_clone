@@ -88,11 +88,15 @@
       -o-transition: all 0s ease;
       transition: all 0s ease;
   }
-  .button:focus, .button:hover, {
+  button:focus, button:hover, {
     background-color: $quora-dark;
   }
  }
 
-.button.alert:focus, .button.alert:hover, .button.alert:focus, .button.alert:hover {
+button.alert:focus, button.alert:hover {
    background-color: $quora-dark;
    }
+
+.button.alert:focus, .button.alert:hover, button.alert:focus, button.alert:hover {
+  background-color: $quora-dark;
+}

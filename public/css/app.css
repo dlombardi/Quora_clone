@@ -83,10 +83,13 @@ h1.title {
   -o-transition: all 0s ease;
   transition: all 0s ease; }
 
-.buttons .button:focus, .buttons .button:hover {
+.buttons button:focus, .buttons button:hover {
   background-color: #6D0300; }
 
-.button.alert:focus, .button.alert:hover, .button.alert:focus, .button.alert:hover {
+button.alert:focus, button.alert:hover {
+  background-color: #6D0300; }
+
+.button.alert:focus, .button.alert:hover, button.alert:focus, button.alert:hover {
   background-color: #6D0300; }
 
 div.row.fullBody {

@@ -9,22 +9,32 @@
 
   <!-- MAIN COLUMN -->
   <div class="buttons small-10 small-offset-1 large-4 large-offset-1 columns primaryColumn">
-    <form action="submit">
-      <h6>Ask a specific question</h6>
-      <input ng-model="postTitle" placeholder="Question title">
-      <input ng-model="topic" placeholder="Tags (comma separated)">
-      <textarea ng-model="postBody" cols="30" rows="10" placeholder="Add extra details..."></textarea>
-      <div id="submitInput">
-        <input class="left" ng-model="topic" placeholder="Topic">
-        <button class="right button-submit" type="button">Post</button>
-      </div>
-    </form>
+    <h6>Ask a specific question</h6>
+
+    <input ng-model="question.title" placeholder="Question title">
+    <input ng-model="question.tags" placeholder="Tags (comma separated)">
+    <textarea ng-model="questions.content" cols="30" rows="10" placeholder="Add extra details..."></textarea>
+    <div id="submitInput">
+      <label>Select Topic
+        <select>
+          <option ng-model="question.topic" ng-repeat="topic in topics track by $index">{{topic.myButt}}</option>
+        </select>
+      </label>
+      <!--
+      <select data-dropdown="drop1" aria-controls="drop1" aria-expanded="false">Select Topic </select>
+      <ul id="drop1" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
+      <li ng-repeat="topic in topics track by $index"><a href="#" ng-model="question.topic">{{topic.myButt}}</a></li>
+    </ul> -->
+
+    <button class="right button-submit" ng-click="submitQuestion(question)">Post</button>
   </div>
 
-  <!-- TOPICS COLUMN -->
-  <div class="small-10 small-offset-1 large-3 large-offset-1 columns end">
-    <hr>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim distinctio veniam nobis blanditiis
-  </div>
+</div>
+
+<!-- TOPICS COLUMN -->
+<div class="small-10 small-offset-1 large-3 large-offset-1 columns end">
+  <hr>
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim distinctio veniam nobis blanditiis
+</div>
 
 </div>
