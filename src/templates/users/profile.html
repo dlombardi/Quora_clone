@@ -1,42 +1,47 @@
 
-<div class="row"> <!--HAS 12.-->
-
-  <!-- PROFILE COLUMN -->
+<div class="row">
   <div class="small-10 small-offset-1 medium-6 medium-offset-1 large-7 large-push-3 large-offset-1 columns">
-    <div class="small-only-text-center">
+    <div class="small-only-text-center buttons">
       <img class="profilePicture" src="http://www.lorempixel.com/150/150/people" alt="Profile Picture">
       <h4>{{user.username}}
         <small> {{user.home}}</small>
+        <button class="right">Follow</button><button  ng-show="LoggedIn()" class="right">Edit Profile</button>
       </h4>
       <br>
       <h6>{{user.about}}</small></h6>
     </div>
 
-<div class="panel">
-    <div id="userStats">
-      <div class="left">
+  <div>
+    <div class="alert-box" id="userStats">
+      <div class="left panel">
         <p>Posts</p>
         <i class="fi-heart"></i> {{user.likes}} likes<br>
         <i class="fi-eye"></i> {{user.views}} views
       </div>
-      <span>
-        <div class="right">
-          <p>Activity</p>
-          <i class="fi-torsos-all"></i> {{user.followers}} followers <br>
-          <i class="fi-torso"></i> {{user.following}} following
-        </div>
-      </span>
+
+      <div class="right panel">
+        <p>Activity</p>
+        <i class="fi-torsos-all"></i> {{user.followers}} followers <br>
+        <i class="fi-torso"></i> {{user.following}} following
+      </div>
+
     </div>
-    </div>
+  </div>
     <br>
+    <div class="feed">
+      <span></span>
+      Feed Here of all user activity?
+    </div>
   </div>
 
   <div class="small-10 small-offset-1 medium-4 medium-offset-1 large-3 large-offset-1 large-pull-8 columns">
-    <i class="fi-pencil"></i><strong>{{user.posts}} posts</strong>
+    <i class="fi-pencil"></i>
+    <strong> {{user.posts.length}} posts</strong>
+    <br>
     <h5>I can answer questions about...</h5>
-    <li ng-repeat="knowledge in knowledges">{{knowledge.name}}</li>
-  </div>
-
+    <ul>
+      <li ng-repeat="topic in knowledge">{{user.knowledge.topic.name}}</li>
+    </ul>
 </div>
 
 
