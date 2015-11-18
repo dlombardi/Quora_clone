@@ -55,11 +55,11 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
   $stateProvider
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
-    
+
     .state('main', { abstract: true, templateUrl: '/html/main/main.html'})
-    .state('main.write', { url: '/write', templateUrl: '/html/general/write.html', controller: 'writeCtrl' })
-    .state('main.thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
-    .state('main.topic', { url: '/topics/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
+    .state('main.write', { url: '/write', templateUrl: '/html/main/write.html', controller: 'writeCtrl' })
+    .state('main.thread', { url: '/thread', templateUrl: '/html/main/thread.html', controller: 'threadCtrl'})
+    .state('main.topic', { url: '/topics/:topic?', templateUrl: '/html/main/topic.html', controller: 'topicCtrl'})
 
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
