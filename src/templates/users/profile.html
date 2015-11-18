@@ -6,13 +6,50 @@
       <h4>{{user.username}}
         <small> {{user.home}}</small>
         <button class="right" ng-click="follow()">Follow</button>
+        <button class="right" ng-click="unfollow()">Unfollow</button>
          <!--Button below should only show up if user is logged in. Try ng-show="LoggedIn()" ? -->
-        <button id="editUserButton"class="right"><a href="#" data-reveal-id="editUserModal">Edit Profile</a></button>
+        <button class="right crammedButton" ng-click="subscribe()">Subscribe</button>
+        <a href="#" data-reveal-id="editUserModal"><button class="right crammedButton">Edit Profile</button></a>
       </h4>
-      <!-- MODAL ------------->
-      <div id="editUserModal" class="reveal-modal buttons" data-reveal aria-labelledby="Profile Settings" aria-hidden="true" role="dialog">
-        <h5 id="modalTitle">Awesome. I have it.</h5>
-        <p class="lead">Your couch.  It is mine.</p>
+
+      <br>
+      <h6>{{user.about}}</small></h6>
+    </div>
+    <hr>
+
+      <!-- FEED ----------------------------------------------->
+    <div class="feed">
+      Feed Here of all user activity?
+    </div>
+  </div>
+    <br>
+
+  <div class="small-10 small-offset-1 medium-4 medium-offset-1 large-3 large-offset-1 large-pull-8 columns">
+    <div class="panel">
+      <div>
+        <p>Posts</p>
+        <i class="fi-heart"></i> {{user.likes}} likes<br>
+        <i class="fi-eye"></i> {{user.views}} views
+      </div><br>
+      <div>
+        <p>Activity</p>
+        <i class="fi-torsos-all"></i> {{user.followers}} followers <br>
+        <i class="fi-torso"></i> {{user.following}} following
+      </div>
+    </div>
+      <i class="fi-pencil"></i>
+      <strong> {{user.posts.length}} posts</strong>
+      <br>
+      <h5>I can answer questions about...</h5>
+      <ul>
+        <li ng-repeat="topic in knowledge">{{user.knowledge.topic.name}}</li>
+      </ul>
+  </div>
+</div>
+
+
+      <!-- MODAL ------------------------->
+      <div id="editUserModal" class="reveal-modal buttons" data-reveal aria-labelledby="Edit Profile" aria-hidden="true" role="dialog">
         <div class="row">
           <div class="small-12 large-6 columns">
             Username
@@ -23,7 +60,7 @@
             <input type="text">
           </div>
           <div class="small-12 large-6 columns">
-            Name - Please enter you full name.
+            Name - Please enter your full name.
             <input type="text">
             Job Title
             <input type="text">
@@ -42,39 +79,4 @@
         <a class="close"><button class="right">Save</button></a>
         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
       </div>
-      <br>
-      <h6>{{user.about}}</small></h6>
-    </div>
-    <hr>
-  </div>
-
-    <br>
-    <div class="feed">
-      Feed Here of all user activity?
-    </div>
-
-  <div class="small-10 small-offset-1 medium-4 medium-offset-1 large-3 large-offset-1 large-pull-8 columns">
-
-    <div class="panel">
-      <div>
-        <p>Posts</p>
-        <i class="fi-heart"></i> {{user.likes}} likes<br>
-        <i class="fi-eye"></i> {{user.views}} views
-      </div><br>
-
-      <div>
-        <p>Activity</p>
-        <i class="fi-torsos-all"></i> {{user.followers}} followers <br>
-        <i class="fi-torso"></i> {{user.following}} following
-      </div>
-    </div>
-
-      <i class="fi-pencil"></i>
-      <strong> {{user.posts.length}} posts</strong>
-      <br>
-      <h5>I can answer questions about...</h5>
-      <ul>
-        <li ng-repeat="topic in knowledge">{{user.knowledge.topic.name}}</li>
-      </ul>
-  </div>
-</div>
+<!-- END MODAL ------------------------------------------------>

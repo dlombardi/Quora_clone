@@ -1,9 +1,16 @@
 'use strict';
 
 
-app.controller('profileCtrl', function($scope, $state, auth){
+app.controller('profileCtrl', function($scope, $state, auth, userFactory){
   $(document).foundation();
+  var currentUser = auth.currentUser();
   console.log("PROFILE CTRL WORKING");
+
+if (currentUser) {
+      console.log(currentUser);
+  } else {
+    console.log('no one is logged in: ', currentUser);
+  }
 
   $scope.user = {
     username:  "bananaLeaf31",
@@ -23,15 +30,46 @@ app.controller('profileCtrl', function($scope, $state, auth){
     hash: String,
   }
 
-  $scope.follow = function(){
+  $scope.follow = function(follow, currentUser) {
     console.log("follow clicked.");
+    var followObject = {
+      toFollow: follow,
+      currentUser: currentUser
+    }
+    userFactory.follow(followObject);
+  };
+
+  $scope.unfollow = function() {
+    console.log("unfollow");
+    var unfollowObject = {
+      toUnfollow: unfollow,
+      currentUser: currentUser
+    }
+    userFactory.unfollow(unfollowObject);
+  };
+
+  $scope.subscribe = function(subscribeObject){
+    console.log("subscribe triggered.");
+    var subscribeObject = {
+      subscribe: subscribe,
+      currentUser: currentUser
+    }
+    userFactory.subscribe(subscribeObject);
   }
 
-});
 
-// app.service("editUserByPost", function($http){
-//   var postUser = function(){
-//     // topic.name =
-//     // user.
-//   }
-// });
+// EXAMPLE
+  // $scope.submitQuestion = function(question, currentUser){
+  //   console.log("SUBMIT POST FUNCTION STARTS");
+  //   var questionObject = {
+  //     author: currentUser._id,
+  //     title: question.title,
+  //     tags: question.tags,
+  //     content: question.content,
+  //     topic: question.topic,
+  //     postType: "question"
+  //   }
+  //   postFactory.createPost(questionObject);
+  // };
+
+});
