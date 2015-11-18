@@ -10,8 +10,17 @@ app.filter('unsafe', function($sce){
   }
 })
 
-app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "markedProvider", function($stateProvider, $locationProvider, $urlRouterProvider, markedProvider){
+.run(function($rootScope) {
+    $rootScope.$on("logout", function(){
+      $rootScope.$broadcast("loggedOut");
+    })
+    $rootScope.$on('login', function(){
+      $rootScope.$broadcast("loggedIn");
+    })
+})
 
+app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "markedProvider", function($stateProvider, $locationProvider, $urlRouterProvider, markedProvider){
+  $locationProvider.html5Mode(true).hashPrefix('!');;
   markedProvider.setOptions({
     gfm: true,
     tables: true,
@@ -26,9 +35,10 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
   $stateProvider
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
-    .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('post', { url: '/post', templateUrl: '/html/general/write.html', controller: 'writeCtrl'})
     .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
+    .state('topic', { url: '/topic/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
+    .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
     .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
 
@@ -38,7 +48,7 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth, marked, $sce) {
+app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth, marked, $sce, $rootScope) {
   $scope.posts;
   $scope.topicFeed;
   var currentUser = auth.currentUser();
@@ -156,6 +166,15 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     })
   }
 
+  $scope.$on("loggedOut", function(){
+    $scope.loggedIn = auth.isLoggedIn();
+  })
+
+  $scope.$on("loggedIn", function(){
+    console.log("inside logged in listener")
+    $scope.loggedIn = auth.isLoggedIn();
+  })
+
   postFactory.getPostsByTag();
 
 });
@@ -209,7 +228,16 @@ app.controller('threadCtrl', function($scope, $state, postFactory){
 
 'use strict';
 
-app.controller('usersCtrl', function($scope, $state, auth, userFactory){
+
+app.controller('topicCtrl', function($scope, $state, $stateParams, postFactory, topicFactory, auth, marked, $sce) {
+  console.log($stateParams.topic);
+  
+
+});
+
+'use strict';
+
+app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootScope){
   $scope.Login = false;
   $scope.loggedIn = auth.isLoggedIn();
 
@@ -224,7 +252,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory){
     console.log("user", user);
     submitFunc(user).success(function(data){
       console.log(data);
-      $scope.loggedIn = true;
+      $scope.$emit('login');
       $state.go('home');
     }).error(function(err){
       console.log(err);
@@ -235,13 +263,22 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory){
 
   $scope.logout = function(){
     auth.logout();
-    $scope.loggedIn = false;
+    $scope.$emit('logout');
     $state.go('home');
   }
 
   $scope.filterByTag = function(tag){
     postFactory.getPostsByTag(tag);
   }
+
+  $scope.$on("loggedOut", function(){
+    $scope.loggedIn = auth.isLoggedIn();
+  })
+
+  $scope.$on("loggedIn", function(){
+    console.log("inside logged in listener")
+    $scope.loggedIn = auth.isLoggedIn();
+  })
 });
 
 'use strict';

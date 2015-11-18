@@ -30,10 +30,10 @@ require('./config/passport');
 app.use(passport.initialize());
 
 
-app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 app.use('/topics', require('./routes/topics'));
 app.use('/posts', require('./routes/posts'));
+app.use('/*', require('./routes/index'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -42,9 +42,6 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handlers
-
-// development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {

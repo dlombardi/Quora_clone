@@ -1,64 +1,69 @@
 
 <br>
-<div class="row fullBody">
+<div class="row">
+  <div class="large-10 large-offset-1 small-12 columns ">
 
-  <!-- FEEDS COLUMN -->
-  <div class="small-10 small-offset-1 large-1 large-offset-1 columns">
-    <h6>FEEDS Topics you are subscribed to</h6>
-    <hr>
-    <ul>
-      <li ng-repeat="topic in topicFeed"><a href="">{{topic.name}}</a></li>
-    </ul>
-  </div>
-
-  <!-- MAIN COLUMN -->
-  <div class="small-10 small-offset-1 large-4 large-offset-1 columns primaryColumn buttons">
-    <div class="row">
-      <h4>Top Stories For You</h4>
-    </div>
-    <hr>
-    <div class="post" ng-repeat="post in posts track by $index">
-      <p><a href="">{{post.topic.name}}</a></p>
-      <h4><a href="">{{post.title}}</a></h4>
-      <p><a href="">{{post.author.username}}</a>, {{post.author.work}}</p>
-      <p ng-bind-html="post.content | unsafe"></p>
-      <button ng-show="!post.liked" ng-click="togglePostLike($index)">Like | <span>{{post.likes}}</span></button>
-      <button ng-show="post.liked" ng-click="togglePostLike($index)">Unlike | <span>{{post.likes}}</span></button>
-      <a class='right' href="" ng-if="!post.showComments" ng-click="showComments($index)">Comments<span> {{post.comments.length}}</span></a>
-      <a class='right' href="" ng-if="post.showComments" ng-click="hideComments($index)">Comments<span> {{post.comments.length}}</span></a>
-      <div class="commentsChain" ng-if="post.showComments">
-        <hr>
-        <div class="commentSection">
-          <div class="commentInput">
-            <div class="row">
-              <div class="columns small-11">
-                <input type="text" ng-model="comment" style="width: 80%;" placeholder="comment...">
-              </div>
-              <div class="columns small-1">
-                <button class="right" ng-click="submitComment(comment, post)">Submit</button>
-              </div>
-            </div>
-          </div>
-          <hr>
-          <div class="comments" ng-repeat="comment in comments">
-            <div class="commentBody">
-              <h6><a href="">{{comment.author.username}}</a></h6>
-              <p ng-bind-html="comment.content | unsafe"></p>
-              <button ng-show="!comment.liked" ng-click="toggleCommentLike($index)">Like | <span>{{comment.likes}}</span></button>
-              <button ng-show="comment.liked" ng-click="toggleCommentLike($index)">Unlike | <span>{{comment.likes}}</span></button>
-            </div>
-            <hr>
-          </div>
+    <!-- FEEDS COLUMN -->
+    <div id="feedColumn" class="large-2 small-12 columns buttons">
+      <div class="row">
+        <p class="header" ng-if="!loggedIn">Topics</p>
+        <p class="header" ng-if="loggedIn">Subscriptions</p>
+        <div class="row">
+          <ul>
+            <li ng-repeat="topic in topicFeed"><a ng-href='/topic/{{topic.name}}'>{{topic.name}}</a></li>
+          </ul>
         </div>
       </div>
-      <hr>
+      <div class="row">
+        <p class="header" ng-if="!loggedIn">Topics</p>
+        <p class="header" ng-if="loggedIn">Subscriptions</p>
+      </div>
+    </div>
+
+    <!-- MAIN COLUMN -->
+    <div class="large-6 small-12 columns buttons">
+      <div class="header">Top Stories For You</div>
+      <div class="post" ng-repeat="post in posts track by $index">
+        <p><a ng-href="/topic/{{post.topic.name}}">{{post.topic.name}}</a></p>
+        <h4><a href="">{{post.title}}</a></h4>
+        <p><a href="">{{post.author.username}}</a>, {{post.author.work}}</p>
+        <p ng-bind-html="post.content | unsafe"></p>
+        <button ng-show="!post.liked" ng-click="togglePostLike($index)">Like | <span>{{post.likes}}</span></button>
+        <button ng-show="post.liked" ng-click="togglePostLike($index)">Unlike | <span>{{post.likes}}</span></button>
+        <a class='right' href="" ng-if="!post.showComments" ng-click="showComments($index)">Comments<span> {{post.comments.length}}</span></a>
+        <a class='right' href="" ng-if="post.showComments" ng-click="hideComments($index)">Comments<span> {{post.comments.length}}</span></a>
+        <div class="commentsChain" ng-if="post.showComments">
+          <hr>
+          <div class="commentSection">
+            <div class="commentInput">
+              <div class="row">
+                <div class="columns small-11">
+                  <textarea type="text" ng-model="comment" style="width: 85%;" placeholder="comment..."></textarea>
+                </div>
+                <div class="columns small-1">
+                  <button class="right" ng-click="submitComment(comment, post)">Submit</button>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="comments" ng-repeat="comment in comments">
+              <div class="commentBody">
+                <h6><a href="">{{comment.author.username}}</a></h6>
+                <p ng-bind-html="comment.content | unsafe"></p>
+                <button ng-show="!comment.liked" ng-click="toggleCommentLike($index)">Like | <span>{{comment.likes}}</span></button>
+                <button ng-show="comment.liked" ng-click="toggleCommentLike($index)">Unlike | <span>{{comment.likes}}</span></button>
+              </div>
+              <hr>
+            </div>
+          </div>
+        </div>
+        <hr>
+      </div>
+    </div>
+
+    <!-- TOPICS COLUMN -->
+    <div class="large-4 small-12 columns buttons">
+      <div class="header">Random</div>
     </div>
   </div>
-
-  <!-- TOPICS COLUMN -->
-  <div class="small-10 small-offset-1 large-3 large-offset-1 columns end">
-    A random topic to reccomend
-    <hr>
-  </div>
-
 </div>

@@ -119,6 +119,9 @@ hr {
 #rightColumn {
   margin-top: 1em; }
 
+.navContainer {
+  border-top: 3px solid #B92B27; }
+
 .top-bar .name h1 a {
   color: #B92B27; }
 
@@ -159,3 +162,14 @@ quora-title {
 
 .commentInput {
   margin-bottom: -20px; }
+
+.header {
+  border-bottom: 1px solid grey;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  font-size: 20px;
+  font-family: "Quattrocento", serif; }
+
+#topicBanner {
+  height: 20vh;
+  vertical-align: middle; }

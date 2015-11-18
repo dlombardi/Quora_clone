@@ -1,7 +1,7 @@
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth, marked, $sce) {
+app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth, marked, $sce, $rootScope) {
   $scope.posts;
   $scope.topicFeed;
   var currentUser = auth.currentUser();
@@ -118,6 +118,15 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
       console.log("error: ", err)
     })
   }
+
+  $scope.$on("loggedOut", function(){
+    $scope.loggedIn = auth.isLoggedIn();
+  })
+
+  $scope.$on("loggedIn", function(){
+    console.log("inside logged in listener")
+    $scope.loggedIn = auth.isLoggedIn();
+  })
 
   postFactory.getPostsByTag();
 

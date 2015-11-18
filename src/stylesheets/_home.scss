@@ -11,7 +11,15 @@
   border-radius: 5px;
 }
 
-
 .commentInput{
   margin-bottom: -20px;
+}
+
+.header{
+  @include line-margin;
+  @include header-style;
+}
+
+#feedColumn{
+  
 }
