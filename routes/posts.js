@@ -5,6 +5,8 @@ var shuffle = require('knuth-shuffle').knuthShuffle
 var router = express.Router();
 var passport = require("passport");
 var marked = require('marked');
+var router = express.Router();
+var jwt = require('jsonwebtoken');
 
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -25,13 +27,30 @@ var UserEmitter = require("../observer/UserEmitter");
 var TopicEmitter = require("../observer/TopicEmitter");
 var PostEmitter = require("../observer/PostEmitter");
 
+function loggedIn(req, res, next) {
+  jwt.verify(req.body.token, process.env.JWT_SECRET, function(err, decoded) {
+    if(decoded._id){
+      User.findById(decoded._id, function(err, user){
+        if(user){
+          next();
+        } else {
+          res.redirect("/login");
+        }
+      })
+    } else {
+      res.redirect("/login");
+    }
+  });
+}
+
 router.get('/:pid', function(req, res, next){
   Post.findById(req.params.pid).populate('author comments.comments topic responseTo').exec(function (err, post){
     res.send(post);
   });
 })
 
-router.post('/add', function(req, res, next){
+router.post('/add', loggedIn, function(req, res, next){
+  console.log(req.body);
   switch(req.body.postType){
     case "question":
       Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){

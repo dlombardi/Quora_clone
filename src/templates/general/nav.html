@@ -1,36 +1,37 @@
-<div class="row">
-  <div class="large-10 large-offset-1 columns ">
-    <nav class="top-bar" data-topbar role="navigation" ng-controller='usersCtrl'>
-      <ul class="title-area">
-        <li class="name">
-          <h1 id="quora-title"><a ui-sref="home">Quora</a></h1>
-        </li>
-        <li class="toggle-topbar"><a href="#"><span>Menu</span></a></li>
-      </ul>
-      <section class="top-bar-section">
-        <ul class="left">
-          <li class="has-form">
-            <div class="row collapse">
-              <div class="medium-8 small-9 columns">
-                <input type="text" ng-model="tag" placeholder="Search By Tag">
-              </div>
-              <div class="medium-4 small-3 columns">
-                <a href="#" ng-click="filterByTag(tag)" class="alert button expand">Search</a>
-              </div>
-            </div>
+<div id="navContainer">
+  <div class="row">
+    <div class="large-10 large-offset-1 columns ">
+      <nav class="top-bar" data-topbar role="navigation" ng-controller='usersCtrl'>
+        <ul class="title-area">
+          <li class="name">
+            <h1 id="quora-title"><a ui-sref="home">Quora</a></h1>
           </li>
+          <li class="toggle-topbar"><a href="#"><span>Menu</span></a></li>
         </ul>
-        <!-- Right Nav Section -->
-        <ul class="right">
-          <li><a ui-sref="home"><i class="fi-home"></i> Home</a></li>
-          <li><a ui-sref="post"><i class="fi-pencil"></i> Write</a></li>
-          <li><a ui-sref="users.profile"><i class="fi-results"></i> Profile</a></li>
-          <li><a ui-sref="users.login" ng-if="!loggedIn">Login</a></li>
-          <li><a ui-sref="home" ng-if="loggedIn" ng-click="logout()">Logout</a></li>
-        </ul>
-      </section>
-    </nav>
+        <section class="top-bar-section">
+          <ul class="left">
+            <li class="has-form">
+              <div class="row collapse">
+                <div class="medium-8 small-9 columns">
+                  <input type="text" ng-model="tag" placeholder="Search By Tag">
+                </div>
+                <div class="medium-4 small-3 columns">
+                  <a href="#" ng-click="filterByTag(tag)" class="alert button expand">Search</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <!-- Right Nav Section -->
+          <ul class="right">
+            <li><a ui-sref="home"><i class="fi-home"></i> Home</a></li>
+            <li><a ui-sref="post"><i class="fi-pencil"></i> Write</a></li>
+            <li><a ui-sref="users.profile"><i class="fi-results"></i> Profile</a></li>
+            <li><a ui-sref="users.login" ng-if="!loggedIn">Login</a></li>
+            <li><a ui-sref="home" ng-if="loggedIn" ng-click="logout()">Logout</a></li>
+          </ul>
+        </section>
+      </nav>
+    </div>
   </div>
+  <hr class="navBarLine">
 </div>
-
-<hr class="navBarLine">

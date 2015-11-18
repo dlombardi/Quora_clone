@@ -1,0 +1,23 @@
+a{
+  color: black;
+}
+
+a:hover{
+  color: #aaaaaa;
+}
+
+.topic{
+  font-family: $headerFont;
+  font-size: 20px;
+  color: black;
+}
+
+.topic:hover{
+  font-family: $headerFont;
+  font-size: 20px;
+  padding-bottom: 2px;
+}
+
+.author:hover{
+  color: $quora-light;
+}

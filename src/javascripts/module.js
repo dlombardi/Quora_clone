@@ -37,7 +37,7 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
     .state('post', { url: '/post', templateUrl: '/html/general/write.html', controller: 'writeCtrl'})
     .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
-    .state('topic', { url: '/topic/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
+    .state('topic', { url: '/topics/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
     .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})

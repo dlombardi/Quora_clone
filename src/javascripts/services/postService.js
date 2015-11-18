@@ -4,32 +4,36 @@ app.factory('postFactory', function($window, $http){
   var postFactory= {};
 
   postFactory.createPost = function(newPost) {
-    return $http.post('/posts/add', newPost);
+    return $http.post('/api/posts/add', newPost);
   };
 
   postFactory.deletePost = function(pid){
-    return $http.delete('/posts/delete', pid);
+    return $http.delete('/api/posts/delete', pid);
   };
 
   postFactory.changeStats = function(statObject){
-    return $http.put('/posts/changeStats', statObject);
+    return $http.put('/api/posts/changeStats', statObject);
   };
 
   postFactory.editPost = function(editObject){
-    return $http.put('/posts/edit', editObject);
+    return $http.put('/api/posts/edit', editObject);
   };
 
   postFactory.getPostsByTag = function(tag){
-    return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
+    return $http.get('/api/posts/sorted/user/topic/tag/'+ tag +'/postType/');
+  };
+
+  postFactory.getPostsByTopic = function(topic){
+    return $http.get('/api/posts/sorted/user/topic/'+ topic +'/tag/postType/');
   };
 
   postFactory.getSortedPosts = function(sorting){
-    return $http.get('/posts/sorted/'+sorting.sortingMethod+'/user/topic/tag/postType/'+ sorting.postType +'');
+    return $http.get('/api/posts/sorted/'+sorting.sortingMethod+'/user/topic/tag/postType/'+ sorting.postType +'');
   };
 
   postFactory.getSortedComments = function(sorting){
     console.log(sorting);
-    return $http.get('/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
+    return $http.get('/api/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
   };
 
 

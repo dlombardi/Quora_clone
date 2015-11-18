@@ -26,13 +26,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // passport stuff!~
 var passport = require('passport');
-require('./config/passport');
+var expressSession = require('express-session');
+
+var initPassport = require('./config/passport');
+
 app.use(passport.initialize());
 
 
-app.use('/posts', require('./routes/posts'));
-app.use('/users', require('./routes/users'));
-app.use('/topics', require('./routes/topics'));
+app.use('/api/posts', require('./routes/posts'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/topics', require('./routes/topics'));
+app.use('/', require('./routes/auth'));
 app.use('/*', require('./routes/index'));
 
 

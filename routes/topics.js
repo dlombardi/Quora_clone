@@ -11,7 +11,7 @@ var UserEmitter = require("../observer/UserEmitter");
 var TopicEmitter = require("../observer/TopicEmitter");
 var PostEmitter = require("../observer/PostEmitter");
 
-router.get('/', function(req, res, next) {
+router.get('/allTopics', function(req, res, next) {
   Topic.find({}, function(err, topics){
     res.send(topics);
   })
@@ -24,7 +24,9 @@ router.get('/topics/:name', function(req, res, next) {
 });
 
 router.get('/limit7', function(req, res, next) {
+  console.log("inAllTopics");
   Topic.find().limit(7).exec(function(err, topics){
+    console.log(topics);
     res.send(topics);
   })
 });

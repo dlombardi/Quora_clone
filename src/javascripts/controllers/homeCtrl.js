@@ -29,8 +29,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
 
     topicFactory.get7Topics()
     .success(function(topics){
-      $scope.topicFeed = topics;
       console.log(topics);
+      $scope.topicFeed = topics;
     })
     .error(function(err){
       console.log("error: ", err)
@@ -43,7 +43,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     var statsObject = {
       pid: $scope.posts[index]._id,
       uid: currentUser._id,
-      type: action
+      type: action,
+      token: auth.getToken()
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
@@ -66,7 +67,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     var statsObject = {
       pid: $scope.comments[index]._id,
       uid: currentUser._id,
-      type: action
+      type: action,
+      token: auth.getToken()
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
@@ -92,9 +94,12 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     }
     postFactory.getSortedComments(sortingObject)
     .success(function(posts){
-      postFactory.formatLikedPosts(posts, currentUser);
-      console.log(posts);
-      $scope.comments = posts;
+      if(currentUser){
+        postFactory.formatLikedPosts(posts, currentUser);
+        $scope.comments = posts;
+      } else {
+        $scope.comments = posts;
+      }
     })
   }
 
@@ -107,7 +112,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
       content: comment,
       author: currentUser._id,
       responseTo: post._id,
-      postType: "comment"
+      postType: "comment",
+      token: auth.getToken()
     }
     postFactory.createPost(commentObject)
     .success(function(post){
@@ -129,5 +135,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   })
 
   postFactory.getPostsByTag();
+
 
 });
