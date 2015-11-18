@@ -10,13 +10,33 @@ app.filter('unsafe', function($sce){
   }
 })
 
-.run(function($rootScope) {
+.run(function($rootScope, $state) {
     $rootScope.$on("logout", function(){
       $rootScope.$broadcast("loggedOut");
     })
     $rootScope.$on('login', function(){
       $rootScope.$broadcast("loggedIn");
     })
+    $rootScope.isNotLoggedIn = function(){
+      swal({
+        title: "Not Logged In!",
+        text: "You must be logged in to complete this action.",
+        showCancelButton: true,
+        confirmButtonColor: "#B92B27",
+        confirmButtonText: "Go to Login?",
+        closeOnConfirm: false,
+        imageUrl: "../assets/Tied_Hands-100.png"
+      },
+      function(){
+        swal({
+          title: "Redirecting!",
+          type: "success",
+          timer: 750,
+          showConfirmButton: false
+        });
+        $state.go("users.login");
+      });
+    }
 })
 
 app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "markedProvider", function($stateProvider, $locationProvider, $urlRouterProvider, markedProvider){

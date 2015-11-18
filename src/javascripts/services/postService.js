@@ -41,7 +41,6 @@ app.factory('postFactory', function($window, $http){
     var formattedPosts = posts.map(function(post){
         return post.likers.forEach(function(liker){
          if(liker.toString() === currentUser._id.toString()){
-           console.log("inside if statement" , post);
            var likedPost = post;
            likedPost.liked = true;
            return likedPost;

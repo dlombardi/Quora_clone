@@ -39,7 +39,6 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
   })
 
   $scope.$on("loggedIn", function(){
-    console.log("inside logged in listener")
     $scope.loggedIn = auth.isLoggedIn();
   })
 });

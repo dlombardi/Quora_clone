@@ -1,10 +1,9 @@
 'use strict';
 
 
-app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, postFactory) {
+app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, postFactory, $rootScope) {
   var currentUser = auth.currentUser();
-  console.log("ok");
-
+  $scope.loggedIn = auth.isLoggedIn();
 
   (function getTopicPosts(){
     $scope.posts = [];
@@ -12,7 +11,6 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
 
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
-      console.log("topic: ", topic);
       $scope.topic = topic;
       $scope.posts = topic.posts;
     })
@@ -22,49 +20,57 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   })();
 
   $scope.togglePostLike = function(index){
-    var action;
-    $scope.posts[index].liked ? action = "dislike" : action = "like";
-    var statsObject = {
-      pid: $scope.posts[index]._id,
-      uid: currentUser._id,
-      type: action
-    }
-    postFactory.changeStats(statsObject)
-    .success(function(post){
-      if(action === "like"){
-        $scope.posts[index].likes += 1
-        $scope.posts[index].liked = true;
-      } else {
-        $scope.posts[index].likes -= 1;
-        $scope.posts[index].liked = false;
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.posts[index].liked ? action = "dislike" : action = "like";
+      var statsObject = {
+        pid: $scope.posts[index]._id,
+        uid: currentUser._id,
+        type: action
       }
-    })
-    .error(function(err){
-      console.log("error: ", err);
-    })
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "like"){
+          $scope.posts[index].likes += 1
+          $scope.posts[index].liked = true;
+        } else {
+          $scope.posts[index].likes -= 1;
+          $scope.posts[index].liked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
   }
 
   $scope.toggleCommentLike = function(index){
-    var action;
-    $scope.comments[index].liked ? action = "dislike" : action = "like";
-    var statsObject = {
-      pid: $scope.comments[index]._id,
-      uid: currentUser._id,
-      type: action
-    }
-    postFactory.changeStats(statsObject)
-    .success(function(post){
-      if(action === "like"){
-        $scope.comments[index].likes += 1
-        $scope.comments[index].liked = true;
-      } else {
-        $scope.comments[index].likes -= 1;
-        $scope.comments[index].liked = false;
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.comments[index].liked ? action = "dislike" : action = "like";
+      var statsObject = {
+        pid: $scope.comments[index]._id,
+        uid: currentUser._id,
+        type: action
       }
-    })
-    .error(function(err){
-      console.log("error: ", err);
-    })
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "like"){
+          $scope.comments[index].likes += 1
+          $scope.comments[index].liked = true;
+        } else {
+          $scope.comments[index].likes -= 1;
+          $scope.comments[index].liked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
   }
 
   $scope.showComments = function(index){
@@ -87,20 +93,24 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   }
 
   $scope.submitComment = function(comment, post){
-    var commentObject = {
-      content: comment,
-      author: currentUser._id,
-      responseTo: post._id,
-      postType: "comment"
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var commentObject = {
+        content: comment,
+        author: currentUser._id,
+        responseTo: post._id,
+        postType: "comment"
+      }
+      postFactory.createPost(commentObject)
+      .success(function(post){
+        $scope.comments.push(post);
+        console.log(post);
+      })
+      .error(function(err){
+        console.log("error: ", err)
+      })
     }
-    postFactory.createPost(commentObject)
-    .success(function(post){
-      $scope.comments.push(post);
-      console.log(post);
-    })
-    .error(function(err){
-      console.log("error: ", err)
-    })
   }
 
   $scope.$on("loggedOut", function(){
@@ -108,7 +118,6 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   })
 
   $scope.$on("loggedIn", function(){
-    console.log("inside logged in listener")
     $scope.loggedIn = auth.isLoggedIn();
   })
 

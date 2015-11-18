@@ -1,0 +1,15 @@
+.sweet-alert{
+  border-radius: 0px;
+  button{
+    border-radius: 0px;
+  }
+  .sa-icon.sa-warning{
+    border-color: $quora-medium;
+  }
+  .sa-icon.sa-warning .sa-body{
+    border-color: $quora-medium;
+  }
+  .sa-icon.sa-warning .sa-dot{
+    border-color: $quora-medium;
+  }
+}

@@ -192,3 +192,14 @@ quora-title {
 #topicBanner {
   height: 20vh;
   vertical-align: middle; }
+
+.sweet-alert {
+  border-radius: 0px; }
+  .sweet-alert button {
+    border-radius: 0px; }
+  .sweet-alert .sa-icon.sa-warning {
+    border-color: #97130F; }
+  .sweet-alert .sa-icon.sa-warning .sa-body {
+    border-color: #97130F; }
+  .sweet-alert .sa-icon.sa-warning .sa-dot {
+    border-color: #97130F; }

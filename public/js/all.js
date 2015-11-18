@@ -10,13 +10,33 @@ app.filter('unsafe', function($sce){
   }
 })
 
-.run(function($rootScope) {
+.run(function($rootScope, $state) {
     $rootScope.$on("logout", function(){
       $rootScope.$broadcast("loggedOut");
     })
     $rootScope.$on('login', function(){
       $rootScope.$broadcast("loggedIn");
     })
+    $rootScope.isNotLoggedIn = function(){
+      swal({
+        title: "Not Logged In!",
+        text: "You must be logged in to complete this action.",
+        showCancelButton: true,
+        confirmButtonColor: "#B92B27",
+        confirmButtonText: "Go to Login?",
+        closeOnConfirm: false,
+        imageUrl: "../assets/Tied_Hands-100.png"
+      },
+      function(){
+        swal({
+          title: "Redirecting!",
+          type: "success",
+          timer: 750,
+          showConfirmButton: false
+        });
+        $state.go("users.login");
+      });
+    }
 })
 
 app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "markedProvider", function($stateProvider, $locationProvider, $urlRouterProvider, markedProvider){
@@ -54,7 +74,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
 
-  (function getPosts(){
+  ($scope.getPosts = function(){
+    console.log("In get posts ", "Current User:", currentUser);
     $scope.posts = [];
     $scope.topicFeed = [];
     var sorting = {
@@ -62,7 +83,7 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     }
     postFactory.getSortedPosts(sorting)
     .success(function(posts){
-      if(currentUser){
+      if($scope.loggedIn){
         postFactory.formatLikedPosts(posts, currentUser);
         console.log("posts: ", posts);
         $scope.posts = posts;
@@ -85,69 +106,59 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   })();
 
   $scope.togglePostLike = function(index){
-    swal({
-      title: "Not Logged In!",
-      text: "You must be logged in to complete this action.",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#DD6B55",
-      confirmButtonText: "Go to Login?",
-      closeOnConfirm: false
-    },
-    function(){
-      swal({
-        title: "Redirecting!",
-        type: "success",
-        timer: 750,
-        showConfirmButton: false
-      });
-      $state.go("users.login");
-    });
-    var action;
-    $scope.posts[index].liked ? action = "dislike" : action = "like";
-    var statsObject = {
-      pid: $scope.posts[index]._id,
-      uid: currentUser._id,
-      type: action,
-      token: auth.getToken()
-    }
-    postFactory.changeStats(statsObject)
-    .success(function(post){
-      if(action === "like"){
-        $scope.posts[index].likes += 1
-        $scope.posts[index].liked = true;
-      } else {
-        $scope.posts[index].likes -= 1;
-        $scope.posts[index].liked = false;
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.posts[index].liked ? action = "dislike" : action = "like";
+      var statsObject = {
+        pid: $scope.posts[index]._id,
+        uid: currentUser._id,
+        type: action,
+        token: auth.getToken()
       }
-    })
-    .error(function(err){
-      console.log("error: ", err);
-    })
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "like"){
+          $scope.posts[index].likes += 1
+          $scope.posts[index].liked = true;
+        } else {
+          $scope.posts[index].likes -= 1;
+          $scope.posts[index].liked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
   }
 
   $scope.toggleCommentLike = function(index){
-    var action;
-    $scope.comments[index].liked ? action = "dislike" : action = "like";
-    var statsObject = {
-      pid: $scope.comments[index]._id,
-      uid: currentUser._id,
-      type: action,
-      token: auth.getToken()
-    }
-    postFactory.changeStats(statsObject)
-    .success(function(post){
-      if(action === "like"){
-        $scope.comments[index].likes += 1
-        $scope.comments[index].liked = true;
-      } else {
-        $scope.comments[index].likes -= 1;
-        $scope.comments[index].liked = false;
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.comments[index].liked ? action = "dislike" : action = "like";
+      var statsObject = {
+        pid: $scope.comments[index]._id,
+        uid: currentUser._id,
+        type: action,
+        token: auth.getToken()
       }
-    })
-    .error(function(err){
-      console.log("error: ", err);
-    })
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "like"){
+          $scope.comments[index].likes += 1
+          $scope.comments[index].liked = true;
+        } else {
+          $scope.comments[index].likes -= 1;
+          $scope.comments[index].liked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
   }
 
   $scope.showComments = function(index){
@@ -173,34 +184,37 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   }
 
   $scope.submitComment = function(comment, post){
-    var commentObject = {
-      content: comment,
-      author: currentUser._id,
-      responseTo: post._id,
-      postType: "comment",
-      token: auth.getToken()
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var commentObject = {
+        content: comment,
+        author: currentUser._id,
+        responseTo: post._id,
+        postType: "comment",
+        token: auth.getToken()
+      }
+      postFactory.createPost(commentObject)
+      .success(function(post){
+        $scope.comments.push(post);
+        console.log(post);
+      })
+      .error(function(err){
+        console.log("error: ", err)
+      })
     }
-    postFactory.createPost(commentObject)
-    .success(function(post){
-      $scope.comments.push(post);
-      console.log(post);
-    })
-    .error(function(err){
-      console.log("error: ", err)
-    })
   }
 
   $scope.$on("loggedOut", function(){
     $scope.loggedIn = auth.isLoggedIn();
+    $scope.getPosts();
   })
 
   $scope.$on("loggedIn", function(){
-    console.log("inside logged in listener")
     $scope.loggedIn = auth.isLoggedIn();
   })
 
   postFactory.getPostsByTag();
-
 
 });
 
@@ -254,10 +268,9 @@ app.controller('threadCtrl', function($scope, $state, postFactory){
 'use strict';
 
 
-app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, postFactory) {
+app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, postFactory, $rootScope) {
   var currentUser = auth.currentUser();
-  console.log("ok");
-
+  $scope.loggedIn = auth.isLoggedIn();
 
   (function getTopicPosts(){
     $scope.posts = [];
@@ -265,7 +278,6 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
 
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
-      console.log("topic: ", topic);
       $scope.topic = topic;
       $scope.posts = topic.posts;
     })
@@ -275,49 +287,57 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   })();
 
   $scope.togglePostLike = function(index){
-    var action;
-    $scope.posts[index].liked ? action = "dislike" : action = "like";
-    var statsObject = {
-      pid: $scope.posts[index]._id,
-      uid: currentUser._id,
-      type: action
-    }
-    postFactory.changeStats(statsObject)
-    .success(function(post){
-      if(action === "like"){
-        $scope.posts[index].likes += 1
-        $scope.posts[index].liked = true;
-      } else {
-        $scope.posts[index].likes -= 1;
-        $scope.posts[index].liked = false;
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.posts[index].liked ? action = "dislike" : action = "like";
+      var statsObject = {
+        pid: $scope.posts[index]._id,
+        uid: currentUser._id,
+        type: action
       }
-    })
-    .error(function(err){
-      console.log("error: ", err);
-    })
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "like"){
+          $scope.posts[index].likes += 1
+          $scope.posts[index].liked = true;
+        } else {
+          $scope.posts[index].likes -= 1;
+          $scope.posts[index].liked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
   }
 
   $scope.toggleCommentLike = function(index){
-    var action;
-    $scope.comments[index].liked ? action = "dislike" : action = "like";
-    var statsObject = {
-      pid: $scope.comments[index]._id,
-      uid: currentUser._id,
-      type: action
-    }
-    postFactory.changeStats(statsObject)
-    .success(function(post){
-      if(action === "like"){
-        $scope.comments[index].likes += 1
-        $scope.comments[index].liked = true;
-      } else {
-        $scope.comments[index].likes -= 1;
-        $scope.comments[index].liked = false;
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.comments[index].liked ? action = "dislike" : action = "like";
+      var statsObject = {
+        pid: $scope.comments[index]._id,
+        uid: currentUser._id,
+        type: action
       }
-    })
-    .error(function(err){
-      console.log("error: ", err);
-    })
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "like"){
+          $scope.comments[index].likes += 1
+          $scope.comments[index].liked = true;
+        } else {
+          $scope.comments[index].likes -= 1;
+          $scope.comments[index].liked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
   }
 
   $scope.showComments = function(index){
@@ -340,20 +360,24 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   }
 
   $scope.submitComment = function(comment, post){
-    var commentObject = {
-      content: comment,
-      author: currentUser._id,
-      responseTo: post._id,
-      postType: "comment"
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var commentObject = {
+        content: comment,
+        author: currentUser._id,
+        responseTo: post._id,
+        postType: "comment"
+      }
+      postFactory.createPost(commentObject)
+      .success(function(post){
+        $scope.comments.push(post);
+        console.log(post);
+      })
+      .error(function(err){
+        console.log("error: ", err)
+      })
     }
-    postFactory.createPost(commentObject)
-    .success(function(post){
-      $scope.comments.push(post);
-      console.log(post);
-    })
-    .error(function(err){
-      console.log("error: ", err)
-    })
   }
 
   $scope.$on("loggedOut", function(){
@@ -361,7 +385,6 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   })
 
   $scope.$on("loggedIn", function(){
-    console.log("inside logged in listener")
     $scope.loggedIn = auth.isLoggedIn();
   })
 
@@ -410,7 +433,6 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
   })
 
   $scope.$on("loggedIn", function(){
-    console.log("inside logged in listener")
     $scope.loggedIn = auth.isLoggedIn();
   })
 });
@@ -556,7 +578,6 @@ app.factory('postFactory', function($window, $http){
     var formattedPosts = posts.map(function(post){
         return post.likers.forEach(function(liker){
          if(liker.toString() === currentUser._id.toString()){
-           console.log("inside if statement" , post);
            var likedPost = post;
            likedPost.liked = true;
            return likedPost;
