@@ -3,15 +3,15 @@
 
 
 app.controller('writeCtrl', function($scope, $http, auth, postFactory, topicFactory){
-  var currentUser = auth.currentUser();
-  $(document).foundation();
-  $scope.topics = [];
+  // var currentUser = auth.currentUser();
+  // $(document).foundation();
+  // $scope.topics = [];
 
 
 
-  (function populateTopics(){
-    console.log("Populate topics function starts");
-    $scope.topics = ["john", "wayne", "Gacy", "adam", "Darius", "Gary", "Dude", "Wilson", "Joe", "alex"];
+  // (function populateTopics(){
+  //   console.log("Populate topics function starts");
+  //   $scope.topics = ["john", "wayne", "Gacy", "adam", "Darius", "Gary", "Dude", "Wilson", "Joe", "alex"];
     // $scope.topics = [];
     // topicFactory.getTopics()
     // .success(function(topics){
@@ -21,7 +21,7 @@ app.controller('writeCtrl', function($scope, $http, auth, postFactory, topicFact
     // .error(function(err){
     //   console.log("error: ", err)
     // })
-  })();
+  // })();
 
   $scope.checkTopic = function(){
     console.log("NG CHANGE");

@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('threadCtrl', function($scope, $state, postFactory){
+app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope){
   $scope.displayComments = false;
   $scope.displayAnswerForm = false;
   var currentUser = $rootScope.getCurrentUser;
