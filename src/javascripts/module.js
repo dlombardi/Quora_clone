@@ -56,7 +56,7 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
   $stateProvider
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
 
-    .state('compose', { url: '/compose', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
+    .state('compose', { url: '/compose', templateUrl: '/html/general/compose.html', controller: 'threadCtrl'})
     // .state('write', { url: '/write', templateUrl: '/html/general/write.html', controller: 'writeCtrl'})
     .state('topic', { url: '/topics/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
 
