@@ -2,6 +2,7 @@
 
 
 app.controller('profileCtrl', function($scope, $state, auth){
+  $(document).foundation();
   console.log("PROFILE CTRL WORKING");
 
   $scope.user = {
@@ -21,4 +22,16 @@ app.controller('profileCtrl', function($scope, $state, auth){
     views: 0,
     hash: String,
   }
+
+  $scope.follow = function(){
+    console.log("follow clicked.");
+  }
+
 });
+
+// app.service("editUserByPost", function($http){
+//   var postUser = function(){
+//     // topic.name =
+//     // user.
+//   }
+// });

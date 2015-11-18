@@ -5,65 +5,51 @@
       <img class="profilePicture" src="http://www.lorempixel.com/150/150/people" alt="Profile Picture">
       <h4>{{user.username}}
         <small> {{user.home}}</small>
-        <button class="right">Follow</button><button  ng-show="LoggedIn()" class="right">Edit Profile</button>
+        <button class="right" ng-click="follow()">Follow</button>
+         <!--Button below should only show up if user is logged in. Try ng-show="LoggedIn()" ? -->
+        <button id="editUserButton"class="right"><a href="#" data-reveal-id="editUserModal">Edit Profile</a></button>
       </h4>
+      <!-- MODAL ------------->
+      <div id="editUserModal" class="reveal-modal buttons" data-reveal aria-labelledby="Profile Settings" aria-hidden="true" role="dialog">
+        <h5 id="modalTitle">Awesome. I have it.</h5>
+        <p class="lead">Your couch.  It is mine.</p>
+        <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
+        <button class="right" ng-click="">Save</button>
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+      </div>
       <br>
       <h6>{{user.about}}</small></h6>
     </div>
+    <hr>
+  </div>
 
-  <div>
-    <div class="alert-box" id="userStats">
-      <div class="left panel">
+    <br>
+    <div class="feed">
+      Feed Here of all user activity?
+    </div>
+
+  <div class="small-10 small-offset-1 medium-4 medium-offset-1 large-3 large-offset-1 large-pull-8 columns">
+
+    <div class="panel">
+      <div>
         <p>Posts</p>
         <i class="fi-heart"></i> {{user.likes}} likes<br>
         <i class="fi-eye"></i> {{user.views}} views
-      </div>
+      </div><br>
 
-      <div class="right panel">
+      <div>
         <p>Activity</p>
         <i class="fi-torsos-all"></i> {{user.followers}} followers <br>
         <i class="fi-torso"></i> {{user.following}} following
       </div>
-
     </div>
+
+      <i class="fi-pencil"></i>
+      <strong> {{user.posts.length}} posts</strong>
+      <br>
+      <h5>I can answer questions about...</h5>
+      <ul>
+        <li ng-repeat="topic in knowledge">{{user.knowledge.topic.name}}</li>
+      </ul>
   </div>
-    <br>
-    <div class="feed">
-      <span></span>
-      Feed Here of all user activity?
-    </div>
-  </div>
-
-  <div class="small-10 small-offset-1 medium-4 medium-offset-1 large-3 large-offset-1 large-pull-8 columns">
-    <i class="fi-pencil"></i>
-    <strong> {{user.posts.length}} posts</strong>
-    <br>
-    <h5>I can answer questions about...</h5>
-    <ul>
-      <li ng-repeat="topic in knowledge">{{user.knowledge.topic.name}}</li>
-    </ul>
-</div>
-
-
-    <!-- <div class="row">
-      <div class="large-2 columns">
-        <h5>I can answer questions about...</h5>
-        <hr>
-        <li ng-repeat="knowledge in knowledges">{{knowledge.name}}</li>
-      </div>
-      <div class="large-9 columns large-offset-1 profileActivity">
-        <p>
-        PROFILE BIO HERE
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat, iste. Dicta suscipit, maxime corporis. Nesciunt in temporibus consequuntur amet doloribus atque nobis nihil reprehenderit quam, rerum a, sapiente, quasi deserunt, asperiores dicta facere nemo aspernatur ut tempora dolore ipsam et. Velit, iste recusandae atque accusantium commodi! Accusantium qui fugit eaque quis, dolorum nisi libero quos vel voluptas! Beatae consequatur nisi, obcaecati veritatis odio ipsum rem consequuntur accusantium cum eum inventore quaerat nulla itaque sed ipsa eos laudantium voluptatum excepturi voluptatibus animi! Alias ratione ipsa dolor, pariatur similique doloribus non laboriosam, fuga nostrum ducimus, velit, debitis optio doloremque magni. Officia a consequuntur veritatis numquam magnam voluptatum assumenda omnis ex voluptas et! Temporibus, quas culpa voluptatum impedit totam deserunt, omnis at officia laboriosam id numquam explicabo, dolor sequi quaerat voluptatibus aspernatur in ex dolore minima veritatis natus nesciunt debitis! Tempora, esse voluptatem facere dolores quaerat, quas vel nemo quis enim placeat beatae reprehenderit cum consectetur numquam quisquam! Fuga rerum quibusdam sapiente qui odio labore, quam delectus aliquid non veritatis cupiditate, quo molestias voluptate eaque officia dolore temporibus quidem distinctio ipsam neque ipsum est. Ipsum, ipsa quibusdam ad quod, quidem.</p>
-      </div>
-    </div>
-  </div> -->
-
-  <!-- NEW COLUMN -->
-  <!-- <div class="large-4 large-offset-1 columns pull-1">
-    <p id="rightColumn">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim distinctio veniam nobis blanditiis labore impedit error porro, laboriosam incidunt explicabo aspernatur hic dolore tempora repudiandae adipisci sit corporis perspiciatis et voluptas facere vero quis! Quas laudantium illo, corrupti, molestiae dicta beatae, reiciendis, perspiciatis eum distinctio fugiat modi! Inventore, cupiditate quaerat, vitae incidunt maxime dolore exercitationem, aliquam ex illo assumenda architecto quia impedit voluptatum itaque fugit praesentium distinctio est tempore animi quos iste. Aspernatur similique corporis incidunt magnam nulla sint ea eos blanditiis iusto error, maiores sequi, illo quidem nostrum illum minus hic deleniti velit commodi recusandae. Quasi itaque praesentium amet, ducimus rem vero laborum earum maxime, voluptas ad! Inventore explicabo ex quod fuga aut sed mollitia magni vitae molestias aperiam. Ipsa, minima. Quidem rem, facilis voluptate doloremque dolorum veritatis ex, tenetur sit, consectetur temporibus corporis, repellat at. Itaque sed ipsam volupt.
-    </p>
-  </div> -->
-
 </div>
