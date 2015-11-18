@@ -4,27 +4,27 @@ app.factory('userFactory', function($window, $http){
   var userFactory= {};
 
   userFactory.addKnowledge = function(knowledgeObject) {
-    return $http.post('/api/users/addKnowledge', knowledgeObject);
+    return $http.post('/users/addKnowledge', knowledgeObject);
   };
 
   userFactory.updateInfo = function(updateObject){
-    return $http.put('/api/users/updateInfo', updateObject);
+    return $http.put('/users/updateInfo', updateObject);
   };
 
   userFactory.follow = function(followObject){
-    return $http.post('/api/users/follow', followObject);
+    return $http.post('/users/follow', followObject);
   };
 
   userFactory.unfollow = function(unfollowObject){
-    return $http.put('/api/users/unfollow', unfollowObject);
+    return $http.put('/users/unfollow', unfollowObject);
   };
 
   userFactory.subscribe = function(subscribeOject){
-    return $http.post('/api/users/subscribe', subscribeObject);
+    return $http.post('/users/subscribe', subscribeObject);
   };
 
   userFactory.unsubscribe = function(unsubscribeObject){
-    return $http.put('/api/users/unsubscribe', unsubscribeObject);
+    return $http.put('/users/unsubscribe', unsubscribeObject);
   };
 
   return userFactory;

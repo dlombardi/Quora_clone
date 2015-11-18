@@ -546,36 +546,36 @@ app.factory('postFactory', function($window, $http){
   var postFactory= {};
 
   postFactory.createPost = function(newPost) {
-    return $http.post('/api/posts/add', newPost);
+    return $http.post('/posts/add', newPost);
   };
 
   postFactory.deletePost = function(pid){
-    return $http.delete('/api/posts/delete', pid);
+    return $http.delete('/posts/delete', pid);
   };
 
   postFactory.changeStats = function(statObject){
-    return $http.put('/api/posts/changeStats', statObject);
+    return $http.put('/posts/changeStats', statObject);
   };
 
   postFactory.editPost = function(editObject){
-    return $http.put('/api/posts/edit', editObject);
+    return $http.put('/posts/edit', editObject);
   };
 
   postFactory.getPostsByTag = function(tag){
-    return $http.get('/api/posts/sorted/user/topic/tag/'+ tag +'/postType/');
+    return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
   };
 
   postFactory.getPostsByTopic = function(topic){
-    return $http.get('/api/posts/sorted/user/topic/'+ topic +'/tag/postType/');
+    return $http.get('/posts/sorted/user/topic/'+ topic +'/tag/postType/');
   };
 
   postFactory.getSortedPosts = function(sorting){
-    return $http.get('/api/posts/sorted/'+sorting.sortingMethod+'/user/topic/tag/postType/'+ sorting.postType +'');
+    return $http.get('/posts/sorted/'+sorting.sortingMethod+'/user/topic/tag/postType/'+ sorting.postType +'');
   };
 
   postFactory.getSortedComments = function(sorting){
     console.log(sorting);
-    return $http.get('/api/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
+    return $http.get('/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
   };
 
 
@@ -615,23 +615,23 @@ app.factory('topicFactory', function($window, $http) {
   var topicFactory = {};
 
   topicFactory.getTopics = function(){
-    return $http.get('/api/topics/allTopics');
+    return $http.get('/topics/allTopics');
   };
 
   topicFactory.get7Topics = function(){
-    return $http.get('/api/topics/limit7');
+    return $http.get('/topics/limit7');
   };
 
   topicFactory.getTopic = function(topicInput){
-    return $http.get('/api/topics/topic/'+topicInput+'')
+    return $http.get('/topics/topic/'+topicInput+'')
   };
 
   topicFactory.createTopic = function(topicInput){
-    return $http.post('/api/topics/add', topicInput);
+    return $http.post('/topics/add', topicInput);
   };
 
   topicFactory.deleteTopic = function(tid){
-    return $http.delete('/api/topics/delete', tid);
+    return $http.delete('/topics/delete', tid);
   };
 
   return topicFactory;
@@ -643,27 +643,27 @@ app.factory('userFactory', function($window, $http){
   var userFactory= {};
 
   userFactory.addKnowledge = function(knowledgeObject) {
-    return $http.post('/api/users/addKnowledge', knowledgeObject);
+    return $http.post('/users/addKnowledge', knowledgeObject);
   };
 
   userFactory.updateInfo = function(updateObject){
-    return $http.put('/api/users/updateInfo', updateObject);
+    return $http.put('/users/updateInfo', updateObject);
   };
 
   userFactory.follow = function(followObject){
-    return $http.post('/api/users/follow', followObject);
+    return $http.post('/users/follow', followObject);
   };
 
   userFactory.unfollow = function(unfollowObject){
-    return $http.put('/api/users/unfollow', unfollowObject);
+    return $http.put('/users/unfollow', unfollowObject);
   };
 
   userFactory.subscribe = function(subscribeOject){
-    return $http.post('/api/users/subscribe', subscribeObject);
+    return $http.post('/users/subscribe', subscribeObject);
   };
 
   userFactory.unsubscribe = function(unsubscribeObject){
-    return $http.put('/api/users/unsubscribe', unsubscribeObject);
+    return $http.put('/users/unsubscribe', unsubscribeObject);
   };
 
   return userFactory;
