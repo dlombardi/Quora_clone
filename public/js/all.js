@@ -58,7 +58,7 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
 
     .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
-    .state('write', { url: '/write', templateUrl: '/html/general/write.html', controller: 'writeCtrl'})
+    .state('compose', { url: '/compose', templateUrl: '/html/general/compose.html', controller: 'composeCtrl'})
     .state('topic', { url: '/topics/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
 
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
@@ -67,6 +67,13 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
   $urlRouterProvider.otherwise('/');
 }]);
+
+'use strict';
+
+app.controller('composeCtrl', function($scope, $state, postFactory, $rootScope){
+
+
+});
 
 'use strict';
 
