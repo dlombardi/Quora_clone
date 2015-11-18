@@ -116,6 +116,9 @@ hr {
 #rightColumn {
   margin-top: 1em; }
 
+#editUserButton {
+  margin-right: .5em; }
+
 .top-bar .name h1 a {
   color: #B92B27; }
 
