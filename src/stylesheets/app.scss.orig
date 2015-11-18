@@ -3,4 +3,8 @@
 @import "authentication";
 @import "profile";
 @import "nav";
+<<<<<<< HEAD
+@import "write";
+=======
 @import "home";
+>>>>>>> master

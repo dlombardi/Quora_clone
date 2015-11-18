@@ -2,11 +2,6 @@
 
 var app = angular.module('quora', ['ui.router', 'infinite-scroll']);
 
-app.run(function($rootScope, auth) {
-    $rootScope.getCurrentUser = auth.currentUser();
-    $rootScope.loggedIn = false;
-})
-
 app.constant('tokenStorageKey', 'my-token');
 
 app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
@@ -25,10 +20,11 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, topicFactory, auth) {
-  var currentUser = $rootScope.getCurrentUser;
+app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth) {
   $scope.posts;
   $scope.topicFeed;
+  var currentUser = auth.currentUser();
+  $scope.loggedIn = auth.isLoggedIn();
 
   (function getPosts(){
     $scope.posts = [];
@@ -38,7 +34,12 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
     }
     postFactory.getTopStories(sorting)
     .success(function(posts){
-      $scope.posts = posts;
+      if(currentUser){
+        postFactory.formatLikedPosts(posts, currentUser);
+        $scope.posts = posts;
+      } else {
+        $scope.posts = posts;
+      }
     })
     .error(function(err){
       console.log("error: ", err)
@@ -57,6 +58,7 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
   $scope.likePost = function(index){
     var statsObject = {
       pid: $scope.posts[index]._id,
+      uid: currentUser._id,
       type: "like"
     }
     postFactory.changeStats(statsObject)
@@ -64,15 +66,15 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
       $scope.posts[index].liked = true;
       $scope.posts[index].likes += 1;
     })
-    .error(function(post){
+    .error(function(err){
       console.log("error: ", err);
     })
   }
 
   $scope.unlikePost = function(index){
-    console.log("in unlike");
     var statsObject = {
       pid: $scope.posts[index]._id,
+      uid: currentUser._id,
       type: "dislike"
     }
     postFactory.changeStats(statsObject)
@@ -80,39 +82,65 @@ app.controller('homeCtrl', function($scope, $state, $rootScope, postFactory, top
       $scope.posts[index].liked = false;
       $scope.posts[index].likes -= 1;
     })
-    .error(function(post){
+    .error(function(err){
       console.log("error: ", err);
     })
   }
 
+  $scope.showComments = function(index){
+    $scope.posts[index].showComments = true;
+    $scope.comments = $scope.posts[index].comments;
+  }
+
+  $scope.hideComments = function(index){
+    $scope.posts[index].showComments = false;
+  }
+
+  $scope.submitComment = function(comment, post){
+    var commentObject = {
+      content: comment,
+      uid: currentUser._id,
+      responseTo: post._id,
+      postType: "comment"
+    }
+    postFactory.createPost(commentObject)
+    .success(function(post){
+      $scope.comments.unshift(post);
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
+  }
+
+  postFactory.getPostsByTag();
+
 });
 
-app.controller('navCtrl', function($scope, $state, auth, $rootScope){
-  var currentUser = $rootScope.getCurrentUser;
-  var loggedIn = $rootScope.loggedIn;
+app.controller('navCtrl', function($scope, $state, auth, postFactory){
+  $scope.loggedIn = auth.isLoggedIn();
 
   $scope.logout = function(){
     auth.logout();
-    $rootScope.loggedIn = false;
+    $scope.loggedIn = false;
     $state.go('home');
   }
+
 });
 
 'use strict';
 
 
-app.controller('profileCtrl', function($scope, $state, auth, $rootScope){
-  var currentUser = $rootScope.getCurrentUser;
+app.controller('profileCtrl', function($scope, $state, auth){
   console.log("PROFILE CTRL WORKING");
 });
 
 'use strict';
 
-app.controller('threadCtrl', function($scope, $state, $rootScope, postFactory){
+app.controller('threadCtrl', function($scope, $state, postFactory){
   $scope.displayComments = false;
   $scope.displayAnswerForm = false;
   var currentUser = $rootScope.getCurrentUser;
- 
+
 
   $scope.showComments = function(){
     $scope.displayComments = !$scope.displayComments;
@@ -137,11 +165,9 @@ app.controller('threadCtrl', function($scope, $state, $rootScope, postFactory){
 
 'use strict';
 
-
-
-app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootScope){
+app.controller('usersCtrl', function($scope, $state, auth, userFactory){
   $scope.Login = false;
-  var currentUser = $rootScope.getCurrentUser;
+  $scope.loggedIn = auth.isLoggedIn();
 
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
@@ -153,7 +179,8 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
     var submitFunc = $scope.Login ? auth.login : auth.register;
     console.log("user", user);
     submitFunc(user).success(function(data){
-      $rootScope.loggedIn = !$rootScope.loggedIn;
+      console.log(data);
+      $scope.loggedIn = true;
       $state.go('home');
     }).error(function(err){
       console.log(err);
@@ -161,15 +188,51 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
       alert(err);
     });
   };
+
+  $scope.logout = function(){
+    auth.logout();
+    $scope.loggedIn = false;
+    $state.go('home');
+  }
+
+  $scope.filterByTag = function(tag){
+    postFactory.getPostsByTag(tag);
+  }
 });
 
 'use strict';
 
 
 
-app.controller('writeCtrl', function($scope, $http, auth, postFactory){
-  var currentUser = auth.getCurrentUser;
+app.controller('writeCtrl', function($scope, $http, auth, postFactory, topicFactory){
+  var currentUser = auth.currentUser();
   $(document).foundation();
+  $scope.topics = [];
+
+
+
+  (function populateTopics(){
+    console.log("Populate topics function starts");
+    $scope.topics = ["john", "wayne", "Gacy", "adam", "Darius", "Gary", "Dude", "Wilson", "Joe", "alex"];
+    // $scope.topics = [];
+    // topicFactory.getTopics()
+    // .success(function(topics){
+    //   $scope.topics = topics;
+    //   console.log(topics);
+    // })
+    // .error(function(err){
+    //   console.log("error: ", err)
+    // })
+  })();
+
+  $scope.checkTopic = function(){
+    console.log("NG CHANGE");
+    if (!$scope.topic) {
+      console.log("EMPTY TOPICS");
+    } else {
+      console.log("NOT EMPTY");
+    }
+  }
 
   $scope.submitQuestion = function(question, currentUser){
     console.log("SUBMIT POST FUNCTION STARTS");
@@ -181,6 +244,7 @@ app.controller('writeCtrl', function($scope, $http, auth, postFactory){
       topic: question.topic,
       postType: "question"
     }
+    postFactory.createPost(questionObject);
   };
 });
 
@@ -198,22 +262,20 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
   };
 
   auth.isLoggedIn = function(){
-    var token = auth.getToken(function(token){
-      if(token){
-        var payload = JSON.parse($window.atob(token.split('.')[1]));
-        return payload.exp > Date.now() / 1000;
-      } else {
-        return false;
-      }
-    })
+    var token = auth.getToken();
+    if(token){
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+      return payload.exp > Date.now() / 1000;
+    } else {
+      return false;
+    }
   };
 
   auth.currentUser = function(){
     if(auth.isLoggedIn()){
-      var token = auth.getToken(function(token){
-        var payload = JSON.parse($window.atob(token.split('.')[1]));
-        return payload;
-      })
+      var token = auth.getToken();
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+      return payload;
     }
   };
 
@@ -241,7 +303,7 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
 app.factory('postFactory', function($window, $http){
   var postFactory= {};
 
-  postFactory.createPost = function(postInput) {
+  postFactory.createPost = function(newPost) {
     return $http.post('/posts/add', newPost);
   };
 
@@ -259,6 +321,27 @@ app.factory('postFactory', function($window, $http){
 
   postFactory.getTopStories = function(sorting){
     return $http.get('/posts/sorted/user/topic/tag/postType/'+ sorting.postType +'');
+  };
+
+  postFactory.getPostsByTag = function(tag){
+    return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
+  };
+
+
+
+  postFactory.formatLikedPosts = function(posts, currentUser){
+    var formattedPosts = posts.map(function(post){
+        return post.likers.forEach(function(liker){
+         if(liker.toString() === currentUser._id.toString()){
+           var likedPost = post;
+           likedPost.liked = true;
+           return likedPost;
+         } else {
+           return post;
+         }
+       })
+    });
+    return formattedPosts;
   };
 
   return postFactory;

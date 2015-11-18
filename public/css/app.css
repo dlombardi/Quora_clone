@@ -147,12 +147,7 @@ nav.top-bar a {
 quora-title {
   font-weight: strong; }
 
-form h6 {
-  font-weight: bold; }
-
-#submitInput input {
-  width: 80%; }
-
-#submitInput button {
-  margin-bottom: 0;
-  bottom: 0px; }
+.commentSection {
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 5px; }
