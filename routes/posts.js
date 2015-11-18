@@ -25,7 +25,6 @@ var UserEmitter = require("../observer/UserEmitter");
 var TopicEmitter = require("../observer/TopicEmitter");
 var PostEmitter = require("../observer/PostEmitter");
 
-
 router.get('/:pid', function(req, res, next){
   Post.findById(req.params.pid).populate('author comments.comments topic responseTo').exec(function (err, post){
     res.send(post);
@@ -224,6 +223,8 @@ router.get("/sortedComments/:sortingMethod?/post/:pid?", function(req, res, next
     res.send(posts);
   });
 });
+
+
 
 
 module.exports = router;
