@@ -21,27 +21,34 @@
       <p><a href="">{{post.topic.name}}</a></p>
       <h4><a href="">{{post.title}}</a></h4>
       <p><a href="">{{post.author.username}}</a>, {{post.author.work}}</p>
-      <p>{{post.content}}</p>
-      <button ng-show="!post.liked" ng-click="likePost($index)">Like | <span>{{post.likes}}</span></button>
-      <button ng-show="post.liked" ng-click="unlikePost($index)">Unlike | <span>{{post.likes}}</span></button>
+      <p ng-bind-html="post.content | unsafe"></p>
+      <button ng-show="!post.liked" ng-click="togglePostLike($index)">Like | <span>{{post.likes}}</span></button>
+      <button ng-show="post.liked" ng-click="togglePostLike($index)">Unlike | <span>{{post.likes}}</span></button>
       <a class='right' href="" ng-if="!post.showComments" ng-click="showComments($index)">Comments<span> {{post.comments.length}}</span></a>
       <a class='right' href="" ng-if="post.showComments" ng-click="hideComments($index)">Comments<span> {{post.comments.length}}</span></a>
       <div class="commentsChain" ng-if="post.showComments">
         <hr>
         <div class="commentSection">
-          <div class="row">
-            <div class="columns small-11">
-              <input type="text" ng-model="comment" style="width: 80%;" placeholder="comment...">
+          <div class="commentInput">
+            <div class="row">
+              <div class="columns small-11">
+                <input type="text" ng-model="comment" style="width: 80%;" placeholder="comment...">
+              </div>
+              <div class="columns small-1">
+                <button class="right" ng-click="submitComment(comment, post)">Submit</button>
+              </div>
             </div>
-            <div class="columns small-1">
-              <button class="right" ng-click="submitComment(comment, post)">Submit</button>
-            </div>
-          </div>
-          <div class="comments" ng-repeat="comment in comments">
-            <h6><a href="">{{comment.author.username}}</a></h6>
-            <h6>{{comment.content}}</h6>
           </div>
           <hr>
+          <div class="comments" ng-repeat="comment in comments">
+            <div class="commentBody">
+              <h6><a href="">{{comment.author.username}}</a></h6>
+              <p ng-bind-html="comment.content | unsafe"></p>
+              <button ng-show="!comment.liked" ng-click="toggleCommentLike($index)">Like | <span>{{comment.likes}}</span></button>
+              <button ng-show="comment.liked" ng-click="toggleCommentLike($index)">Unlike | <span>{{comment.likes}}</span></button>
+            </div>
+            <hr>
+          </div>
         </div>
       </div>
       <hr>

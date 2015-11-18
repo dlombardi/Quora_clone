@@ -1,12 +1,30 @@
 'use strict';
 
-var app = angular.module('quora', ['ui.router', 'infinite-scroll']);
+var app = angular.module('quora', ['ui.router', 'infinite-scroll', 'hc.marked']);
 
 app.constant('tokenStorageKey', 'my-token');
 
-app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
-  $stateProvider
+app.filter('unsafe', function($sce){
+  return function(val){
+    return $sce.trustAsHtml(val);
+  }
+})
 
+app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "markedProvider", function($stateProvider, $locationProvider, $urlRouterProvider, markedProvider){
+
+  markedProvider.setOptions({
+    gfm: true,
+    tables: true,
+    highlight: function (code, lang) {
+      if (lang) {
+        return hljs.highlight(lang, code, true).value;
+      } else {
+        return hljs.highlightAuto(code).value;
+      }
+    }
+  });
+
+  $stateProvider
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('post', { url: '/post', templateUrl: '/html/general/write.html', controller: 'writeCtrl'})
@@ -15,12 +33,12 @@ app.config(function($stateProvider, $locationProvider, $urlRouterProvider){
     .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
 
   $urlRouterProvider.otherwise('/');
-});
+}]);
 
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth) {
+app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth, marked, $sce) {
   $scope.posts;
   $scope.topicFeed;
   var currentUser = auth.currentUser();
@@ -32,10 +50,11 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     var sorting = {
       postType: "question"
     }
-    postFactory.getTopStories(sorting)
+    postFactory.getSortedPosts(sorting)
     .success(function(posts){
       if(currentUser){
         postFactory.formatLikedPosts(posts, currentUser);
+        console.log("posts: ", posts);
         $scope.posts = posts;
       } else {
         $scope.posts = posts;
@@ -55,32 +74,46 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     })
   })();
 
-  $scope.likePost = function(index){
+  $scope.togglePostLike = function(index){
+    var action;
+    $scope.posts[index].liked ? action = "dislike" : action = "like";
     var statsObject = {
       pid: $scope.posts[index]._id,
       uid: currentUser._id,
-      type: "like"
+      type: action
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
-      $scope.posts[index].liked = true;
-      $scope.posts[index].likes += 1;
+      if(action === "like"){
+        $scope.posts[index].likes += 1
+        $scope.posts[index].liked = true;
+      } else {
+        $scope.posts[index].likes -= 1;
+        $scope.posts[index].liked = false;
+      }
     })
     .error(function(err){
       console.log("error: ", err);
     })
   }
 
-  $scope.unlikePost = function(index){
+  $scope.toggleCommentLike = function(index){
+    var action;
+    $scope.comments[index].liked ? action = "dislike" : action = "like";
     var statsObject = {
-      pid: $scope.posts[index]._id,
+      pid: $scope.comments[index]._id,
       uid: currentUser._id,
-      type: "dislike"
+      type: action
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
-      $scope.posts[index].liked = false;
-      $scope.posts[index].likes -= 1;
+      if(action === "like"){
+        $scope.comments[index].likes += 1
+        $scope.comments[index].liked = true;
+      } else {
+        $scope.comments[index].likes -= 1;
+        $scope.comments[index].liked = false;
+      }
     })
     .error(function(err){
       console.log("error: ", err);
@@ -89,7 +122,17 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
 
   $scope.showComments = function(index){
     $scope.posts[index].showComments = true;
-    $scope.comments = $scope.posts[index].comments;
+    var comments = $scope.posts[index].comments;
+    var sortingObject = {
+      sortingMethod: "likes",
+      pid: $scope.posts[index]._id
+    }
+    postFactory.getSortedComments(sortingObject)
+    .success(function(posts){
+      postFactory.formatLikedPosts(posts, currentUser);
+      console.log(posts);
+      $scope.comments = posts;
+    })
   }
 
   $scope.hideComments = function(index){
@@ -99,13 +142,14 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   $scope.submitComment = function(comment, post){
     var commentObject = {
       content: comment,
-      uid: currentUser._id,
+      author: currentUser._id,
       responseTo: post._id,
       postType: "comment"
     }
     postFactory.createPost(commentObject)
     .success(function(post){
-      $scope.comments.unshift(post);
+      $scope.comments.push(post);
+      console.log(post);
     })
     .error(function(err){
       console.log("error: ", err)
@@ -319,20 +363,25 @@ app.factory('postFactory', function($window, $http){
     return $http.put('/posts/edit', editObject);
   };
 
-  postFactory.getTopStories = function(sorting){
-    return $http.get('/posts/sorted/user/topic/tag/postType/'+ sorting.postType +'');
-  };
-
   postFactory.getPostsByTag = function(tag){
     return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
   };
 
+  postFactory.getSortedPosts = function(sorting){
+    return $http.get('/posts/sorted/'+sorting.sortingMethod+'/user/topic/tag/postType/'+ sorting.postType +'');
+  };
+
+  postFactory.getSortedComments = function(sorting){
+    console.log(sorting);
+    return $http.get('/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
+  };
 
 
   postFactory.formatLikedPosts = function(posts, currentUser){
     var formattedPosts = posts.map(function(post){
         return post.likers.forEach(function(liker){
          if(liker.toString() === currentUser._id.toString()){
+           console.log("inside if statement" , post);
            var likedPost = post;
            likedPost.liked = true;
            return likedPost;

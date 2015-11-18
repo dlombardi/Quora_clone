@@ -1,7 +1,7 @@
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth) {
+app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth, marked, $sce) {
   $scope.posts;
   $scope.topicFeed;
   var currentUser = auth.currentUser();
@@ -13,10 +13,11 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     var sorting = {
       postType: "question"
     }
-    postFactory.getTopStories(sorting)
+    postFactory.getSortedPosts(sorting)
     .success(function(posts){
       if(currentUser){
         postFactory.formatLikedPosts(posts, currentUser);
+        console.log("posts: ", posts);
         $scope.posts = posts;
       } else {
         $scope.posts = posts;
@@ -36,32 +37,46 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     })
   })();
 
-  $scope.likePost = function(index){
+  $scope.togglePostLike = function(index){
+    var action;
+    $scope.posts[index].liked ? action = "dislike" : action = "like";
     var statsObject = {
       pid: $scope.posts[index]._id,
       uid: currentUser._id,
-      type: "like"
+      type: action
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
-      $scope.posts[index].liked = true;
-      $scope.posts[index].likes += 1;
+      if(action === "like"){
+        $scope.posts[index].likes += 1
+        $scope.posts[index].liked = true;
+      } else {
+        $scope.posts[index].likes -= 1;
+        $scope.posts[index].liked = false;
+      }
     })
     .error(function(err){
       console.log("error: ", err);
     })
   }
 
-  $scope.unlikePost = function(index){
+  $scope.toggleCommentLike = function(index){
+    var action;
+    $scope.comments[index].liked ? action = "dislike" : action = "like";
     var statsObject = {
-      pid: $scope.posts[index]._id,
+      pid: $scope.comments[index]._id,
       uid: currentUser._id,
-      type: "dislike"
+      type: action
     }
     postFactory.changeStats(statsObject)
     .success(function(post){
-      $scope.posts[index].liked = false;
-      $scope.posts[index].likes -= 1;
+      if(action === "like"){
+        $scope.comments[index].likes += 1
+        $scope.comments[index].liked = true;
+      } else {
+        $scope.comments[index].likes -= 1;
+        $scope.comments[index].liked = false;
+      }
     })
     .error(function(err){
       console.log("error: ", err);
@@ -70,7 +85,17 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
 
   $scope.showComments = function(index){
     $scope.posts[index].showComments = true;
-    $scope.comments = $scope.posts[index].comments;
+    var comments = $scope.posts[index].comments;
+    var sortingObject = {
+      sortingMethod: "likes",
+      pid: $scope.posts[index]._id
+    }
+    postFactory.getSortedComments(sortingObject)
+    .success(function(posts){
+      postFactory.formatLikedPosts(posts, currentUser);
+      console.log(posts);
+      $scope.comments = posts;
+    })
   }
 
   $scope.hideComments = function(index){
@@ -80,13 +105,14 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   $scope.submitComment = function(comment, post){
     var commentObject = {
       content: comment,
-      uid: currentUser._id,
+      author: currentUser._id,
       responseTo: post._id,
       postType: "comment"
     }
     postFactory.createPost(commentObject)
     .success(function(post){
-      $scope.comments.unshift(post);
+      $scope.comments.push(post);
+      console.log(post);
     })
     .error(function(err){
       console.log("error: ", err)
