@@ -4,3 +4,22 @@
   background-color: #f1f1f1;
   border-radius: 5px;
 }
+
+.commentBody{
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+
+.commentInput{
+  margin-bottom: -20px;
+}
+
+.header{
+  @include line-margin;
+  @include header-style;
+}
+
+#feedColumn{
+  
+}

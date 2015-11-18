@@ -1,8 +1,10 @@
 //PRIMARY CSS FILE
 @import "variables";
-@import "mixins";
 @import "authentication";
 @import "profile";
 @import "nav";
+<<<<<<< HEAD
+@import "write";
+=======
 @import "home";
-@import "topic";
+>>>>>>> master

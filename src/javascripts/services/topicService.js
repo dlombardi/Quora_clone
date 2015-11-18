@@ -11,6 +11,12 @@ app.factory('topicFactory', function($window, $http) {
     return $http.get('/topics/limit7');
   };
 
+  topicFactory.getTopic = function(topicInput){
+    var formatName = topicInput.replace(" ", "_");
+    console.log(formatName);
+    return $http.get('/topics/'+formatName+'');
+  };
+
   topicFactory.createTopic = function(topicInput){
     return $http.post('/topics/add', topicInput);
   };

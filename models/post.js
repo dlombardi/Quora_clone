@@ -5,7 +5,7 @@ var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var PostSchema = new mongoose.Schema({
   author: {type: mongoose.Schema.ObjectId, required: true, ref: 'User'},
-  topic: {type: mongoose.Schema.ObjectId, required: true, ref: 'Topic'},
+  topic: {type: mongoose.Schema.ObjectId, ref: 'Topic'},
   responseTo: {type: mongoose.Schema.ObjectId, ref: 'Post'},
   answers: [{type: mongoose.Schema.ObjectId, ref: 'Post'}],
   comments: [{type: mongoose.Schema.ObjectId, ref: 'Post'}],

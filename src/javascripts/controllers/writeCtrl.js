@@ -1,16 +1,47 @@
 'use strict';
 
-app.controller('writeCtrl', function($scope, $state, postFactory, auth){
-  console.log("post CTRL WORKING");
 
-  $scope.comments = ['test comment 1','test comment 2','test comment 3','test comment 4','test comment 5','test comment 6','test comment 7','test comment 8'];
 
-  $scope.loadMore = function() {
-    var last = $scope.comments[$scope.comments.length - 1]; //'test 8'
-    var showComments = 8;
-    for(var count = 1; count <= showComments; count++) {
-      console.log('count is '+ count);
-      $scope.comments.push(last + '');//replace last with data.
+app.controller('writeCtrl', function($scope, $http, auth, postFactory, topicFactory){
+  var currentUser = auth.currentUser();
+  $(document).foundation();
+  $scope.topics = [];
+
+
+
+  (function populateTopics(){
+    console.log("Populate topics function starts");
+    $scope.topics = ["john", "wayne", "Gacy", "adam", "Darius", "Gary", "Dude", "Wilson", "Joe", "alex"];
+    // $scope.topics = [];
+    // topicFactory.getTopics()
+    // .success(function(topics){
+    //   $scope.topics = topics;
+    //   console.log(topics);
+    // })
+    // .error(function(err){
+    //   console.log("error: ", err)
+    // })
+  })();
+
+  $scope.checkTopic = function(){
+    console.log("NG CHANGE");
+    if (!$scope.topic) {
+      console.log("EMPTY TOPICS");
+    } else {
+      console.log("NOT EMPTY");
     }
+  }
+
+  $scope.submitQuestion = function(question, currentUser){
+    console.log("SUBMIT POST FUNCTION STARTS");
+    var questionObject = {
+      author: currentUser._id,
+      title: question.title,
+      tags: question.tags,
+      content: question.content,
+      topic: question.topic,
+      postType: "question"
+    }
+    postFactory.createPost(questionObject);
   };
 });
