@@ -57,7 +57,7 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
 
     .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
-    .state('compose', { url: '/compose', templateUrl: '/html/general/compose.html', controller: 'composeCtrl'})
+    .state('compose', { url: '/compose', templateUrl: '/html/main/compose.html', controller: 'composeCtrl'})
     .state('topic', { url: '/topics/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
 
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
@@ -69,9 +69,50 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
 'use strict';
 
-app.controller('composeCtrl', function($scope, $state, postFactory, $rootScope){
 
 
+app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFactory){
+  var currentUser = auth.currentUser();
+  $(document).foundation();
+  $scope.topics = [];
+
+
+
+  (function populateTopics(){
+    console.log("Populate topics function starts");
+    $scope.topics = ["john", "wayne", "Gacy", "adam", "Darius", "Gary", "Dude", "Wilson", "Joe", "alex"];
+    $scope.topics = [];
+    topicFactory.getTopics()
+    .success(function(topics){
+      $scope.topics = topics;
+      console.log(topics);
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
+  })();
+
+  $scope.checkTopic = function(){
+    console.log("NG CHANGE");
+    if (!$scope.topic) {
+      console.log("EMPTY TOPICS");
+    } else {
+      console.log("NOT EMPTY");
+    }
+  }
+
+  $scope.submitQuestion = function(question, currentUser){
+    console.log("SUBMIT POST FUNCTION STARTS");
+    var questionObject = {
+      author: currentUser._id,
+      title: question.title,
+      tags: question.tags,
+      content: question.content,
+      topic: question.topic,
+      postType: "question"
+    }
+    postFactory.createPost(questionObject);
+  };
 });
 
 'use strict';
