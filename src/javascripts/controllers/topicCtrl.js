@@ -1,8 +1,15 @@
 'use strict';
 
 
-app.controller('topicCtrl', function($scope, $state, $stateParams, postFactory, topicFactory, auth, marked, $sce) {
-  console.log($stateParams.topic);
-  
+app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth) {
 
+  (function getTopic(){
+    topicFactory.getTopic($stateParams.topic)
+    .success(function(data){
+      console.log(data);
+    })
+    .error(function(err){
+      console.log(err);
+    })
+  })();
 });

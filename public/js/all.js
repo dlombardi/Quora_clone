@@ -229,10 +229,17 @@ app.controller('threadCtrl', function($scope, $state, postFactory){
 'use strict';
 
 
-app.controller('topicCtrl', function($scope, $state, $stateParams, postFactory, topicFactory, auth, marked, $sce) {
-  console.log($stateParams.topic);
-  
+app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth) {
 
+  (function getTopic(){
+    topicFactory.getTopic($stateParams.topic)
+    .success(function(data){
+      console.log(data);
+    })
+    .error(function(err){
+      console.log(err);
+    })
+  })();
 });
 
 'use strict';
@@ -456,6 +463,12 @@ app.factory('topicFactory', function($window, $http) {
 
   topicFactory.get7Topics = function(){
     return $http.get('/topics/limit7');
+  };
+
+  topicFactory.getTopic = function(topicInput){
+    var formatName = topicInput.replace(" ", "_");
+    console.log(formatName);
+    return $http.get('/topics/'+formatName+'');
   };
 
   topicFactory.createTopic = function(topicInput){

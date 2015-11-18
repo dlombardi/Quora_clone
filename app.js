@@ -11,6 +11,7 @@ var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/quora");
 
 var app = express();
+var router = express.Router();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,10 +31,12 @@ require('./config/passport');
 app.use(passport.initialize());
 
 
+
 app.use('/users', require('./routes/users'));
 app.use('/topics', require('./routes/topics'));
 app.use('/posts', require('./routes/posts'));
 app.use('/*', require('./routes/index'));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
