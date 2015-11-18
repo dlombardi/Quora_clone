@@ -3,6 +3,7 @@
 
 app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, postFactory) {
   var currentUser = auth.currentUser();
+  console.log("ok");
 
 
   (function getTopicPosts(){
@@ -11,6 +12,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
 
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
+      console.log("topic: ", topic);
       $scope.topic = topic;
       $scope.posts = topic.posts;
     })

@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('quora', ['ui.router', 'infinite-scroll', 'hc.marked']);
+var app = angular.module('quora', ['ui.router', 'infinite-scroll', 'hc.marked', "oitozero.ngSweetAlert"]);
 
 app.constant('tokenStorageKey', 'my-token');
 
@@ -85,6 +85,24 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   })();
 
   $scope.togglePostLike = function(index){
+    swal({
+      title: "Not Logged In!",
+      text: "You must be logged in to complete this action.",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Go to Login?",
+      closeOnConfirm: false
+    },
+    function(){
+      swal({
+        title: "Redirecting!",
+        type: "success",
+        timer: 750,
+        showConfirmButton: false
+      });
+      $state.go("users.login");
+    });
     var action;
     $scope.posts[index].liked ? action = "dislike" : action = "like";
     var statsObject = {
@@ -238,6 +256,7 @@ app.controller('threadCtrl', function($scope, $state, postFactory){
 
 app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, postFactory) {
   var currentUser = auth.currentUser();
+  console.log("ok");
 
 
   (function getTopicPosts(){
@@ -246,6 +265,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
 
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
+      console.log("topic: ", topic);
       $scope.topic = topic;
       $scope.posts = topic.posts;
     })

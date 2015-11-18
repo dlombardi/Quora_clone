@@ -183,9 +183,9 @@ quora-title {
   margin-bottom: -20px; }
 
 .header {
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid #d0cece;
   margin-bottom: 20px;
-  padding-bottom: 20px;
+  padding-bottom: 5px;
   font-size: 20px;
   font-family: "Quattrocento", serif; }
 

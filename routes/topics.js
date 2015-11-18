@@ -17,9 +17,9 @@ router.get('/allTopics', function(req, res, next) {
   })
 });
 
-router.get('/topics/:name', function(req, res, next) {
+router.get('/topic/:name', function(req, res, next) {
   Topic.find({name: req.params.name}).populate("subscribers posts").exec(function(err, topic){
-    res.send(topic);
+    res.send(topic[0]);
   });
 });
 

@@ -38,6 +38,24 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   })();
 
   $scope.togglePostLike = function(index){
+    swal({
+      title: "Not Logged In!",
+      text: "You must be logged in to complete this action.",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Go to Login?",
+      closeOnConfirm: false
+    },
+    function(){
+      swal({
+        title: "Redirecting!",
+        type: "success",
+        timer: 750,
+        showConfirmButton: false
+      });
+      $state.go("users.login");
+    });
     var action;
     $scope.posts[index].liked ? action = "dislike" : action = "like";
     var statsObject = {
