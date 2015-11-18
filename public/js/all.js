@@ -56,8 +56,9 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
   $stateProvider
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
 
-    .state('write', { url: '/write', templateUrl: '/html/general/write.html', controller: 'writeCtrl' })
+
     .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
+    .state('write', { url: '/write', templateUrl: '/html/general/write.html', controller: 'writeCtrl'})
     .state('topic', { url: '/topics/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
 
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
@@ -66,6 +67,185 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
   $urlRouterProvider.otherwise('/');
 }]);
+
+'use strict';
+
+app.factory('auth', function($window, $http, tokenStorageKey) {
+  var auth = {};
+
+  auth.saveToken = function(token) {
+    $window.localStorage[tokenStorageKey] = token;
+  };
+
+  auth.getToken = function() {
+    return $window.localStorage[tokenStorageKey];
+  };
+
+  auth.isLoggedIn = function(){
+    var token = auth.getToken();
+    if(token){
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+      return payload.exp > Date.now() / 1000;
+    } else {
+      return false;
+    }
+  };
+
+  auth.currentUser = function(){
+    if(auth.isLoggedIn()){
+      var token = auth.getToken();
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+      return payload;
+    }
+  };
+
+  auth.register = function(user){
+    return $http.post('/auth/register', user).success(function(data){
+      auth.saveToken(data.token);
+    });
+  };
+
+  auth.login = function(user){
+    return $http.post('/auth/login', user).success(function(data){
+      auth.saveToken(data.token);
+    });
+  };
+
+  auth.logout = function(){
+    $window.localStorage.removeItem(tokenStorageKey);
+  };
+
+  return auth;
+});
+
+'use strict';
+
+app.factory('postFactory', function($window, $http){
+  var postFactory= {};
+
+  postFactory.createPost = function(newPost) {
+    return $http.post('/posts/add', newPost);
+  };
+
+  postFactory.deletePost = function(pid){
+    return $http.delete('/posts/delete', pid);
+  };
+
+  postFactory.changeStats = function(statObject){
+    return $http.put('/posts/changeStats', statObject);
+  };
+
+  postFactory.editPost = function(editObject){
+    return $http.put('/posts/edit', editObject);
+  };
+
+  postFactory.getPostsByTag = function(tag){
+    return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
+  };
+
+  postFactory.getPostsByTopic = function(topic){
+    return $http.get('/posts/sorted/user/topic/'+ topic +'/tag/postType/');
+  };
+
+  postFactory.getSortedPosts = function(sorting){
+    return $http.get('/posts/sorted/'+sorting.sortingMethod+'/user/topic/tag/postType/'+ sorting.postType +'');
+  };
+
+  postFactory.getSortedComments = function(sorting){
+    console.log(sorting);
+    return $http.get('/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
+  };
+
+
+  postFactory.formatLikedPosts = function(posts, currentUser){
+    var formattedPosts = posts.map(function(post){
+        return post.likers.forEach(function(liker){
+         if(liker.toString() === currentUser._id.toString()){
+           var likedPost = post;
+           likedPost.liked = true;
+           return likedPost;
+         } else {
+           return post;
+         }
+       })
+    });
+    return formattedPosts;
+  };
+
+  return postFactory;
+});
+
+
+
+// $http({
+//   method: 'GET',
+//   url: '/topics'
+// }).then(function(data){
+//   var specialdata = [{myButt: 'data'}, {myButt: 'butt'}, {myButt: 'rocks'}, {myButt: 'salt'}, {myButt: 'bathsalt'}];
+//   $scope.topics = specialdata;
+// }).catch(function(err){
+//   console.error('errthang is wrong.', err, status);
+// });
+
+'use strict';
+
+app.factory('topicFactory', function($window, $http) {
+  var topicFactory = {};
+
+  topicFactory.getTopics = function(){
+    return $http.get('/topics/allTopics');
+  };
+
+  topicFactory.get7Topics = function(){
+    return $http.get('/topics/limit7');
+  };
+
+  topicFactory.getTopic = function(topicInput){
+    return $http.get('/topics/topic/'+topicInput+'')
+  };
+
+  topicFactory.createTopic = function(topicInput){
+    return $http.post('/topics/add', topicInput);
+  };
+
+  topicFactory.deleteTopic = function(tid){
+    return $http.delete('/topics/delete', tid);
+  };
+
+  return topicFactory;
+});
+
+'use strict';
+
+app.factory('userFactory', function($window, $http){
+  var userFactory= {};
+
+  userFactory.addKnowledge = function(knowledgeObject) {
+    return $http.post('/users/addKnowledge', knowledgeObject);
+  };
+
+  userFactory.updateInfo = function(updateObject){
+    return $http.put('/users/updateInfo', updateObject);
+  };
+
+  userFactory.follow = function(followObject){
+    return $http.post('/users/follow', followObject);
+  };
+
+  userFactory.unfollow = function(unfollowObject){
+    return $http.put('/users/unfollow', unfollowObject);
+  };
+
+  userFactory.subscribe = function(subscribeOject){
+    return $http.post('/users/subscribe', subscribeObject);
+  };
+
+  userFactory.unsubscribe = function(unsubscribeObject){
+    return $http.put('/users/unsubscribe', unsubscribeObject);
+  };
+
+  return userFactory;
+});
 
 'use strict';
 
@@ -490,183 +670,4 @@ app.controller('writeCtrl', function($scope, $http, auth, postFactory, topicFact
     }
     postFactory.createPost(questionObject);
   };
-});
-
-'use strict';
-
-app.factory('auth', function($window, $http, tokenStorageKey) {
-  var auth = {};
-
-  auth.saveToken = function(token) {
-    $window.localStorage[tokenStorageKey] = token;
-  };
-
-  auth.getToken = function() {
-    return $window.localStorage[tokenStorageKey];
-  };
-
-  auth.isLoggedIn = function(){
-    var token = auth.getToken();
-    if(token){
-      var payload = JSON.parse($window.atob(token.split('.')[1]));
-      return payload.exp > Date.now() / 1000;
-    } else {
-      return false;
-    }
-  };
-
-  auth.currentUser = function(){
-    if(auth.isLoggedIn()){
-      var token = auth.getToken();
-      var payload = JSON.parse($window.atob(token.split('.')[1]));
-      return payload;
-    }
-  };
-
-  auth.register = function(user){
-    return $http.post('/auth/register', user).success(function(data){
-      auth.saveToken(data.token);
-    });
-  };
-
-  auth.login = function(user){
-    return $http.post('/auth/login', user).success(function(data){
-      auth.saveToken(data.token);
-    });
-  };
-
-  auth.logout = function(){
-    $window.localStorage.removeItem(tokenStorageKey);
-  };
-
-  return auth;
-});
-
-'use strict';
-
-app.factory('postFactory', function($window, $http){
-  var postFactory= {};
-
-  postFactory.createPost = function(newPost) {
-    return $http.post('/posts/add', newPost);
-  };
-
-  postFactory.deletePost = function(pid){
-    return $http.delete('/posts/delete', pid);
-  };
-
-  postFactory.changeStats = function(statObject){
-    return $http.put('/posts/changeStats', statObject);
-  };
-
-  postFactory.editPost = function(editObject){
-    return $http.put('/posts/edit', editObject);
-  };
-
-  postFactory.getPostsByTag = function(tag){
-    return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
-  };
-
-  postFactory.getPostsByTopic = function(topic){
-    return $http.get('/posts/sorted/user/topic/'+ topic +'/tag/postType/');
-  };
-
-  postFactory.getSortedPosts = function(sorting){
-    return $http.get('/posts/sorted/'+sorting.sortingMethod+'/user/topic/tag/postType/'+ sorting.postType +'');
-  };
-
-  postFactory.getSortedComments = function(sorting){
-    console.log(sorting);
-    return $http.get('/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
-  };
-
-
-  postFactory.formatLikedPosts = function(posts, currentUser){
-    var formattedPosts = posts.map(function(post){
-        return post.likers.forEach(function(liker){
-         if(liker.toString() === currentUser._id.toString()){
-           var likedPost = post;
-           likedPost.liked = true;
-           return likedPost;
-         } else {
-           return post;
-         }
-       })
-    });
-    return formattedPosts;
-  };
-
-  return postFactory;
-});
-
-
-
-// $http({
-//   method: 'GET',
-//   url: '/topics'
-// }).then(function(data){
-//   var specialdata = [{myButt: 'data'}, {myButt: 'butt'}, {myButt: 'rocks'}, {myButt: 'salt'}, {myButt: 'bathsalt'}];
-//   $scope.topics = specialdata;
-// }).catch(function(err){
-//   console.error('errthang is wrong.', err, status);
-// });
-
-'use strict';
-
-app.factory('topicFactory', function($window, $http) {
-  var topicFactory = {};
-
-  topicFactory.getTopics = function(){
-    return $http.get('/topics/allTopics');
-  };
-
-  topicFactory.get7Topics = function(){
-    return $http.get('/topics/limit7');
-  };
-
-  topicFactory.getTopic = function(topicInput){
-    return $http.get('/topics/topic/'+topicInput+'')
-  };
-
-  topicFactory.createTopic = function(topicInput){
-    return $http.post('/topics/add', topicInput);
-  };
-
-  topicFactory.deleteTopic = function(tid){
-    return $http.delete('/topics/delete', tid);
-  };
-
-  return topicFactory;
-});
-
-'use strict';
-
-app.factory('userFactory', function($window, $http){
-  var userFactory= {};
-
-  userFactory.addKnowledge = function(knowledgeObject) {
-    return $http.post('/users/addKnowledge', knowledgeObject);
-  };
-
-  userFactory.updateInfo = function(updateObject){
-    return $http.put('/users/updateInfo', updateObject);
-  };
-
-  userFactory.follow = function(followObject){
-    return $http.post('/users/follow', followObject);
-  };
-
-  userFactory.unfollow = function(unfollowObject){
-    return $http.put('/users/unfollow', unfollowObject);
-  };
-
-  userFactory.subscribe = function(subscribeOject){
-    return $http.post('/users/subscribe', subscribeObject);
-  };
-
-  userFactory.unsubscribe = function(unsubscribeObject){
-    return $http.put('/users/unsubscribe', unsubscribeObject);
-  };
-
-  return userFactory;
 });
