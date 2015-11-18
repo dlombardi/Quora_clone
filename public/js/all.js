@@ -55,9 +55,12 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
   $stateProvider
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
-    .state('write', { url: '/write', templateUrl: '/html/general/write.html', controller: 'writeCtrl'})
-    .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
-    .state('topic', { url: '/topics/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
+    
+    .state('main', { abstract: true, templateUrl: '/html/main/main.html'})
+    .state('main.write', { url: '/write', templateUrl: '/html/general/write.html', controller: 'writeCtrl' })
+    .state('main.thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
+    .state('main.topic', { url: '/topics/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
+
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
     .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
