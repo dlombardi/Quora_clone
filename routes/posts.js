@@ -4,6 +4,18 @@ var express = require('express');
 var shuffle = require('knuth-shuffle').knuthShuffle
 var router = express.Router();
 var passport = require("passport");
+var marked = require('marked');
+
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: true,
+  smartLists: true,
+  smartypants: false
+});
 
 var User = require('../models/user');
 var Topic = require('../models/topic');
@@ -31,6 +43,7 @@ router.post('/add', function(req, res, next){
           if(req.body.tags){
             post.formatTags(req.body.tags, post);
           }
+          post.content = marked(post.content);
           post.save(function(err){
             if(err){res.send("error: ",err)};
             PostEmitter.emit("addQuestionToTopicAndUser", post);
@@ -43,6 +56,7 @@ router.post('/add', function(req, res, next){
       break;
     case "answer":
       var post = new Post(req.body);
+      post.content = marked(post.content);
       post.save(function(err){
         if(err){res.send("error: ",err)};
         PostEmitter.emit("addAnswerToQuestionAndUser", post);
@@ -51,6 +65,7 @@ router.post('/add', function(req, res, next){
       break;
     case "comment":
       var post = new Post(req.body);
+      post.content = marked(post.content);
       post.save(function(err){
         if(err){console.log("error: ",err)};
         console.log(post);
@@ -134,7 +149,7 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       sortParams = {"updated" : 'asc'};
       break;
     case "likes":
-      sortParams = {"likes" : 'asc'};
+      sortParams = {"likes" : 'desc'};
       break;
     case "dislikes":
       sortParams = {"likes" : 'desc'};
@@ -180,6 +195,34 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       res.send(posts);
     });
   }
+});
+
+router.get("/sortedComments/:sortingMethod?/post/:pid?", function(req, res, next){
+  var sortingMethod = req.params.sortingMethod;
+  var sortParams;
+  switch(sortingMethod){
+    case "newest":
+      sortParams = {"updated" : 'desc'};
+      break;
+    case "oldest":
+      sortParams = {"updated" : 'asc'};
+      break;
+    case "likes":
+      sortParams = {"likes" : 'desc'};
+      break;
+    case "dislikes":
+      sortParams = {"likes" : 'desc'};
+      break;
+    case "views":
+      sortParams = {"views" : 'asc'};
+      break;
+    default:
+      sortParams = {"likes" : 'desc'};
+  }
+  Post.find({responseTo: req.params.pid}).deepPopulate("author comments.comments topic").sort(sortParams).exec(function(err, posts){
+    if(err){res.send("error: ",err)};
+    res.send(posts);
+  });
 });
 
 
