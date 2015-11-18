@@ -26,7 +26,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // passport stuff!~
 var passport = require('passport');
-var expressSession = require('express-session');
 
 var initPassport = require('./config/passport');
 
