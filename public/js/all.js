@@ -412,9 +412,14 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
       $scope.$emit('login');
       $state.go('home');
     }).error(function(err){
-      console.log(err);
+      swal({
+        title: "Input Not Valid",
+        text: "Either the username or password was entered incorrectly",
+        timer: 2000,
+        type: "error",
+        confirmButtonColor: "#B92B27"
+      });
       $scope.user = {};
-      alert(err);
     });
   };
 
@@ -517,13 +522,13 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
   };
 
   auth.register = function(user){
-    return $http.post('/register', user).success(function(data){
+    return $http.post('/auth/register', user).success(function(data){
       auth.saveToken(data.token);
     });
   };
 
   auth.login = function(user){
-    return $http.post('/login', user).success(function(data){
+    return $http.post('/auth/login', user).success(function(data){
       auth.saveToken(data.token);
     });
   };
