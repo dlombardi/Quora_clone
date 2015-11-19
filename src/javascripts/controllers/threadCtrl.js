@@ -1,9 +1,23 @@
 'use strict';
 
-app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope){
+app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope, $stateParams){
   $scope.displayComments = false;
   $scope.displayAnswerForm = false;
   var currentUser = $rootScope.getCurrentUser;
+
+  ($scope.getPost = function(){
+    var postObject = {
+      pid: $stateParams.thread
+    }
+    postFactory.getPost(postObject)
+    .success(function(question){
+      $scope.question = question;
+      $scope.topic = question.topic;
+    })
+    .error(function(err){
+      console.log(err);
+    });
+  })();
 
 
   $scope.showComments = function(){
@@ -13,9 +27,6 @@ app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope){
   $scope.showAnswerForm = function(){
     $scope.displayAnswerForm = !$scope.displayAnswerForm;
   }
-
-
-  $scope.comments = [{author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", likes: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", views: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}];
 
   $scope.loadMore = function() {
     var last = $scope.comments[$scope.comments.length - 1];

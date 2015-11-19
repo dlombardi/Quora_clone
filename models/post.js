@@ -16,7 +16,9 @@ var PostSchema = new mongoose.Schema({
   title: String,
   content: String,
   likers: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
+  dislikers: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
   likes: {type: Number, default: 0},
+  dislikes: {type: Number, default: 0},
   views: {type: Number, default: 0},
   tags: [{type: String}]
 })

@@ -1,0 +1,16 @@
+#topQuestion{
+  border: 1px solid $grey;
+  border-radius: 5px;
+  padding: 10px
+}
+
+.stats{
+  background-color: $quora-base;
+  color: white;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.stats:hover{
+  background-color: $quora-dark;
+}

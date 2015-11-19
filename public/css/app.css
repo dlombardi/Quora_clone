@@ -6914,9 +6914,37 @@ quora-title {
   font-size: 20px;
   font-family: "Quattrocento", serif; }
 
+.postBody {
+  padding: 10px; }
+
+#filter {
+  padding: 10px; }
+
+.subscriptions {
+  margin-right: 20px;
+  margin-bottom: 5px; }
+
 #topicBanner {
-  height: 20vh;
+  height: 15vh;
   vertical-align: middle; }
+  #topicBanner h1 {
+    vertical-align: middle;
+    margin-top: 25px;
+    margin-left: 10px; }
+
+#topQuestion {
+  border: 1px solid #acacac;
+  border-radius: 5px;
+  padding: 10px; }
+
+.stats {
+  background-color: #B92B27;
+  color: white;
+  border-radius: 3px;
+  padding: 5px; }
+
+.stats:hover {
+  background-color: #6D0300; }
 
 .sweet-alert {
   border-radius: 0px; }
@@ -6935,6 +6963,9 @@ a {
 a:hover {
   color: #aaaaaa; }
 
+ul {
+  list-style-type: none; }
+
 .topic {
   font-family: "Quattrocento", serif;
   font-size: 20px;
@@ -6950,3 +6981,9 @@ a:hover {
 
 button {
   border-radius: 3px; }
+
+.buttons .dislikeBtn {
+  background-color: #acacac; }
+
+.buttons .dislikeBtn:hover {
+  background-color: #797979; }

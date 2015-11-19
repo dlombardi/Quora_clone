@@ -43,7 +43,7 @@ app.filter('unsafe', function($sce){
 })
 
 app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "markedProvider", function($stateProvider, $locationProvider, $urlRouterProvider, markedProvider){
-  $locationProvider.html5Mode(true).hashPrefix('!');;
+  $locationProvider.html5Mode(true).hashPrefix('!');
   markedProvider.setOptions({
     gfm: true,
     tables: true,
@@ -75,7 +75,7 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
 
 
-app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFactory){
+app.controller('composeCtrl', function($scope, $http, $location, $state, auth, postFactory, topicFactory){
   var currentUser = auth.currentUser();
   $(document).foundation();
   $scope.topics = [];
@@ -83,7 +83,7 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
   $scope.toggleDropdown = false;
 
 
-  (function populateTopics(){
+  (function init(){
     topicFactory.getTopics()
     .success(function(topics){
       $scope.topics = topics;
@@ -92,7 +92,19 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
     .error(function(err){
       console.log("error: ", err)
     })
+    var questionObject = {
+      postType: "question"
+    }
+    postFactory.getSortedPosts(questionObject)
+    .success(function(questions){
+      $scope.topQuestion = questions[0];
+    })
+    .error(function(err){
+      console.log("error: ", err);
+    })
   })();
+
+
 
   $scope.addTopicToPost = function(topic){
     $scope.selectedTopic = topic.name;
@@ -125,7 +137,7 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
     console.log(questionObject);
     postFactory.createPost(questionObject)
     .success(function(data){
-      console.log("success: ", data);
+      $location.path('thread/'+data._id+'');
     })
     .error(function(err){
       console.log(err);
@@ -159,7 +171,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   $scope.loggedIn = auth.isLoggedIn();
 
   $scope.getPosts = function(sortingMethod){
-    console.log("IN GET POSTS");
     $scope.posts = [];
     $scope.topicFeed = [];
     var sorting = {
@@ -198,10 +209,10 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     $scope.getPosts("likes");
   }
 
-  $scope.sortViews = function(){
+  $scope.sortDislikes = function(){
     $(".filter").removeClass("active");
-    $("#views").addClass("active");
-    $scope.getPosts("views");
+    $("#dislikes").addClass("active");
+    $scope.getPosts("dislikes");
   }
 
   $scope.sortOldest = function(){
@@ -221,7 +232,7 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
       $rootScope.isNotLoggedIn();
     } else {
       var action;
-      $scope.posts[index].liked ? action = "dislike" : action = "like";
+      $scope.posts[index].liked ? action = "unlike" : action = "like";
       var statsObject = {
         pid: $scope.posts[index]._id,
         uid: currentUser._id,
@@ -244,12 +255,40 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     }
   }
 
+  $scope.togglePostDislike = function(index){
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.posts[index].disliked ? action = "undo" : action = "dislike";
+      var statsObject = {
+        pid: $scope.posts[index]._id,
+        uid: currentUser._id,
+        type: action,
+        token: auth.getToken()
+      }
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "dislike"){
+          $scope.posts[index].dislikes += 1
+          $scope.posts[index].disliked = true;
+        } else {
+          $scope.posts[index].dislikes -= 1;
+          $scope.posts[index].disliked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
+  }
+
   $scope.toggleCommentLike = function(index){
     if(!$scope.loggedIn){
       $rootScope.isNotLoggedIn();
     } else {
       var action;
-      $scope.comments[index].liked ? action = "dislike" : action = "like";
+      $scope.comments[index].liked ? action = "unlike" : action = "like";
       var statsObject = {
         pid: $scope.comments[index]._id,
         uid: currentUser._id,
@@ -264,6 +303,34 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
         } else {
           $scope.comments[index].likes -= 1;
           $scope.comments[index].liked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
+  }
+
+  $scope.toggleCommentDislike = function(index){
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.comments[index].disliked ? action = "undo" : action = "dislike";
+      var statsObject = {
+        pid: $scope.comments[index]._id,
+        uid: currentUser._id,
+        type: action,
+        token: auth.getToken()
+      }
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "dislike"){
+          $scope.comments[index].dislikes += 1
+          $scope.comments[index].disliked = true;
+        } else {
+          $scope.comments[index].dislikes -= 1;
+          $scope.comments[index].disliked = false;
         }
       })
       .error(function(err){
@@ -353,10 +420,24 @@ app.controller('profileCtrl', function($scope, $state, auth){
 
 'use strict';
 
-app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope){
+app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope, $stateParams){
   $scope.displayComments = false;
   $scope.displayAnswerForm = false;
   var currentUser = $rootScope.getCurrentUser;
+
+  ($scope.getPost = function(){
+    var postObject = {
+      pid: $stateParams.thread
+    }
+    postFactory.getPost(postObject)
+    .success(function(question){
+      $scope.question = question;
+      $scope.topic = question.topic;
+    })
+    .error(function(err){
+      console.log(err);
+    });
+  })();
 
 
   $scope.showComments = function(){
@@ -366,9 +447,6 @@ app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope){
   $scope.showAnswerForm = function(){
     $scope.displayAnswerForm = !$scope.displayAnswerForm;
   }
-
-
-  $scope.comments = [{author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", likes: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god", views: 19}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}, {author: "billy", content: "this is a comment on a question in quora oh my god oh my god oh my god"}];
 
   $scope.loadMore = function() {
     var last = $scope.comments[$scope.comments.length - 1];
@@ -410,7 +488,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
       var statsObject = {
         pid: $scope.posts[index]._id,
         uid: currentUser._id,
-        type: action
+        type: action,
+        token: auth.getToken()
       }
       postFactory.changeStats(statsObject)
       .success(function(post){
@@ -437,7 +516,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
       var statsObject = {
         pid: $scope.comments[index]._id,
         uid: currentUser._id,
-        type: action
+        type: action,
+        token: auth.getToken()
       }
       postFactory.changeStats(statsObject)
       .success(function(post){
@@ -482,7 +562,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
         content: comment,
         author: currentUser._id,
         responseTo: post._id,
-        postType: "comment"
+        postType: "comment",
+        token: auth.getToken()
       }
       postFactory.createPost(commentObject)
       .success(function(post){
@@ -629,6 +710,10 @@ app.factory('postFactory', function($window, $http){
     return $http.put('/posts/changeStats', statObject);
   };
 
+  postFactory.getPost = function(postObject){
+    return $http.get('/posts/'+postObject.pid+'');
+  };
+
   postFactory.editPost = function(editObject){
     return $http.put('/posts/edit', editObject);
   };
@@ -652,18 +737,28 @@ app.factory('postFactory', function($window, $http){
 
 
   postFactory.formatLikedPosts = function(posts, currentUser){
-    var formattedPosts = posts.map(function(post){
-        return post.likers.forEach(function(liker){
-         if(liker.toString() === currentUser._id.toString()){
-           var likedPost = post;
-           likedPost.liked = true;
-           return likedPost;
-         } else {
-           return post;
-         }
-       })
+    posts.map(function(post){
+      return post.likers.forEach(function(liker){
+        if(liker.toString() === currentUser._id.toString()){
+          var likedPost = post;
+          likedPost.liked = true;
+          return likedPost;
+        } else {
+          return post;
+        }
+      })
     });
-    return formattedPosts;
+    posts.map(function(post){
+      return post.dislikers.forEach(function(disliker){
+        if(disliker.toString() === currentUser._id.toString()){
+          var dislikedPost = post;
+          dislikedPost.disliked = true;
+          return dislikedPost;
+        } else {
+          return post;
+        }
+      })
+    });
   };
 
   return postFactory;

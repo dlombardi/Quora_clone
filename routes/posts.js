@@ -123,10 +123,20 @@ router.put('/changeStats', function(req, res, next){
         post.author.likes += 1;
         PostEmitter.emit("likePost", EmitObject);
         break;
-      case "dislike":
+      case "unlike":
         post.likes -= 1;
         post.author.likes -= 1;
         PostEmitter.emit("unlikePost", EmitObject);
+        break;
+      case "dislike":
+        post.dislikes += 1;
+        post.author.dislikes += 1;
+        PostEmitter.emit("dislikePost", EmitObject);
+        break;
+      case "undo":
+        post.dislikes -= 1;
+        post.author.dislikes -= 1;
+        PostEmitter.emit("undoDislikePost", EmitObject);
         break;
     }
     post.save();
@@ -170,7 +180,7 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       sortParams = {"likes" : 'desc'};
       break;
     case "dislikes":
-      sortParams = {"likes" : 'desc'};
+      sortParams = {"dislikes" : 'desc'};
       break;
     case "views":
       sortParams = {"views" : 'asc'};

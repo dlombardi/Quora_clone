@@ -5,16 +5,15 @@
     <h6>FEEDS</h6>
     <hr>
     <ul>
-      <li ng-repeat="questions in topic"><a href="">{{topic.name}}</a></li>
+      <li ng-repeat="questions in topic"><a href="">{{topic.posts.name}}</a></li>
     </ul>
   </div>
 
   <!-- MAIN COLUMN -->
   <div class="small-10 small-offset-1 large-4 large-offset-1 columns primaryColumn">
-    {{question}}
     <div class="buttons" id="question">
       <div class="row">
-        <h4><strong>{{question.title}}What is your favorite way to eat rice?</strong></h4>
+        <h4><strong>{{question.title}}</strong></h4>
       </div>
       <div class="row">
         <button ng-click="showAnswerForm()">Answer</button>

@@ -16,6 +16,10 @@ app.factory('postFactory', function($window, $http){
     return $http.put('/posts/changeStats', statObject);
   };
 
+  postFactory.getPost = function(postObject){
+    return $http.get('/posts/'+postObject.pid+'');
+  };
+
   postFactory.editPost = function(editObject){
     return $http.put('/posts/edit', editObject);
   };
@@ -39,18 +43,28 @@ app.factory('postFactory', function($window, $http){
 
 
   postFactory.formatLikedPosts = function(posts, currentUser){
-    var formattedPosts = posts.map(function(post){
-        return post.likers.forEach(function(liker){
-         if(liker.toString() === currentUser._id.toString()){
-           var likedPost = post;
-           likedPost.liked = true;
-           return likedPost;
-         } else {
-           return post;
-         }
-       })
+    posts.map(function(post){
+      return post.likers.forEach(function(liker){
+        if(liker.toString() === currentUser._id.toString()){
+          var likedPost = post;
+          likedPost.liked = true;
+          return likedPost;
+        } else {
+          return post;
+        }
+      })
     });
-    return formattedPosts;
+    posts.map(function(post){
+      return post.dislikers.forEach(function(disliker){
+        if(disliker.toString() === currentUser._id.toString()){
+          var dislikedPost = post;
+          dislikedPost.disliked = true;
+          return dislikedPost;
+        } else {
+          return post;
+        }
+      })
+    });
   };
 
   return postFactory;

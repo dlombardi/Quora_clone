@@ -18,8 +18,10 @@ var UserSchema = new mongoose.Schema({
   following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
   posts: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
   postLikes: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
+  postDislikes: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
   notifications: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
   likes: {type: Number, default: 0},
+  dislikes: {type: Number, default: 0},
   views: {type: Number, default: 0},
   hash: String,
   salt: String

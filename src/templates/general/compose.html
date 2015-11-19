@@ -2,14 +2,10 @@
 <br>
 <div class="row">
 
-  <div id=""></div>
-  <div class="small-10 small-offset-1 large-1 large-offset-1 columns">
-    <hr>
-  </div>
 
   <!-- MAIN COLUMN -->
-  <div class="buttons small-10 small-offset-1 large-4 large-offset-1 columns primaryColumn">
-    <h6>Ask a specific question</h6>
+  <div class="buttons small-10 small-offset-1 large-6 large-offset-1 columns primaryColumn">
+    <div class="header">Ask a specific question</div>
 
     <input ng-model="question.title" placeholder="Question title">
     <textarea ng-model="question.content" cols="30" rows="10" placeholder="Add extra details..."></textarea>
@@ -27,9 +23,13 @@
   </div>
 
   <!-- TOPICS COLUMN -->
-  <div class="small-10 small-offset-1 large-3 large-offset-1 columns end">
-    <hr>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim distinctio veniam nobis blanditiis
+  <div class="small-10 small-offset-1 large-2 large-offset-1 columns end">
+    <div class="header">Top Question</div>
+    <div id="topQuestion">
+      <a href="/thread/{{topQuestion._id}}">{{topQuestion.title}}</a>
+      <p>By: {{topQuestion.author.username}}</p>
+      <span class="stats">Likes | {{topQuestion.likes}}</span>
+    </div>
   </div>
 </div>
 

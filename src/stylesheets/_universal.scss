@@ -6,6 +6,8 @@ a:hover{
   color: #aaaaaa;
 }
 
+ul{ list-style-type: none; }
+
 .topic{
   font-family: $headerFont;
   font-size: 20px;
@@ -24,4 +26,12 @@ a:hover{
 
 button{
   border-radius: 3px;
+}
+
+.buttons .dislikeBtn{
+  background-color: $grey;
+}
+
+.buttons .dislikeBtn:hover{
+  background-color: #797979;
 }

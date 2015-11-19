@@ -2,7 +2,7 @@
 
 
 
-app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFactory){
+app.controller('composeCtrl', function($scope, $http, $location, $state, auth, postFactory, topicFactory){
   var currentUser = auth.currentUser();
   $(document).foundation();
   $scope.topics = [];
@@ -10,7 +10,7 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
   $scope.toggleDropdown = false;
 
 
-  (function populateTopics(){
+  (function init(){
     topicFactory.getTopics()
     .success(function(topics){
       $scope.topics = topics;
@@ -19,7 +19,19 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
     .error(function(err){
       console.log("error: ", err)
     })
+    var questionObject = {
+      postType: "question"
+    }
+    postFactory.getSortedPosts(questionObject)
+    .success(function(questions){
+      $scope.topQuestion = questions[0];
+    })
+    .error(function(err){
+      console.log("error: ", err);
+    })
   })();
+
+
 
   $scope.addTopicToPost = function(topic){
     $scope.selectedTopic = topic.name;
@@ -52,7 +64,7 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
     console.log(questionObject);
     postFactory.createPost(questionObject)
     .success(function(data){
-      console.log("success: ", data);
+      $location.path('thread/'+data._id+'');
     })
     .error(function(err){
       console.log(err);

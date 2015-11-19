@@ -43,7 +43,7 @@ app.filter('unsafe', function($sce){
 })
 
 app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "markedProvider", function($stateProvider, $locationProvider, $urlRouterProvider, markedProvider){
-  $locationProvider.html5Mode(true).hashPrefix('!');;
+  $locationProvider.html5Mode(true).hashPrefix('!');
   markedProvider.setOptions({
     gfm: true,
     tables: true,

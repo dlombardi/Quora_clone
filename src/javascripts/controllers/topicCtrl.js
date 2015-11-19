@@ -28,7 +28,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
       var statsObject = {
         pid: $scope.posts[index]._id,
         uid: currentUser._id,
-        type: action
+        type: action,
+        token: auth.getToken()
       }
       postFactory.changeStats(statsObject)
       .success(function(post){
@@ -55,7 +56,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
       var statsObject = {
         pid: $scope.comments[index]._id,
         uid: currentUser._id,
-        type: action
+        type: action,
+        token: auth.getToken()
       }
       postFactory.changeStats(statsObject)
       .success(function(post){
@@ -100,7 +102,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
         content: comment,
         author: currentUser._id,
         responseTo: post._id,
-        postType: "comment"
+        postType: "comment",
+        token: auth.getToken()
       }
       postFactory.createPost(commentObject)
       .success(function(post){

@@ -49,6 +49,36 @@ PostEmitter.on("unlikePost", function(data){
   });
 });
 
+PostEmitter.on("dislikePost", function(data){
+  Post.findById(data.pid, function(err, post){
+    User.findById(data.uid, function(err, user){
+      user.postDislikes.push(post._id);
+      post.dislikers.push(user._id);
+      user.save();
+      post.save();
+    });
+  });
+});
+
+PostEmitter.on("undoDislikePost", function(data){
+  Post.findById(data.pid, function(err, post){
+    User.findById(data.uid, function(err, user){
+      user.postDislikes.forEach(function(dislikedPost, i){
+        if(post._id.toString() === dislikedPost.toString()){
+          user.postDislikes.splice(i, 1);
+        }
+      });
+      post.dislikers.forEach(function(disliker, i){
+        if(user._id.toString() === disliker.toString()){
+          post.dislikers.splice(i, 1);
+        }
+      })
+      user.save();
+      post.save();
+    });
+  });
+});
+
 PostEmitter.on("addQuestionToTopicAndUser", function(post){
   Topic.findById(post.topic, function(err, topic){
     if(topic.posts.indexOf(post._id) === -1){
