@@ -4,6 +4,7 @@ app.factory('postFactory', function($window, $http){
   var postFactory= {};
 
   postFactory.createPost = function(newPost) {
+    console.log(newPost);
     return $http.post('/posts/add', newPost);
   };
 

@@ -62,6 +62,7 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
+    .state('users.notifications', { url: '/notifications', templateUrl: '/html/users/notifications.html', controller: 'notificationsCtrl'})
     .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
 
   $urlRouterProvider.otherwise('/');

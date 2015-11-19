@@ -6,13 +6,11 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
   var currentUser = auth.currentUser();
   $(document).foundation();
   $scope.topics = [];
-
+  $scope.selectedTopic;
+  $scope.toggleDropdown = false;
 
 
   (function populateTopics(){
-    console.log("Populate topics function starts");
-    $scope.topics = ["john", "wayne", "Gacy", "adam", "Darius", "Gary", "Dude", "Wilson", "Joe", "alex"];
-    $scope.topics = [];
     topicFactory.getTopics()
     .success(function(topics){
       $scope.topics = topics;
@@ -23,6 +21,14 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
     })
   })();
 
+  $scope.addTopicToPost = function(topic){
+    $scope.selectedTopic = topic.name;
+    $scope.toggleDropdown = true;
+    window.setTimeout(function(){
+        $scope.toggleDropdown = false;
+    }, 50);
+  }
+
   $scope.checkTopic = function(){
     console.log("NG CHANGE");
     if (!$scope.topic) {
@@ -32,16 +38,24 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
     }
   }
 
-  $scope.submitQuestion = function(question, currentUser){
+  $scope.submitQuestion = function(question, selectedTopic){
     console.log("SUBMIT POST FUNCTION STARTS");
     var questionObject = {
       author: currentUser._id,
       title: question.title,
       tags: question.tags,
       content: question.content,
-      topic: question.topic,
-      postType: "question"
+      topic: selectedTopic,
+      postType: "question",
+      token: auth.getToken()
     }
-    postFactory.createPost(questionObject);
+    console.log(questionObject);
+    postFactory.createPost(questionObject)
+    .success(function(data){
+      console.log("success: ", data);
+    })
+    .error(function(err){
+      console.log(err);
+    })
   };
 });

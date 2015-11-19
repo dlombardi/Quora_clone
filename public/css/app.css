@@ -1,23 +1,4 @@
 /* Main Primary color */
-a {
-  color: black; }
-
-a:hover {
-  color: #aaaaaa; }
-
-.topic {
-  font-family: "Quattrocento", serif;
-  font-size: 20px;
-  color: black; }
-
-.topic:hover {
-  font-family: "Quattrocento", serif;
-  font-size: 20px;
-  padding-bottom: 2px; }
-
-.author:hover {
-  color: #D54d4A; }
-
 #loginForm {
   width: 400px;
   margin: 0 auto;
@@ -203,3 +184,25 @@ quora-title {
     border-color: #97130F; }
   .sweet-alert .sa-icon.sa-warning .sa-dot {
     border-color: #97130F; }
+
+a {
+  color: black; }
+
+a:hover {
+  color: #aaaaaa; }
+
+.topic {
+  font-family: "Quattrocento", serif;
+  font-size: 20px;
+  color: black; }
+
+.topic:hover {
+  font-family: "Quattrocento", serif;
+  font-size: 20px;
+  padding-bottom: 2px; }
+
+.author:hover {
+  color: #D54d4A; }
+
+button {
+  border-radius: 3px; }

@@ -50,20 +50,20 @@ router.get('/:pid', function(req, res, next){
 })
 
 router.post('/add', loggedIn, function(req, res, next){
-  console.log(req.body);
   switch(req.body.postType){
     case "question":
-      Topic.findById(req.body.topic).populate("posts").exec(function(err, topic){
+      Topic.find({name: req.body.topic}).populate("posts").exec(function(err, topic){
         if(err){res.send("error: ",err)};
-        var notRepeated = topic.posts.every(isTitleFound);
+        var notRepeated = topic[0].posts.every(isTitleFound);
         if(notRepeated){
           var post = new Post(req.body);
+          post.topic = topic[0]._id;
           if(req.body.tags){
             post.formatTags(req.body.tags, post);
           }
           post.content = marked(post.content);
           post.save(function(err){
-            if(err){res.send("error: ",err)};
+            console.log("post: ", post);
             PostEmitter.emit("addQuestionToTopicAndUser", post);
             res.send(post);
           });
