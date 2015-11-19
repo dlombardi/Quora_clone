@@ -56,7 +56,7 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
   $stateProvider
     .state('home', { url: '/', templateUrl: '/html/general/home.html', controller: 'homeCtrl' })
 
-    .state('thread', { url: '/thread', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
+    .state('thread', { url: '/thread/:thread?', templateUrl: '/html/general/thread.html', controller: 'threadCtrl'})
     .state('compose', { url: '/compose', templateUrl: '/html/general/compose.html', controller: 'composeCtrl'})
     .state('topic', { url: '/topics/:topic?', templateUrl: '/html/general/topic.html', controller: 'topicCtrl'})
 
@@ -128,6 +128,22 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
       console.log(err);
     })
   };
+
+  $scope.submitTopic = function(topic){
+    console.log("SUBMIT POST FUNCTION STARTS");
+    var topicObject = {
+      name: topic.name,
+      about: topic.about,
+      token: auth.getToken()
+    }
+    topicFactory.createTopic(topicObject)
+    .success(function(topic){
+      $scope.topics.push(topic);
+    })
+    .error(function(err){
+      console.log(err);
+    })
+  };
 });
 
 'use strict';
@@ -139,12 +155,13 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
 
-  ($scope.getPosts = function(){
-    console.log("In get posts ", "Current User:", currentUser);
+  $scope.getPosts = function(sortingMethod){
+    console.log("IN GET POSTS");
     $scope.posts = [];
     $scope.topicFeed = [];
     var sorting = {
-      postType: "question"
+      postType: "question",
+      sortingMethod: sortingMethod
     }
     postFactory.getSortedPosts(sorting)
     .success(function(posts){
@@ -168,7 +185,12 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     .error(function(err){
       console.log("error: ", err)
     })
-  })();
+  };
+
+  $scope.getPosts("likes");
+
+
+
 
   $scope.togglePostLike = function(index){
     if(!$scope.loggedIn){
@@ -268,6 +290,30 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
         console.log("error: ", err)
       })
     }
+  }
+
+  $scope.sortLikes = function(){
+    $(".filter").removeClass("active");
+    $("#likes").addClass("active");
+    $scope.getPosts("likes");
+  }
+
+  $scope.sortViews = function(){
+    $(".filter").removeClass("active");
+    $("#views").addClass("active");
+    $scope.getPosts("views");
+  }
+
+  $scope.sortOldest = function(){
+    $(".filter").removeClass("active");
+    $("#oldest").addClass("active");
+    $scope.getPosts("oldest");
+  }
+
+  $scope.sortNewest = function(){
+    $(".filter").removeClass("active");
+    $("#newest").addClass("active");
+    $scope.getPosts("newest");
   }
 
   $scope.$on("loggedOut", function(){

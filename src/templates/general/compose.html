@@ -34,8 +34,11 @@
 </div>
 
 <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-  <h2 id="modalTitle">Awesome. I have it.</h2>
-  <p class="lead">Your couch.  It is mine.</p>
-  <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
+  <div class="buttons large-10 large-offset-1 small-12 small-offset-1 columns primaryColumn">
+    <h6 class="header">Add a Topic</h6>
+    <input ng-model="topic.name" placeholder="Topic title">
+    <textarea ng-model="topic.about" cols="30" rows="10" placeholder="What's it all about?"></textarea>
+      <button class="right button-submit" ng-click="submitTopic(topic)">Submit</button>
+  </div>
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>

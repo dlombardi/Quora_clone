@@ -58,4 +58,20 @@ app.controller('composeCtrl', function($scope, $http, auth, postFactory, topicFa
       console.log(err);
     })
   };
+
+  $scope.submitTopic = function(topic){
+    console.log("SUBMIT POST FUNCTION STARTS");
+    var topicObject = {
+      name: topic.name,
+      about: topic.about,
+      token: auth.getToken()
+    }
+    topicFactory.createTopic(topicObject)
+    .success(function(topic){
+      $scope.topics.push(topic);
+    })
+    .error(function(err){
+      console.log(err);
+    })
+  };
 });

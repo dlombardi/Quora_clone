@@ -9,6 +9,7 @@ var PostSchema = new mongoose.Schema({
   responseTo: {type: mongoose.Schema.ObjectId, ref: 'Post'},
   answers: [{type: mongoose.Schema.ObjectId, ref: 'Post'}],
   comments: [{type: mongoose.Schema.ObjectId, ref: 'Post'}],
+  followers: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
   updated: { type: Date, default: Date.now },
   postType: {type: String, enum: ['question', 'answer', 'comment'], required: true},
   answerWritten: {type: Boolean, default: false},

@@ -23,9 +23,16 @@
     <!-- MAIN COLUMN -->
     <div class="large-8 small-12 columns buttons">
       <div class="header">Top Stories For You</div>
+      <dl class="sub-nav">
+      <dt>Filter:</dt>
+        <dd class="filter active"id="likes"><a class="filterPill" href="#" ng-click="sortLikes()">Likes</a></dd>
+        <dd class="filter " id="views"><a class="filterPill" href="#" id="views" ng-click="sortViews()">Views</a></dd>
+        <dd class="filter " id="newest"><a class="filterPill" href="#" ng-click="sortNewest()">Newest</a></dd>
+        <dd class="filter " id="oldest" ><a class="filterPill" href="#" ng-click="sortOldest()">Oldest</a></dd>
+      </dl>
       <div class="post" ng-repeat="post in posts track by $index">
-        <p><a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
-        <h4><a href="">{{post.title}}</a></h4>
+        <p>{{post.answerWritten}} • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
+        <h4><a ng-href='/thread/{{post._id}}'>{{post.title}}</a></h4>
         <p><a href="" class="author">{{post.author.username}}</a>, {{post.author.work}}</p>
         <p ng-bind-html="post.content | unsafe"></p>
         <button ng-show="!post.liked" ng-click="togglePostLike($index)">Like | <span>{{post.likes}}</span></button>
