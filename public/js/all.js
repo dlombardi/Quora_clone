@@ -11,11 +11,14 @@ app.filter('unsafe', function($sce){
 })
 
 .run(function($rootScope, $state) {
-    $rootScope.$on("logout", function(){
+    $rootScope.$on('logout', function(){
       $rootScope.$broadcast("loggedOut");
     })
     $rootScope.$on('login', function(){
       $rootScope.$broadcast("loggedIn");
+    })
+    $rootScope.$on('tag posts', function(event, posts){
+      $rootScope.$broadcast("filteredByTags", posts);
     })
     $rootScope.isNotLoggedIn = function(){
       swal({
@@ -189,8 +192,29 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
 
   $scope.getPosts("likes");
 
+  $scope.sortLikes = function(){
+    $(".filter").removeClass("active");
+    $("#likes").addClass("active");
+    $scope.getPosts("likes");
+  }
 
+  $scope.sortViews = function(){
+    $(".filter").removeClass("active");
+    $("#views").addClass("active");
+    $scope.getPosts("views");
+  }
 
+  $scope.sortOldest = function(){
+    $(".filter").removeClass("active");
+    $("#oldest").addClass("active");
+    $scope.getPosts("oldest");
+  }
+
+  $scope.sortNewest = function(){
+    $(".filter").removeClass("active");
+    $("#newest").addClass("active");
+    $scope.getPosts("newest");
+  }
 
   $scope.togglePostLike = function(index){
     if(!$scope.loggedIn){
@@ -292,29 +316,10 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     }
   }
 
-  $scope.sortLikes = function(){
-    $(".filter").removeClass("active");
-    $("#likes").addClass("active");
-    $scope.getPosts("likes");
-  }
-
-  $scope.sortViews = function(){
-    $(".filter").removeClass("active");
-    $("#views").addClass("active");
-    $scope.getPosts("views");
-  }
-
-  $scope.sortOldest = function(){
-    $(".filter").removeClass("active");
-    $("#oldest").addClass("active");
-    $scope.getPosts("oldest");
-  }
-
-  $scope.sortNewest = function(){
-    $(".filter").removeClass("active");
-    $("#newest").addClass("active");
-    $scope.getPosts("newest");
-  }
+  $scope.$on('filteredByTags', function(event, posts){
+    postFactory.formatLikedPosts(posts, currentUser);
+    $scope.posts = posts;
+  })
 
   $scope.$on("loggedOut", function(){
     $scope.loggedIn = auth.isLoggedIn();
@@ -326,17 +331,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
   })
 
   postFactory.getPostsByTag();
-
-});
-
-app.controller('navCtrl', function($scope, $state, auth, postFactory){
-  $scope.loggedIn = auth.isLoggedIn();
-
-  $scope.logout = function(){
-    auth.logout();
-    $scope.loggedIn = false;
-    $state.go('home');
-  }
 
 });
 
@@ -515,7 +509,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
 
 'use strict';
 
-app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootScope){
+app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFactory, $rootScope){
   $scope.Login = false;
   $scope.loggedIn = auth.isLoggedIn();
 
@@ -527,9 +521,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
 
   $scope.submit = function(user) {
     var submitFunc = $scope.Login ? auth.login : auth.register;
-    console.log("user", user);
     submitFunc(user).success(function(data){
-      console.log(data);
       $scope.$emit('login');
       $state.go('home');
     }).error(function(err){
@@ -551,7 +543,13 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
   }
 
   $scope.filterByTag = function(tag){
-    postFactory.getPostsByTag(tag);
+    postFactory.getPostsByTag(tag)
+    .success(function(posts){
+      $scope.$emit('tag posts', posts);
+    })
+    .error(function(err){
+      console.log(err);
+    })
   }
 
   $scope.$on("loggedOut", function(){

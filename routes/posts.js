@@ -184,7 +184,7 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       res.send(posts);
     });
   } else if (tag) {
-    Post.find({topic : req.params.tid, tags: {$in: [tag]}}).sort(sortParams).exec(function(err, posts){
+    Post.find({tags: {$in: [tag]}}).sort(sortParams).exec(function(err, posts){
       if(err)res.send("error: ",err);
       res.send(posts);
     });

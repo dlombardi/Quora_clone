@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootScope){
+app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFactory, $rootScope){
   $scope.Login = false;
   $scope.loggedIn = auth.isLoggedIn();
 
@@ -12,9 +12,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
 
   $scope.submit = function(user) {
     var submitFunc = $scope.Login ? auth.login : auth.register;
-    console.log("user", user);
     submitFunc(user).success(function(data){
-      console.log(data);
       $scope.$emit('login');
       $state.go('home');
     }).error(function(err){
@@ -36,7 +34,13 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, $rootSco
   }
 
   $scope.filterByTag = function(tag){
-    postFactory.getPostsByTag(tag);
+    postFactory.getPostsByTag(tag)
+    .success(function(posts){
+      $scope.$emit('tag posts', posts);
+    })
+    .error(function(err){
+      console.log(err);
+    })
   }
 
   $scope.$on("loggedOut", function(){

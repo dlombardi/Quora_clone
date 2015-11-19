@@ -6950,9 +6950,3 @@ a:hover {
 
 button {
   border-radius: 3px; }
-
-.filterPill.active {
-  background-color: red; }
-
-.active {
-  background-color: grey; }

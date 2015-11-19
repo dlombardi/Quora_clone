@@ -41,8 +41,29 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
 
   $scope.getPosts("likes");
 
+  $scope.sortLikes = function(){
+    $(".filter").removeClass("active");
+    $("#likes").addClass("active");
+    $scope.getPosts("likes");
+  }
 
+  $scope.sortViews = function(){
+    $(".filter").removeClass("active");
+    $("#views").addClass("active");
+    $scope.getPosts("views");
+  }
 
+  $scope.sortOldest = function(){
+    $(".filter").removeClass("active");
+    $("#oldest").addClass("active");
+    $scope.getPosts("oldest");
+  }
+
+  $scope.sortNewest = function(){
+    $(".filter").removeClass("active");
+    $("#newest").addClass("active");
+    $scope.getPosts("newest");
+  }
 
   $scope.togglePostLike = function(index){
     if(!$scope.loggedIn){
@@ -144,29 +165,10 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     }
   }
 
-  $scope.sortLikes = function(){
-    $(".filter").removeClass("active");
-    $("#likes").addClass("active");
-    $scope.getPosts("likes");
-  }
-
-  $scope.sortViews = function(){
-    $(".filter").removeClass("active");
-    $("#views").addClass("active");
-    $scope.getPosts("views");
-  }
-
-  $scope.sortOldest = function(){
-    $(".filter").removeClass("active");
-    $("#oldest").addClass("active");
-    $scope.getPosts("oldest");
-  }
-
-  $scope.sortNewest = function(){
-    $(".filter").removeClass("active");
-    $("#newest").addClass("active");
-    $scope.getPosts("newest");
-  }
+  $scope.$on('filteredByTags', function(event, posts){
+    postFactory.formatLikedPosts(posts, currentUser);
+    $scope.posts = posts;
+  })
 
   $scope.$on("loggedOut", function(){
     $scope.loggedIn = auth.isLoggedIn();

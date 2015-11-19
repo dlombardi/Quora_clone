@@ -11,11 +11,14 @@ app.filter('unsafe', function($sce){
 })
 
 .run(function($rootScope, $state) {
-    $rootScope.$on("logout", function(){
+    $rootScope.$on('logout', function(){
       $rootScope.$broadcast("loggedOut");
     })
     $rootScope.$on('login', function(){
       $rootScope.$broadcast("loggedIn");
+    })
+    $rootScope.$on('tag posts', function(event, posts){
+      $rootScope.$broadcast("filteredByTags", posts);
     })
     $rootScope.isNotLoggedIn = function(){
       swal({
