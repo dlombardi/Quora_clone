@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "postinstall": "gulp",
+    "postinstall": "bower i",
     "setup": "rm -rf node_modules public/vendor && touch .env && npm i && bower i"
   },
   "dependencies": {
@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "gulp-concat": "^2.6.0",
-    "gulp-jshint": "^1.12.0",
     "gulp-minify": "0.0.5",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.1.0",
