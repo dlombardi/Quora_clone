@@ -7,8 +7,9 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "postinstall": "bower install && gulp",
-    "setup": "rm -rf node_modules public/vendor && touch .env && npm i && bower i"
+    "postinstall": "bower install",
+    "setup": "rm -rf node_modules public/vendor && touch .env && npm i && bower i",
+    "gulp": "gulp"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
