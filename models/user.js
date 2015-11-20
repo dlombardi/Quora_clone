@@ -19,7 +19,7 @@ var UserSchema = new mongoose.Schema({
   posts: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
   postLikes: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
   postDislikes: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
-  notifications: [{ type: mongoose.Schema.ObjectId, ref: "Post" }],
+  notifications: [{ type: mongoose.Schema.ObjectId, ref: "Notification" }],
   likes: {type: Number, default: 0},
   dislikes: {type: Number, default: 0},
   views: {type: Number, default: 0},

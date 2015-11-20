@@ -116,6 +116,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     }
   }
 
+  $scope.$emit("getNotifications")
+
   $scope.$on("loggedOut", function(){
     $scope.loggedIn = auth.isLoggedIn();
   })

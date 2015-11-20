@@ -12,6 +12,15 @@ var TopicEmitter = require("../observer/TopicEmitter");
 var PostEmitter = require("../observer/PostEmitter");
 
 
+router.get('/:uid', function(req, res, next){
+  if(!req.params.uid){
+    return res.send("no entry");
+  }
+  User.findById(req.params.uid).deepPopulate("notifications.actor notifications.receiver").exec(function(err, user){
+    res.send(user);
+  });
+});
+
 router.post('/addknowledge', function(req, res, next){
   if(!req.body){
     return res.send("no entry");

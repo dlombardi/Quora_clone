@@ -3,6 +3,8 @@
 app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFactory, $rootScope){
   $scope.Login = false;
   $scope.loggedIn = auth.isLoggedIn();
+  $scope.currentUser = auth.currentUser();
+  $scope.notifications = [];
 
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
@@ -39,15 +41,27 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
       $scope.$emit('tag posts', posts);
     })
     .error(function(err){
-      console.log(err);
+      console.log("error: ", err);
     })
   }
 
+  $scope.$on("notifications", function(){
+    userFactory.getUser($scope.currentUser._id)
+    .success(function(user){
+      $scope.notifications = user.notifications;
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
+  })
+
   $scope.$on("loggedOut", function(){
     $scope.loggedIn = auth.isLoggedIn();
+    $scope.notifications = [];
   })
 
   $scope.$on("loggedIn", function(){
     $scope.loggedIn = auth.isLoggedIn();
   })
+
 });

@@ -1,38 +1,76 @@
 
-<div class="row fullBody"> <!--HAS 12.-->
+<div class="row">
+  <div class="small-10 small-offset-1 medium-6 medium-offset-1 large-7 large-push-3 large-offset-1 columns">
+    <div class="small-only-text-center buttons">
+      <img class="profilePicture" src="http://www.lorempixel.com/150/150/people" alt="Profile Picture">
+      <h4>{{user.username}}
+        <small> {{user.home}}</small>
+        <button class="right" ng-click="follow()">Follow</button>
+        <button class="right" ng-click="unfollow()">Unfollow</button>
+        <button class="right crammedButton" ng-click="subscribe()">Subscribe</button>
+        <a href="#" data-reveal-id="editUserModal"><button class="right crammedButton">Edit Profile</button></a>
+      </h4>
 
-  <!-- PROFILE COLUMN -->
-  <div class="large-6 large-offset-1 columns primaryColumn">
-    <div class="row"> <!--HAS 12.-->
-      <div class="medium-3 columns">
-        <img class="profilePicture" src="http://www.lorempixel.com/150/150/people" alt="Profile Picture">
-      </div>
-
-      <div class="large-8 large-offset-1 columns bioColumn">
-        <h3>Charles Watson<small><br>Profile Description</small></h3>
-      </div>
-      <hr>
+      <br>
+      <h6>{{user.about}}</small></h6>
     </div>
+    <hr>
 
-
-    <div class="row">
-      <div class="large-2 columns profileStats">
-        <h5>FEEDS</h5>
-        <hr>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam dignissimos adipisci esse aperiam atque minima nihil maiores tempora fuga iure dolorem dicta voluptas architecto doloribus enim, doloremque incidunt. In impedit quae vero. Maiores debitiporro.
-      </div>
-      <div class="large-9 columns large-offset-1 profileActivity">
-        PROFILE BIO HERE
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat, iste. Dicta suscipit, maxime corporis. Nesciunt in temporibus consequuntur amet doloribus atque nobis nihil reprehenderit quam, rerum a, sapiente, quasi deserunt, asperiores dicta facere nemo aspernatur ut tempora dolore ipsam et. Velit, iste recusandae atque accusantium commodi! Accusantium qui fugit eaque quis, dolorum nisi libero quos vel voluptas! Beatae consequatur nisi, obcaecati veritatis odio ipsum rem consequuntur accusantium cum eum inventore quaerat nulla itaque sed ipsa eos laudantium voluptatum excepturi voluptatibus animi! Alias ratione ipsa dolor, pariatur similique doloribus non laboriosam, fuga nostrum ducimus, velit, debitis optio doloremque magni. Officia a consequuntur veritatis numquam magnam voluptatum assumenda omnis ex voluptas et! Temporibus, quas culpa voluptatum impedit totam deserunt, omnis at officia laboriosam id numquam explicabo, dolor sequi quaerat voluptatibus aspernatur in ex dolore minima veritatis natus nesciunt debitis! Tempora, esse voluptatem facere dolores quaerat, quas vel nemo quis enim placeat beatae reprehenderit cum consectetur numquam quisquam! Fuga rerum quibusdam sapiente qui odio labore, quam delectus aliquid non veritatis cupiditate, quo molestias voluptate eaque officia dolore temporibus quidem distinctio ipsam neque ipsum est. Ipsum, ipsa quibusdam ad quod, quidem.
-      </div>
+      <!-- FEED ----------------------------------------------->
+    <div class="feed">
+      Feed Here of all user activity?
     </div>
   </div>
-
-  <!-- NEW COLUMN -->
-  <div class="large-4 large-offset-1 columns pull-1">
-    <p id="rightColumn">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim distinctio veniam nobis blanditiis labore impedit error porro, laboriosam incidunt explicabo aspernatur hic dolore tempora repudiandae adipisci sit corporis perspiciatis et voluptas facere vero quis! Quas laudantium illo, corrupti, molestiae dicta beatae, reiciendis, perspiciatis eum distinctio fugiat modi! Inventore, cupiditate quaerat, vitae incidunt maxime dolore exercitationem, aliquam ex illo assumenda architecto quia impedit voluptatum itaque fugit praesentium distinctio est tempore animi quos iste. Aspernatur similique corporis incidunt magnam nulla sint ea eos blanditiis iusto error, maiores sequi, illo quidem nostrum illum minus hic deleniti velit commodi recusandae. Quasi itaque praesentium amet, ducimus rem vero laborum earum maxime, voluptas ad! Inventore explicabo ex quod fuga aut sed mollitia magni vitae molestias aperiam. Ipsa, minima. Quidem rem, facilis voluptate doloremque dolorum veritatis ex, tenetur sit, consectetur temporibus corporis, repellat at. Itaque sed ipsam volupt.
-    </p>
+    <br>
+  <div class="small-10 small-offset-1 medium-4 medium-offset-1 large-3 large-offset-1 large-pull-8 columns">
+    <div class="panel">
+      <div>
+        <p>Posts</p>
+        <i class="fi-heart"></i> {{user.likes}} likes<br>
+        <i class="fi-eye"></i> {{user.views}} views
+      </div><br>
+      <div>
+        <p>Activity</p>
+        <i class="fi-torsos-all"></i> {{user.followers}} followers <br>
+        <i class="fi-torso"></i> {{user.following}} following
+      </div>
+    </div>
+      <i class="fi-pencil"></i>
+      <strong> {{user.posts.length}} posts</strong>
+      <br>
+      <h5>I can answer questions about...</h5>
+      <ul>
+        <li ng-repeat="topic in knowledge">{{user.knowledge.topic.name}}</li>
+      </ul>
   </div>
-
 </div>
+      <!-- MODAL ------------------------->
+      <div id="editUserModal" class="reveal-modal buttons" data-reveal aria-labelledby="Edit Profile" aria-hidden="true" role="dialog">
+        <div class="row">
+          <div class="small-12 large-6 columns">
+            Username
+            <input type="text">
+            Email
+            <input type="text">
+            Password
+            <input type="text">
+          </div>
+          <div class="small-12 large-6 columns">
+            Name - Please enter your full name.
+            <input type="text">
+            Job Title
+            <input type="text">
+            Location
+            <input type="text">
+          </div>
+        </div>
+        <div class="row">
+          <div class="large-12 columns">
+            Bio
+            <textarea name="" id="" cols="30" rows="3"></textarea>
+          </div>
+        </div>
+         <!-- ng-click="" -->
+        <a class="close"><button class="right">Save</button></a>
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+      </div>

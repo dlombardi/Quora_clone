@@ -4,10 +4,22 @@ var emitter = require("events").EventEmitter;
 var User = require('../models/user');
 var Topic = require('../models/topic');
 var Post = require('../models/post');
+var Notification = require('../models/notification');
 var Mixpanel = require('mixpanel');
 var mixpanel = Mixpanel.init('66b2b8969a8e0b1d6694945c0259ac12');
 
 var PostEmitter = new emitter();
+
+
+function createNotification(uid, rid, pid, action, subject){
+  var notification = new Notification();
+  notification.actor = uid;
+  notification.receiver = rid;
+  notification.post = pid;
+  notification.action = action;
+  notification.subject = subject;
+  return notification;
+}
 
 PostEmitter.on("addPost", function(data){
   console.log(data);
@@ -20,9 +32,14 @@ PostEmitter.on("viewPost", function(post, author){
 });
 
 PostEmitter.on("likePost", function(data){
-  Post.findById(data.pid, function(err, post){
+  Post.findById(data.pid).deepPopulate("author.notifications").exec(function(err, post){
     User.findById(data.uid, function(err, user){
-      user.postLikes.push(post._id);
+      if(post.author._id.toString() !== user._id.toString()){
+        post.author.notifications.push(newNotification);
+        var newNotification = createNotification(user._id, post.author._id, post._id, "liked","Post");
+        newNotification.save();
+      }
+      post.author.save();
       post.likers.push(user._id);
       user.save();
       post.save();
@@ -31,8 +48,15 @@ PostEmitter.on("likePost", function(data){
 });
 
 PostEmitter.on("unlikePost", function(data){
-  Post.findById(data.pid, function(err, post){
+  Post.findById(data.pid).deepPopulate("author.notifications").exec(function(err, post){
     User.findById(data.uid, function(err, user){
+      if(post.author.notifications.length <= 0){
+        post.author.notifications.forEach(function(notification, i){
+          if(notification.actor.toString() === user._id.toString()){
+            post.author.notifications.splice(i, 1);
+          }
+        })
+      }
       user.postLikes.forEach(function(likedPost, i){
         if(post._id.toString() === likedPost.toString()){
           user.postLikes.splice(i, 1);
@@ -43,6 +67,7 @@ PostEmitter.on("unlikePost", function(data){
           post.likers.splice(i, 1);
         }
       })
+      post.author.save();
       user.save();
       post.save();
     });
@@ -171,6 +196,7 @@ PostEmitter.on("removePost", function(post){
       break;
   }
 });
+
 
 
 

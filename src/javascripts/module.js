@@ -20,6 +20,9 @@ app.filter('unsafe', function($sce){
     $rootScope.$on('tag posts', function(event, posts){
       $rootScope.$broadcast("filteredByTags", posts);
     })
+    $rootScope.$on('getNotifications', function(event, posts){
+      $rootScope.$broadcast("notifications", posts);
+    })
     $rootScope.isNotLoggedIn = function(){
       swal({
         title: "Not Logged In!",
@@ -66,7 +69,9 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
     .state('users.notifications', { url: '/notifications', templateUrl: '/html/users/notifications.html', controller: 'notificationsCtrl'})
-    .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
+
+    .state('users.profile', { url: '/profile/:user?', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
+
 
   $urlRouterProvider.otherwise('/');
 }]);

@@ -220,6 +220,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     }
   }
 
+  $scope.$emit("getNotifications")
+
   $scope.$on('filteredByTags', function(event, posts){
     postFactory.formatLikedPosts(posts, currentUser);
     $scope.posts = posts;

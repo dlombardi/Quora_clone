@@ -3,6 +3,10 @@
 app.factory('userFactory', function($window, $http){
   var userFactory= {};
 
+  userFactory.getUser = function(uid) {
+    return $http.get('/users/'+uid+'');
+  };
+
   userFactory.addKnowledge = function(knowledgeObject) {
     return $http.post('/users/addKnowledge', knowledgeObject);
   };

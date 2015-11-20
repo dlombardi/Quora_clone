@@ -6863,6 +6863,9 @@ hr {
 #rightColumn {
   margin-top: 1em; }
 
+.right {
+  margin-left: 10px; }
+
 #navContainer {
   border-top: 3px solid #B92B27; }
 
@@ -6945,6 +6948,16 @@ quora-title {
 
 .stats:hover {
   background-color: #6D0300; }
+
+.filter a {
+  color: #3284ac;
+  font-size: 14px; }
+
+.notification_list_item {
+  background-color: #acacac;
+  margin-top: -20px;
+  padding: 10px;
+  border-bottom: 1px solid black; }
 
 .sweet-alert {
   border-radius: 0px; }

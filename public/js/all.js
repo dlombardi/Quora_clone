@@ -20,6 +20,9 @@ app.filter('unsafe', function($sce){
     $rootScope.$on('tag posts', function(event, posts){
       $rootScope.$broadcast("filteredByTags", posts);
     })
+    $rootScope.$on('getNotifications', function(event, posts){
+      $rootScope.$broadcast("notifications", posts);
+    })
     $rootScope.isNotLoggedIn = function(){
       swal({
         title: "Not Logged In!",
@@ -66,7 +69,9 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
     .state('users', { abstract: true, templateUrl: '/html/users/users.html'})
     .state('users.login', { url: '/login', templateUrl: '/html/users/form.html', controller: 'usersCtrl'})
     .state('users.notifications', { url: '/notifications', templateUrl: '/html/users/notifications.html', controller: 'notificationsCtrl'})
-    .state('users.profile', { url: '/profile', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
+
+    .state('users.profile', { url: '/profile/:user?', templateUrl: '/html/users/profile.html', controller: 'profileCtrl'})
+
 
   $urlRouterProvider.otherwise('/');
 }]);
@@ -114,17 +119,7 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
     }, 50);
   }
 
-  $scope.checkTopic = function(){
-    console.log("NG CHANGE");
-    if (!$scope.topic) {
-      console.log("EMPTY TOPICS");
-    } else {
-      console.log("NOT EMPTY");
-    }
-  }
-
   $scope.submitQuestion = function(question, selectedTopic){
-    console.log("SUBMIT POST FUNCTION STARTS");
     var questionObject = {
       author: currentUser._id,
       title: question.title,
@@ -159,6 +154,8 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
       console.log(err);
     })
   };
+
+  $scope.$emit("getNotifications");
 });
 
 'use strict';
@@ -383,6 +380,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     }
   }
 
+  $scope.$emit("getNotifications")
+
   $scope.$on('filteredByTags', function(event, posts){
     postFactory.formatLikedPosts(posts, currentUser);
     $scope.posts = posts;
@@ -405,10 +404,19 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
 
 
 
-app.controller('notificationsCtrl', function($scope, $http, auth, postFactory, topicFactory){
-  var currentUser = auth.currentUser();
+app.controller('notificationsCtrl', function($scope, $http, auth, userFactory, postFactory, topicFactory){
+  $scope.currentUser = auth.currentUser();
+  $scope.notifications;
 
-  
+  ($scope.getNotifications = function(){
+    userFactory.getUser($scope.currentUser._id)
+    .success(function(user){
+      $scope.notifications = user.notifications;
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
+  })();
 });
 
 'use strict';
@@ -416,6 +424,8 @@ app.controller('notificationsCtrl', function($scope, $http, auth, postFactory, t
 
 app.controller('profileCtrl', function($scope, $state, auth){
   console.log("PROFILE CTRL WORKING");
+
+  $scope.$emit("getNotifications");
 });
 
 'use strict';
@@ -456,6 +466,8 @@ app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope, $
       $scope.comments.push(last + '');//replace last with data.
     }
   };
+
+  $scope.$emit("getNotifications")
 });
 
 'use strict';
@@ -576,6 +588,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     }
   }
 
+  $scope.$emit("getNotifications")
+
   $scope.$on("loggedOut", function(){
     $scope.loggedIn = auth.isLoggedIn();
   })
@@ -593,6 +607,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
 app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFactory, $rootScope){
   $scope.Login = false;
   $scope.loggedIn = auth.isLoggedIn();
+  $scope.currentUser = auth.currentUser();
+  $scope.notifications = [];
 
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
@@ -629,17 +645,29 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
       $scope.$emit('tag posts', posts);
     })
     .error(function(err){
-      console.log(err);
+      console.log("error: ", err);
     })
   }
 
+  $scope.$on("notifications", function(){
+    userFactory.getUser($scope.currentUser._id)
+    .success(function(user){
+      $scope.notifications = user.notifications;
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
+  })
+
   $scope.$on("loggedOut", function(){
     $scope.loggedIn = auth.isLoggedIn();
+    $scope.notifications = [];
   })
 
   $scope.$on("loggedIn", function(){
     $scope.loggedIn = auth.isLoggedIn();
   })
+
 });
 
 'use strict';
@@ -760,21 +788,8 @@ app.factory('postFactory', function($window, $http){
       })
     });
   };
-
   return postFactory;
 });
-
-
-
-// $http({
-//   method: 'GET',
-//   url: '/topics'
-// }).then(function(data){
-//   var specialdata = [{myButt: 'data'}, {myButt: 'butt'}, {myButt: 'rocks'}, {myButt: 'salt'}, {myButt: 'bathsalt'}];
-//   $scope.topics = specialdata;
-// }).catch(function(err){
-//   console.error('errthang is wrong.', err, status);
-// });
 
 'use strict';
 
@@ -808,6 +823,10 @@ app.factory('topicFactory', function($window, $http) {
 
 app.factory('userFactory', function($window, $http){
   var userFactory= {};
+
+  userFactory.getUser = function(uid) {
+    return $http.get('/users/'+uid+'');
+  };
 
   userFactory.addKnowledge = function(knowledgeObject) {
     return $http.post('/users/addKnowledge', knowledgeObject);

@@ -24,9 +24,7 @@ router.get('/topic/:name', function(req, res, next) {
 });
 
 router.get('/limit7', function(req, res, next) {
-  console.log("inAllTopics");
   Topic.find().limit(7).exec(function(err, topics){
-    console.log(topics);
     res.send(topics);
   })
 });

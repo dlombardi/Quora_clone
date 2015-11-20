@@ -36,4 +36,6 @@ app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope, $
       $scope.comments.push(last + '');//replace last with data.
     }
   };
+
+  $scope.$emit("getNotifications")
 });

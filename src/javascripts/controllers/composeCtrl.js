@@ -41,17 +41,7 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
     }, 50);
   }
 
-  $scope.checkTopic = function(){
-    console.log("NG CHANGE");
-    if (!$scope.topic) {
-      console.log("EMPTY TOPICS");
-    } else {
-      console.log("NOT EMPTY");
-    }
-  }
-
   $scope.submitQuestion = function(question, selectedTopic){
-    console.log("SUBMIT POST FUNCTION STARTS");
     var questionObject = {
       author: currentUser._id,
       title: question.title,
@@ -86,4 +76,6 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
       console.log(err);
     })
   };
+
+  $scope.$emit("getNotifications");
 });
