@@ -6,8 +6,11 @@ app.controller('notificationsCtrl', function($scope, $http, auth, userFactory, p
   $scope.currentUser = auth.currentUser();
   $scope.notifications;
 
-  ($scope.getNotifications = function(){
-    userFactory.getUser($scope.currentUser._id)
+  ($scope.clearNotifications = function(){
+    var userObject = {
+      uid: $scope.currentUser._id
+    }
+    userFactory.clearNotifs(userObject)
     .success(function(user){
       $scope.notifications = user.notifications;
     })

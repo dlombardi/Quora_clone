@@ -7,6 +7,10 @@ app.factory('userFactory', function($window, $http){
     return $http.get('/users/'+uid+'');
   };
 
+  userFactory.clearNotifs = function(userObject) {
+    return $http.post('/users/clearNotifications', userObject);
+  };
+
   userFactory.addKnowledge = function(knowledgeObject) {
     return $http.post('/users/addKnowledge', knowledgeObject);
   };

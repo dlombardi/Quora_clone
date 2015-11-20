@@ -55,6 +55,15 @@ router.put('/updateInfo', function(req, res, next){
   }
 });
 
+router.post('/clearNotifications', function(req, res, next){
+  User.findById(req.body.uid, function(err, user){
+    console.log("user: ", user);
+    user.notifications = [];
+    user.save();
+    res.send(user);
+  });
+});
+
 router.post('/follow', function(req, res, next){
   User.findById(req.body.uid, function (err, follower){
     User.findById(req.body.rid, function(err, receiver){

@@ -22,15 +22,14 @@
             </li>
           </ul>
           <!-- Right Nav Section -->
-          <ul class="right">
+          <ul class="right navBar">
             <li><a ui-sref="home"><i class="fi-home"></i> Home</a></li>
-            <li><a ui-sref="compose"><i class="fi-pencil"></i> Compose</a></li>
-            <li><a ui-sref="users.notifications" ng-if="loggedIn"> Notifications</a></li>
-            <li><a href="/profile/{{currentUser._id}}"><i class="fi-results"></i> Profile</a></li>
+            <li><a ui-sref="compose" ng-if="loggedIn"><i class="fi-pencil"></i>Compose</a></li>
+            <li><a id="notifs" ui-sref="users.notifications" ng-if="loggedIn"><span>{{notifications.length}}<span> Notifications</a></li>
+            <li><a href="/profile/{{currentUser._id}}" ng-if="loggedIn"><i class="fi-results"></i> Profile</a></li>
             <li><a ui-sref="users.login" ng-if="!loggedIn"> Login</a></li>
             <li><a ui-sref="home" ng-if="loggedIn" ng-click="logout()"> Logout</a></li>
           </ul>
-          <span ng-if="notifications.length > 0" id="notifCount">{{notifications.length}}1<span>
         </section>
       </nav>
     </div>

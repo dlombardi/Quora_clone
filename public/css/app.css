@@ -6889,13 +6889,17 @@ nav.top-bar a {
   background-color: #B92B27; }
 
 .top-bar-section li:not(.has-form) a:not(.button):hover {
-  background-color: #B92B27; }
+  background-color: #f7f7f7;
+  color: black; }
 
 .top-bar .toggle-topbar span {
   color: #B92B27; }
 
 quora-title {
   font-weight: strong; }
+
+.navBar #notifs {
+  color: #D54d4A; }
 
 .commentSection {
   padding: 10px;
@@ -6926,6 +6930,23 @@ quora-title {
 .subscriptions {
   margin-right: 20px;
   margin-bottom: 5px; }
+
+div.post.ng-scope > div > p:nth-child(1) {
+  margin-bottom: -3px; }
+
+div.post.ng-scope > div > p:nth-child(1) > a {
+  font-size: 16px; }
+
+div.post.ng-scope > div > p:nth-child(3) {
+  margin-bottom: 8px; }
+
+div.post.ng-scope > div > h4 > a {
+  font-size: 20px;
+  font-weight: bold; }
+
+div.post.ng-scope > div > h4 > a:hover {
+  color: black;
+  text-decoration: underline; }
 
 #topicBanner {
   height: 15vh;
@@ -6972,9 +6993,6 @@ quora-title {
 
 a {
   color: black; }
-
-a:hover {
-  color: #aaaaaa; }
 
 ul {
   list-style-type: none; }

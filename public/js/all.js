@@ -408,8 +408,11 @@ app.controller('notificationsCtrl', function($scope, $http, auth, userFactory, p
   $scope.currentUser = auth.currentUser();
   $scope.notifications;
 
-  ($scope.getNotifications = function(){
-    userFactory.getUser($scope.currentUser._id)
+  ($scope.clearNotifications = function(){
+    var userObject = {
+      uid: $scope.currentUser._id
+    }
+    userFactory.clearNotifs(userObject)
     .success(function(user){
       $scope.notifications = user.notifications;
     })
@@ -826,6 +829,10 @@ app.factory('userFactory', function($window, $http){
 
   userFactory.getUser = function(uid) {
     return $http.get('/users/'+uid+'');
+  };
+
+  userFactory.clearNotifs = function(userObject) {
+    return $http.post('/users/clearNotifications', userObject);
   };
 
   userFactory.addKnowledge = function(knowledgeObject) {
