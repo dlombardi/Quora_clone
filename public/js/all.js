@@ -178,7 +178,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     .success(function(posts){
       if($scope.loggedIn){
         postFactory.formatLikedPosts(posts, currentUser);
-        console.log("posts: ", posts);
         $scope.posts = posts;
       } else {
         $scope.posts = posts;
@@ -190,7 +189,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
 
     topicFactory.get7Topics()
     .success(function(topics){
-      console.log(topics);
       $scope.topicFeed = topics;
     })
     .error(function(err){
@@ -372,7 +370,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
       postFactory.createPost(commentObject)
       .success(function(post){
         $scope.comments.push(post);
-        console.log(post);
       })
       .error(function(err){
         console.log("error: ", err)
@@ -406,18 +403,33 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
 
 app.controller('notificationsCtrl', function($scope, $http, auth, userFactory, postFactory, topicFactory){
   $scope.currentUser = auth.currentUser();
-  $scope.notifications;
+  $scope.newNotifications;
+  $scope.oldNotifications;
 
-  ($scope.clearNotifications = function(){
+  ($scope.getNotifications = function(){
+    $scope.newNotifications = [];
+    $scope.oldNotifications = [];
     var userObject = {
       uid: $scope.currentUser._id
     }
-    userFactory.clearNotifs(userObject)
+    userFactory.getNotifs(userObject)
     .success(function(user){
-      $scope.notifications = user.notifications;
+      $scope.newNotifications = user.notifications.filter(function(notif){
+        return notif.seen;
+      })
+      $scope.oldNotifications = user.notifications.filter(function(notif){
+        return !notif.seen;
+      })
+      userFactory.clearNotifs(userObject)
+      .success(function(user){
+        console.log("user: ", user);
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
     })
     .error(function(err){
-      console.log("error: ", err)
+      console.log("error: ", err);
     })
   })();
 });
@@ -476,7 +488,7 @@ app.controller('threadCtrl', function($scope, $state, postFactory, $rootScope, $
 'use strict';
 
 
-app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, postFactory, $rootScope) {
+app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, userFactory ,postFactory, $rootScope) {
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
 
@@ -493,6 +505,20 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
       console.log("error: ", err)
     })
   })();
+
+  $scope.subscribe = function(){
+    var subscribeObject = {
+      uid: currentUser,
+      topic: $stateParams.topic
+    }
+    userFactory.subscribe(subscribeObject)
+    .success(function(data){
+      console.log(data);
+    })
+    .error(function(err){
+      console.log("error: ", err);
+    })
+  }
 
   $scope.togglePostLike = function(index){
     if(!$scope.loggedIn){
@@ -655,7 +681,9 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
   $scope.$on("notifications", function(){
     userFactory.getUser($scope.currentUser._id)
     .success(function(user){
-      $scope.notifications = user.notifications;
+      $scope.newNotifications = user.notifications.filter(function(notif){
+        return notif.seen;
+      })
     })
     .error(function(err){
       console.log("error: ", err)
@@ -829,6 +857,10 @@ app.factory('userFactory', function($window, $http){
 
   userFactory.getUser = function(uid) {
     return $http.get('/users/'+uid+'');
+  };
+
+  userFactory.getNotifs = function(userObject) {
+    return $http.get('/users/notifications/'+userObject.uid+'');
   };
 
   userFactory.clearNotifs = function(userObject) {

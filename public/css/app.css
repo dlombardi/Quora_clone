@@ -4481,7 +4481,7 @@ ul.pagination {
     .sub-nav dd.active a,
     .sub-nav li.active a {
       border-radius: 3px;
-      background: #acacac;
+      background: #a6a6a6;
       color: #FFFFFF;
       cursor: default;
       font-weight: normal;
@@ -4489,7 +4489,7 @@ ul.pagination {
       .sub-nav dt.active a:hover,
       .sub-nav dd.active a:hover,
       .sub-nav li.active a:hover {
-        background: #949494; }
+        background: #8f8f8f; }
 
 .switch {
   border: none;
@@ -6899,7 +6899,13 @@ quora-title {
   font-weight: strong; }
 
 .navBar #notifs {
-  color: #D54d4A; }
+  color: black; }
+
+#notifNumber {
+  padding: 1px 5px 1px 5px;
+  border-radius: 20px;
+  background-color: #D54d4A;
+  color: white; }
 
 .commentSection {
   padding: 10px;
@@ -6956,8 +6962,11 @@ div.post.ng-scope > div > h4 > a:hover {
     margin-top: 25px;
     margin-left: 10px; }
 
+#subscribeBtn {
+  margin-left: 10px; }
+
 #topQuestion {
-  border: 1px solid #acacac;
+  border: 1px solid #a6a6a6;
   border-radius: 5px;
   padding: 10px; }
 
@@ -6974,11 +6983,24 @@ div.post.ng-scope > div > h4 > a:hover {
   color: #3284ac;
   font-size: 14px; }
 
-.notification_list_item {
-  background-color: #acacac;
-  margin-top: -20px;
+#notifications {
+  margin-top: -20px; }
+
+.newNotification {
+  background-color: #F9807D;
   padding: 10px;
-  border-bottom: 1px solid black; }
+  border-bottom: 1px solid #a6a6a6;
+  color: white; }
+
+.newNotification:hover {
+  background-color: white; }
+
+.oldNotification {
+  padding: 10px;
+  border-bottom: 1px solid #a6a6a6; }
+
+.oldNotification:hover {
+  background-color: #f7f7f7; }
 
 .sweet-alert {
   border-radius: 0px; }
@@ -7014,7 +7036,7 @@ button {
   border-radius: 3px; }
 
 .buttons .dislikeBtn {
-  background-color: #acacac; }
+  background-color: #a6a6a6; }
 
 .buttons .dislikeBtn:hover {
   background-color: #797979; }

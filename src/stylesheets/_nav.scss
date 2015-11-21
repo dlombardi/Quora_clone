@@ -38,6 +38,13 @@ quora-title {
 
 .navBar{
   #notifs{
-    color:$quora-light;
+    color:black;
   }
+}
+
+#notifNumber{
+  padding: 1px 5px 1px 5px;
+  border-radius: 20px;
+  background-color: $quora-light;
+  color: white;
 }

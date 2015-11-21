@@ -3,9 +3,26 @@
   font-size: 14px;
 }
 
-.notification_list_item{
-  background-color: $grey;
+#notifications{
   margin-top: -20px;
+}
+
+.newNotification{
+  background-color: $quora-highlight;
   padding: 10px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid $grey;
+  color: white;
+}
+
+.newNotification:hover{
+  background-color: white;
+}
+
+.oldNotification{
+  padding: 10px;
+  border-bottom: 1px solid $grey;
+}
+
+.oldNotification:hover{
+  background-color: $quora-hover-grey;
 }

@@ -18,7 +18,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     .success(function(posts){
       if($scope.loggedIn){
         postFactory.formatLikedPosts(posts, currentUser);
-        console.log("posts: ", posts);
         $scope.posts = posts;
       } else {
         $scope.posts = posts;
@@ -30,7 +29,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
 
     topicFactory.get7Topics()
     .success(function(topics){
-      console.log(topics);
       $scope.topicFeed = topics;
     })
     .error(function(err){
@@ -212,7 +210,6 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
       postFactory.createPost(commentObject)
       .success(function(post){
         $scope.comments.push(post);
-        console.log(post);
       })
       .error(function(err){
         console.log("error: ", err)

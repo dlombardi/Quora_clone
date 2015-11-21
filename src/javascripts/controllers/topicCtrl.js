@@ -1,7 +1,7 @@
 'use strict';
 
 
-app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, postFactory, $rootScope) {
+app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, userFactory ,postFactory, $rootScope) {
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
 
@@ -18,6 +18,20 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
       console.log("error: ", err)
     })
   })();
+
+  $scope.subscribe = function(){
+    var subscribeObject = {
+      uid: currentUser,
+      topic: $stateParams.topic
+    }
+    userFactory.subscribe(subscribeObject)
+    .success(function(data){
+      console.log(data);
+    })
+    .error(function(err){
+      console.log("error: ", err);
+    })
+  }
 
   $scope.togglePostLike = function(index){
     if(!$scope.loggedIn){

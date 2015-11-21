@@ -55,10 +55,18 @@ router.put('/updateInfo', function(req, res, next){
   }
 });
 
+router.get('/notifications/:uid', function(req, res, next){
+  User.findById(req.params.uid).deepPopulate("notifications.actor notifications.receiver notifications.post").exec(function(err, user){
+    console.log("USER: ", user);
+    res.send(user);
+  });
+});
+
 router.post('/clearNotifications', function(req, res, next){
-  User.findById(req.body.uid, function(err, user){
-    console.log("user: ", user);
-    user.notifications = [];
+  User.findById(req.body.uid).populate("notifications").exec(function(err, user){
+    user.notifications.map(function(notif){
+      return notif.seen = true;
+    })
     user.save();
     res.send(user);
   });
@@ -67,10 +75,10 @@ router.post('/clearNotifications', function(req, res, next){
 router.post('/follow', function(req, res, next){
   User.findById(req.body.uid, function (err, follower){
     User.findById(req.body.rid, function(err, receiver){
-      if(follower.following.indexOf(req.body.rid) === -1){
-        follower.following.push(req.body.rid);
+      if(follower.following.indexOf(receiver._id) === -1){
+        follower.following.push(receiver._id);
         follower.save();
-        UserEmitter.emit("following", receiver, req.body.uid);
+        UserEmitter.emit("following", receiver, follower._id);
         res.send(follower);
       } else {
         res.send("follower subscription already exists")
@@ -86,7 +94,7 @@ router.put('/unfollow', function(req, res, next){
         if(person.toString() === receiver._id.toString()){
           follower.following.splice(i, 1);
           follower.save();
-          UserEmitter.emit("removeFollowing", receiver, req.body.uid);
+          UserEmitter.emit("removeFollowing", receiver, follower._id);
           res.send(follower);
         }
       });
@@ -95,7 +103,7 @@ router.put('/unfollow', function(req, res, next){
 });
 
 router.post('/subscribe', function(req, res, next){
-  Topic.findById(req.body.tid, function(err, topic){
+  Topic.find({name: req.body.topic}, function(err, topic){
     User.findById(req.body.uid, function(err, user){
       topic.subscribers.push(user._id);
       user.subscriptions.push(topic._id);

@@ -17,8 +17,13 @@
     <div class="large-9 small-12 columns buttons">
       <div class="header">All Notifications</div>
       <div id="notifications">
-        <div class="notification_list_item" ng-repeat="notification in notifications">
-          {{notification.subject}}
+        <div class="newNotifications" ng-repeat="newNotification in newNotifications">
+          {{newNotification.subject}}
+        </div>
+        <div class="oldNotification" ng-repeat="oldNotification in oldNotifications">
+          <div>
+            {{oldNotification.subject}}
+          </div>
         </div>
       </div>
     </div>

@@ -35,8 +35,8 @@ PostEmitter.on("likePost", function(data){
   Post.findById(data.pid).deepPopulate("author.notifications").exec(function(err, post){
     User.findById(data.uid, function(err, user){
       if(post.author._id.toString() !== user._id.toString()){
-        post.author.notifications.push(newNotification);
         var newNotification = createNotification(user._id, post.author._id, post._id, "liked","Post");
+        post.author.notifications.push(newNotification);
         newNotification.save();
       }
       post.author.save();

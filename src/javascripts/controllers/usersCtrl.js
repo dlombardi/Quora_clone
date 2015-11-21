@@ -48,7 +48,9 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
   $scope.$on("notifications", function(){
     userFactory.getUser($scope.currentUser._id)
     .success(function(user){
-      $scope.notifications = user.notifications;
+      $scope.newNotifications = user.notifications.filter(function(notif){
+        return notif.seen;
+      })
     })
     .error(function(err){
       console.log("error: ", err)
