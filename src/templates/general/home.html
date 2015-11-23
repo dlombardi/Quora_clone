@@ -34,7 +34,12 @@
       </dl>
       <div class="post" ng-repeat="post in posts track by $index">
         <div class="postBody">
-          <p>{{post.answerWritten}} • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
+          <div ng-if="post.answerWritten">
+            <p>answered • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
+          </div>
+          <div ng-if="!post.answerWritten">
+            <p>unanswered • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
+          </div>
           <h4><a ng-href='/thread/{{post._id}}'>{{post.title}}</a></h4>
           <p><a href="" class="author">{{post.author.username}}</a> {{post.author.work}}</p>
           <p ng-bind-html="post.content | unsafe"></p>
