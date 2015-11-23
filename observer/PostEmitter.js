@@ -8,6 +8,22 @@ var Notification = require('../models/notification');
 var Mixpanel = require('mixpanel');
 var mixpanel = Mixpanel.init('66b2b8969a8e0b1d6694945c0259ac12');
 
+var api_key = 'key-b8a01d88cdbd5569b90a0836ba58f9ec';
+var domain = 'sandbox070d004777eb4626becca0b49bc97acc.mailgun.org';
+var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
+
+function sendEmail(to, subject, text){
+  var data = {
+    from: 'darien.lombardi@gmail.com',
+    to: to,
+    subject: subject,
+    text: text
+  };
+  mailgun.messages().send(data, function (error, body) {
+    console.log("body: ",body);
+  });
+}
+
 var PostEmitter = new emitter();
 
 
@@ -132,6 +148,7 @@ PostEmitter.on("addAnswerToQuestionAndUser", function(post){
       author.save();
       question.answers.push(post._id);
       question.save();
+      sendEmail(author.email, "Question Answered - Quora-Clone", `${post.author.username} answered your question titled: ${question.title}`)
     });
   })
   User.findById(post.author, function(err, user){
@@ -153,6 +170,7 @@ PostEmitter.on("addCommentToPostAndUser", function(post){
       author.save();
       parentPost.comments.push(post._id);
       parentPost.save();
+      sendEmail(author.email, "Commented on Question - Quora-Clone", `${post.author.username} commented on your post titled: ${parentPost.title}`)
     })
   });
   User.findById(post.author, function(err, user){

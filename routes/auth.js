@@ -7,7 +7,6 @@ var passport = require("passport");
 var marked = require('marked');
 var router = express.Router();
 
-
 var User = require('../models/user');
 var Topic = require('../models/topic');
 var Post = require('../models/post');
@@ -23,6 +22,8 @@ router.post('/register', function(req, res, next){
   }
   var user = new User();
   user.username = req.body.username;
+  user.email = req.body.email;
+  user.fullName = req.body.fullName;
   user.setPassword(req.body.password);
 
   user.save(function(err){

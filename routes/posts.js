@@ -76,7 +76,6 @@ router.post('/add', loggedIn, function(req, res, next){
       var post = new Post(req.body);
       post.content = marked(post.content);
       User.findById(post.author, function(err, user){
-        console.log(user);
         post.author = user;
         post.save(function(err){
           if(err){res.send("error: ",err)};
@@ -88,12 +87,14 @@ router.post('/add', loggedIn, function(req, res, next){
     case "comment":
       var post = new Post(req.body);
       post.content = marked(post.content);
-      post.save(function(err){
-        if(err){console.log("error: ",err)};
-        console.log(post);
-        PostEmitter.emit("addCommentToPostAndUser", post);
-        res.send(post);
-      });
+      User.findById(post.author, function(err, user){
+        post.author = user;
+        post.save(function(err){
+          if(err){console.log("error: ",err)};
+          PostEmitter.emit("addCommentToPostAndUser", post);
+          res.send(post);
+        });
+      })
       break;
   }
   function isTitleFound(post){
