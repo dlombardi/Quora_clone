@@ -10,6 +10,12 @@
         <p class="header" ng-if="loggedIn">Subscriptions</p>
         <div class="row">
           <ul>
+            <li class="subscriptions" ng-repeat="subscription in subscriptions"><a ng-href='/topics/{{topic.name}}'>{{subscription.name}}</a></li>
+          </ul>
+        </div>
+        <p class="header" ng-if="loggedIn">Random Topics</p>
+        <div class="row">
+          <ul>
             <li class="subscriptions" ng-repeat="topic in topicFeed"><a ng-href='/topics/{{topic.name}}'>{{topic.name}}</a></li>
           </ul>
         </div>

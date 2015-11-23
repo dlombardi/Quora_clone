@@ -5,12 +5,17 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
   $scope.posts;
+  $scope.topic;
+  $scope.subscribed = false;
 
   (function getTopicPosts(){
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
       console.log("TOPIC: ", topic)
       postFactory.formatLikedPosts(topic.posts, currentUser);
+      topic.subscribers.forEach(function(subscriber){
+        subscriber === currentUser._id ? $scope.subscribed = true : $scope.subscribed = false;
+      });
       $scope.topic = topic;
       $scope.posts = topic.posts;
     })
@@ -21,12 +26,27 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
 
   $scope.subscribe = function(){
     var subscribeObject = {
-      uid: currentUser,
+      uid: currentUser._id,
       topic: $stateParams.topic
     }
+    console.log(subscribeObject)
     userFactory.subscribe(subscribeObject)
     .success(function(data){
-      console.log(data);
+      $scope.subscribed = true;
+    })
+    .error(function(err){
+      console.log("error: ", err);
+    })
+  }
+
+  $scope.unsubscribe = function(){
+    var unsubscribeObject = {
+      uid: currentUser._id,
+      topic: $stateParams.topic
+    }
+    userFactory.unsubscribe(unsubscribeObject)
+    .success(function(data){
+      $scope.subscribed = false;
     })
     .error(function(err){
       console.log("error: ", err);

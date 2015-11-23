@@ -161,7 +161,7 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth, marked, $sce, $rootScope) {
+app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, topicFactory, auth, marked, $sce, $rootScope) {
   $scope.posts;
   $scope.topicFeed;
   var currentUser = auth.currentUser();
@@ -188,8 +188,17 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     });
 
     topicFactory.get7Topics()
-    .success(function(topics){
-      $scope.topicFeed = topics;
+    .success(function(posts){
+      $scope.topicFeed = posts;
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
+
+    userFactory.getUser(currentUser._id)
+    .success(function(user){
+      console.log("user: ", user);
+      $scope.subscriptions = user.subscriptions;
     })
     .error(function(err){
       console.log("error: ", err)
@@ -665,12 +674,17 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
   $scope.posts;
+  $scope.topic;
+  $scope.subscribed = false;
 
   (function getTopicPosts(){
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
       console.log("TOPIC: ", topic)
       postFactory.formatLikedPosts(topic.posts, currentUser);
+      topic.subscribers.forEach(function(subscriber){
+        subscriber === currentUser._id ? $scope.subscribed = true : $scope.subscribed = false;
+      });
       $scope.topic = topic;
       $scope.posts = topic.posts;
     })
@@ -681,12 +695,27 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
 
   $scope.subscribe = function(){
     var subscribeObject = {
-      uid: currentUser,
+      uid: currentUser._id,
       topic: $stateParams.topic
     }
+    console.log(subscribeObject)
     userFactory.subscribe(subscribeObject)
     .success(function(data){
-      console.log(data);
+      $scope.subscribed = true;
+    })
+    .error(function(err){
+      console.log("error: ", err);
+    })
+  }
+
+  $scope.unsubscribe = function(){
+    var unsubscribeObject = {
+      uid: currentUser._id,
+      topic: $stateParams.topic
+    }
+    userFactory.unsubscribe(unsubscribeObject)
+    .success(function(data){
+      $scope.subscribed = false;
     })
     .error(function(err){
       console.log("error: ", err);
@@ -1089,6 +1118,10 @@ app.factory('topicFactory', function($window, $http) {
     return $http.get('/topics/allTopics');
   };
 
+  topicFactory.subscribedTopics = function(){
+    return $http.get('/topics/allTopics');
+  };
+
   topicFactory.get7Topics = function(){
     return $http.get('/topics/limit7');
   };
@@ -1150,7 +1183,7 @@ app.factory('userFactory', function($window, $http){
     return $http.put('/users/unfollow', unfollowObject);
   };
 
-  userFactory.subscribe = function(subscribeOject){
+  userFactory.subscribe = function(subscribeObject){
     return $http.post('/users/subscribe', subscribeObject);
   };
 

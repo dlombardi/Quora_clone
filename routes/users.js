@@ -18,7 +18,7 @@ router.get('/:uid', function(req, res, next){
   if(!req.params.uid){
     return res.send("no entry");
   }
-  User.findById(req.params.uid).deepPopulate("notifications.actor notifications.receiver").exec(function(err, user){
+  User.findById(req.params.uid).deepPopulate("notifications.actor notifications.receiver subscriptions").exec(function(err, user){
     res.send(user);
   });
 });
@@ -112,31 +112,31 @@ router.put('/unfollow', function(req, res, next){
 router.post('/subscribe', function(req, res, next){
   Topic.find({name: req.body.topic}, function(err, topic){
     User.findById(req.body.uid, function(err, user){
-      topic.subscribers.push(user._id);
-      user.subscriptions.push(topic._id);
-      topic.save();
+      topic[0].subscribers.push(user._id);
+      user.subscriptions.push(topic[0]._id);
+      topic[0].save();
       user.save();
-      res.send(topic, user);
+      res.send(user);
     });
   });
 });
 
 router.put('/unsubscribe', function(req, res, next){
-  Topic.findById(req.body.tid, function(err, topic){
+  Topic.find({name:req.body.topic}, function(err, topic){
     User.findById(req.body.uid, function(err, user){
-      console.log(typeof(topic._id.toString()))
-      console.log(typeof(req.body.tid));
-      user.subscriptions.forEach(function(topic, i){
-        if(topic.toString() === req.body.tid.toString()){
+      console.log(user);
+      user.subscriptions.forEach(function(subscribedtopic, i){
+        console.log(topic);
+        if(subscribedtopic.toString() === topic[0]._id.toString()){
           user.subscriptions.splice(i, 1);
         }
       })
-      topic.subscribers.forEach(function(user, i){
-        if(user.toString() === req.body.uid.toString()){
-          topic.subscribers.splice(i, 1);
+      topic[0].subscribers.forEach(function(topicSubscriber, i){
+        if(topicSubscriber.toString() === user._id.toString()){
+          topic[0].subscribers.splice(i, 1);
         }
       })
-      topic.save();
+      topic[0].save();
       user.save();
       res.send(user);
     });

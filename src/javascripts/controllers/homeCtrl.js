@@ -1,7 +1,7 @@
 'use strict';
 
 
-app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, auth, marked, $sce, $rootScope) {
+app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, topicFactory, auth, marked, $sce, $rootScope) {
   $scope.posts;
   $scope.topicFeed;
   var currentUser = auth.currentUser();
@@ -28,8 +28,17 @@ app.controller('homeCtrl', function($scope, $state, postFactory, topicFactory, a
     });
 
     topicFactory.get7Topics()
-    .success(function(topics){
-      $scope.topicFeed = topics;
+    .success(function(posts){
+      $scope.topicFeed = posts;
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
+
+    userFactory.getUser(currentUser._id)
+    .success(function(user){
+      console.log("user: ", user);
+      $scope.subscriptions = user.subscriptions;
     })
     .error(function(err){
       console.log("error: ", err)

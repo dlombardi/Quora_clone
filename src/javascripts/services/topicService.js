@@ -7,6 +7,10 @@ app.factory('topicFactory', function($window, $http) {
     return $http.get('/topics/allTopics');
   };
 
+  topicFactory.subscribedTopics = function(){
+    return $http.get('/topics/allTopics');
+  };
+
   topicFactory.get7Topics = function(){
     return $http.get('/topics/limit7');
   };

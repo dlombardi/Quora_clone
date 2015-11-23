@@ -40,7 +40,7 @@ app.factory('userFactory', function($window, $http){
     return $http.put('/users/unfollow', unfollowObject);
   };
 
-  userFactory.subscribe = function(subscribeOject){
+  userFactory.subscribe = function(subscribeObject){
     return $http.post('/users/subscribe', subscribeObject);
   };
 
