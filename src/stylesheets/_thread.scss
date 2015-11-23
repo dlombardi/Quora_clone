@@ -1,0 +1,17 @@
+#answerText{
+  height: 100px;
+  width: 100%;
+}
+
+#answerSection{
+  margin-top: 70px;
+  padding: 10px;
+}
+
+.answer{
+  padding: 10px;
+  border: 10px solid $quora-answer-blue;
+  border-radius: 5px;
+  background-color: white;
+  width: 100%
+}

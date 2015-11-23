@@ -1,15 +1,13 @@
 
 <div class="row">
   <div class="small-10 small-offset-1 medium-6 medium-offset-1 large-7 large-push-3 large-offset-1 columns">
+    <img class="profilePicture" src="http://www.lorempixel.com/150/150/people" alt="Profile Picture">
     <div class="small-only-text-center buttons">
-      <img class="profilePicture" src="http://www.lorempixel.com/150/150/people" alt="Profile Picture">
-      <h4>{{user.username}}
-        <small> {{user.home}}</small>
+      <h4>{{user.username}}</h4>
         <button class="right" ng-click="follow()">Follow</button>
         <button class="right" ng-click="unfollow()">Unfollow</button>
         <button class="right crammedButton" ng-click="subscribe()">Subscribe</button>
         <a href="#" data-reveal-id="editUserModal"><button class="right crammedButton">Edit Profile</button></a>
-      </h4>
 
       <br>
       <h6>{{user.about}}</small></h6>
@@ -44,33 +42,33 @@
       </ul>
   </div>
 </div>
-      <!-- MODAL ------------------------->
-      <div id="editUserModal" class="reveal-modal buttons" data-reveal aria-labelledby="Edit Profile" aria-hidden="true" role="dialog">
-        <div class="row">
-          <div class="small-12 large-6 columns">
-            Username
-            <input type="text">
-            Email
-            <input type="text">
-            Password
-            <input type="text">
-          </div>
-          <div class="small-12 large-6 columns">
-            Name - Please enter your full name.
-            <input type="text">
-            Job Title
-            <input type="text">
-            Location
-            <input type="text">
-          </div>
-        </div>
-        <div class="row">
-          <div class="large-12 columns">
-            Bio
-            <textarea name="" id="" cols="30" rows="3"></textarea>
-          </div>
-        </div>
-         <!-- ng-click="" -->
-        <a class="close"><button class="right">Save</button></a>
-        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-      </div>
+  <!-- MODAL ------------------------->
+<div id="editUserModal" class="reveal-modal buttons" data-reveal aria-labelledby="Edit Profile" aria-hidden="true" role="dialog">
+  <div class="row">
+    <div class="small-12 large-6 columns">
+      Username
+      <input type="text">
+      Email
+      <input type="text">
+      Password
+      <input type="text">
+    </div>
+    <div class="small-12 large-6 columns">
+      Name - Please enter your full name.
+      <input type="text">
+      Job Title
+      <input type="text">
+      Location
+      <input type="text">
+    </div>
+  </div>
+  <div class="row">
+    <div class="large-12 columns">
+      Bio
+      <textarea name="" id="" cols="30" rows="3"></textarea>
+    </div>
+  </div>
+   <!-- ng-click="" -->
+  <a class="close"><button class="right">Save</button></a>
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>

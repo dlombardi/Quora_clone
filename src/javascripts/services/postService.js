@@ -4,7 +4,6 @@ app.factory('postFactory', function($window, $http){
   var postFactory= {};
 
   postFactory.createPost = function(newPost) {
-    console.log(newPost);
     return $http.post('/posts/add', newPost);
   };
 
@@ -37,6 +36,11 @@ app.factory('postFactory', function($window, $http){
   };
 
   postFactory.getSortedComments = function(sorting){
+    console.log(sorting);
+    return $http.get('/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
+  };
+
+  postFactory.getSortedAnswers = function(sorting){
     console.log(sorting);
     return $http.get('/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
   };

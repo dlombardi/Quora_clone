@@ -18,7 +18,7 @@ router.get('/allTopics', function(req, res, next) {
 });
 
 router.get('/topic/:name', function(req, res, next) {
-  Topic.find({name: req.params.name}).populate("subscribers posts").exec(function(err, topic){
+  Topic.find({name: req.params.name}).deepPopulate("subscribers posts.author posts").exec(function(err, topic){
     res.send(topic[0]);
   });
 });

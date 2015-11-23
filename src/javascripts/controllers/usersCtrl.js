@@ -4,7 +4,9 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
   $scope.Login = false;
   $scope.loggedIn = auth.isLoggedIn();
   $scope.currentUser = auth.currentUser();
-  $scope.notifications = [];
+  $scope.newNotifications = [];
+  $scope.currentUserName;
+  $scope.photo;
 
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
@@ -29,6 +31,16 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
     });
   };
 
+  $scope.upload = function(){
+    var fd = new FormData();
+    fd.append('file', $scope.files[0])
+    console.log(fd);
+    userFactory.addPhoto(fd)
+    .success(function(data){
+      console.log("Data: ", data);
+    })
+  }
+
   $scope.logout = function(){
     auth.logout();
     $scope.$emit('logout');
@@ -49,7 +61,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
     userFactory.getUser($scope.currentUser._id)
     .success(function(user){
       $scope.newNotifications = user.notifications.filter(function(notif){
-        return notif.seen;
+        return !notif.seen;
       })
     })
     .error(function(err){
@@ -64,6 +76,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
 
   $scope.$on("loggedIn", function(){
     $scope.loggedIn = auth.isLoggedIn();
+    $scope.currentUser = auth.currentUser();
   })
 
 });

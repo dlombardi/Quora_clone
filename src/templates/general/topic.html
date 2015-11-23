@@ -28,10 +28,12 @@
       <div class="post" ng-repeat="post in posts track by $index">
         <p><a ng-href="#/topic/{{post.topic._id}}">{{post.topic.name}}</a></p>
         <h4><a href="">{{post.title}}</a></h4>
-        <p><a href="" class="author">{{post.author.username}}</a>, {{post.author.work}}</p>
+        <p><a href="" class="author">{{post.author.username}}</a> {{post.author.work}}</p>
         <p ng-bind-html="post.content | unsafe"></p>
         <button ng-show="!post.liked" ng-click="togglePostLike($index)">Like | <span>{{post.likes}}</span></button>
         <button ng-show="post.liked" ng-click="togglePostLike($index)">Unlike | <span>{{post.likes}}</span></button>
+        <button class="dislikeBtn" ng-show="!post.disliked" ng-click="togglePostDislike($index)">Dislike | <span>{{post.dislikes}}</span></button>
+        <button class="dislikeBtn" ng-show="post.disliked" ng-click="togglePostDislike($index)">Undo | <span>{{post.dislikes}}</span></button>
         <a class='right' href="" ng-if="!post.showComments" ng-click="showComments($index)">Comments<span> {{post.comments.length}}</span></a>
         <a class='right' href="" ng-if="post.showComments" ng-click="hideComments($index)">Comments<span> {{post.comments.length}}</span></a>
         <div class="commentsChain" ng-if="post.showComments">

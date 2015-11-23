@@ -25,8 +25,8 @@
           <ul class="right navBar">
             <li><a ui-sref="home"><i class="fi-home"></i> Home</a></li>
             <li><a ui-sref="compose" ng-if="loggedIn"><i class="fi-pencil"></i>Compose</a></li>
-            <li><a id="notifs" ui-sref="users.notifications" ng-if="loggedIn"><span ng-if="notifications.length > 0" id="notifNumber">{{notifications.length}}</span> Notifications</a></li>
-            <li><a href="/profile/{{currentUser._id}}" ng-if="loggedIn"><i class="fi-results"></i> Profile</a></li>
+            <li><a id="notifs" ui-sref="users.notifications" ng-if="loggedIn"><span ng-if="newNotifications.length > 0" id="notifNumber">{{newNotifications.length}}</span> Notifications</a></li>
+            <li><a href="/profile/{{currentUser._id}}" ng-if="loggedIn"><i class="fi-torso"></i> {{currentUser.username}}</a></li>
             <li><a ui-sref="users.login" ng-if="!loggedIn"> Login</a></li>
             <li><a ui-sref="home" ng-if="loggedIn" ng-click="logout()"> Logout</a></li>
           </ul>

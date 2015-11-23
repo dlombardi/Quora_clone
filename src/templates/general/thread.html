@@ -1,59 +1,64 @@
 <br>
-<div class="row fullBody">
-  <!-- FEED COLUMN -->
-  <div class="small-10 small-offset-1 large-2 large-offset-1 columns">
-    <h6>FEEDS</h6>
-    <hr>
-    <ul>
-      <li ng-repeat="questions in topic"><a href="">{{topic.posts.name}}</a></li>
-    </ul>
-  </div>
+<div class="row">
+  <div class="large-10 large-offset-1 medium-10 medium-offset-1 small-12 columns ">
+    <div id="feedColumn" class="large-3 medium-2 small-12 columns buttons">
+      <div class="header">Questions in {{question.topic.name}} </div>
+    </div>
 
-  <!-- MAIN COLUMN -->
-  <div class="small-10 small-offset-1 large-6 large-offset-1 columns primaryColumn">
-    <div class="buttons" id="question">
-      <div class="row">
-        <h4><strong>{{question.title}}</strong></h4>
-      </div>
-      <div class="row">
-        <button ng-click="showAnswerForm()">Answer</button>
-        <button class="right" ng-click="showComments()">Comment</button>
-        <hr>
-        <span>{{question.comments}}</span>
-      </div>
-      <div class="row" id="answerForm" ng-show="displayAnswerForm">
-        <textarea name="" id="answer" cols="30" rows="8" ng-model="answerText" placeholder="answer..."></textarea>
-        <button>Submit</button>
-      </div>
-      <div class="row" ng-show="displayComments">
-        <input type="text" ng-model="comment" placeholder="comment...">
-        <button ng-click="postComment(comment)">Comment</button>
-        <div class="row" ng-repeat="comment in comments track by $index">
-          <p>{{comment.author}}</p>
-          <div class="row">
-            <p>{{comment.content}}</p>
+    <!-- MAIN COLUMN -->
+    <div class="large-9 medium-8 small-12 columns buttons">
+        <div class="text-center header">{{question.title}}</div>
+        <p ng-bind-html="question.content | unsafe"></p>
+        Your Answer
+      <textarea id="answerText" type="text" ng-model="answer" placeholder="Answer..."></textarea>
+      <button class="buttons left" ng-click="submitAnswer(answer, question)">Post Your Answer</button>
+      <div id="answerSection">
+        <div ng-repeat="answer in answers">
+          <div class="answer">
+            <a href="">{{answer.author.username}}</a>'s Answer
+            <p>{{answer.date | date}}</p>
+            <hr>
+            <p ng-bind-html="answer.content | unsafe"></p>
+            <hr>
+            <button ng-show="!answer.liked" ng-click="toggleAnswerLike($index)">Like | <span>{{answer.likes}}</span></button>
+            <button ng-show="answer.liked" ng-click="toggleAnswerLike($index)">Unlike | <span>{{answer.likes}}</span></button>
+            <button class="dislikeBtn" ng-show="!answer.disliked" ng-click="toggleAnswerDislike($index)">Dislike | <span>{{answer.dislikes}}</span></button>
+            <button class="dislikeBtn" ng-show="answer.disliked" ng-click="toggleAnswerDislike($index)">Undo | <span>{{answer.dislikes}}</span></button>
           </div>
-          <div class="row">
-            <input type="text" ng-model="reply" placeholder="reply...">
-            <button ng-click="postReply(reply)">Reply</button>
-            <p>likes: <span>{{comment.likes}}</span></p>
-            <p>views: <span>{{comment.views}}</span></p>
+          <hr>
+        </div>
+      </div>
+      <div class="commentsChain">
+        <hr>
+        <div class="commentSection">
+          <div class="commentInput">
+            <div class="row">
+              <div class="columns small-11">
+                <textarea type="text" ng-model="comment" style="width: 85%;" placeholder="comment..."></textarea>
+              </div>
+              <div class="columns small-1">
+                <button class="right" ng-click="submitComment(comment, question)">Submit</button>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="comments" ng-repeat="comment in comments">
+            <div class="commentBody">
+              <h6><a href="">{{comment.author.username}}</a></h6>
+              <p ng-bind-html="comment.content | unsafe"></p>
+              <button ng-show="!comment.liked" ng-click="toggleCommentLike($index)">Like | <span>{{comment.likes}}</span></button>
+              <button ng-show="comment.liked" ng-click="toggleCommentLike($index)">Unlike | <span>{{comment.likes}}</span></button>
+              <button class="dislikeBtn" ng-show="!comment.disliked" ng-click="toggleCommentDislike($index)">Dislike | <span>{{comment.dislikes}}</span></button>
+              <button class="dislikeBtn" ng-show="comment.disliked" ng-click="toggleCommentDislike($index)">Undo | <span>{{comment.dislikes}}</span></button>
+            </div>
+            <hr>
           </div>
         </div>
       </div>
     </div>
-    <div>
-      <h6><strong>Answer</strong></h6>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi inventore aliquid nulla omnis molestiae sed maiores doloremque totam animi, cumque fugit impedit cum laborum esse error repudiandae, placeat tempora ipsa.</p>
-      <div infinite-scroll='loadMore()' infinite-scroll-distance='0'>
-        <p ng-repeat="comment in comments track by $index">{{comment}}</p>
-      </div>
-    </div>
   </div>
 
+
   <!-- TOPICS COLUMN -->
-  <div class="small-10 small-offset-1 large-3 large-offset-1 columns end">
-    RANDOM TOPICS
-  </div>
 
 </div>

@@ -3,6 +3,8 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var multer = require('multer');
+var upload = multer({ storage: multer.memoryStorage() });
 
 var User = require('../models/user');
 var Topic = require('../models/topic');
@@ -19,6 +21,12 @@ router.get('/:uid', function(req, res, next){
   User.findById(req.params.uid).deepPopulate("notifications.actor notifications.receiver").exec(function(err, user){
     res.send(user);
   });
+});
+
+router.post('/addPhoto', function(req, res, next){
+  console.log(req.body);
+  // var profilePicture = new Buffer(req.file.buffer, 'base64').toString('ascii')
+  // console.log(profilePicture);
 });
 
 router.post('/addknowledge', function(req, res, next){
@@ -40,9 +48,7 @@ router.put('/updateInfo', function(req, res, next){
   if(!req.body){
     return res.send("no entry");
   }
-
   updateInfo(req.body.uid, req.body.type, req.body.content);
-
   function updateInfo(uid, infoType, content){
     var infoObj = {};
     var type = infoType;
@@ -64,8 +70,9 @@ router.get('/notifications/:uid', function(req, res, next){
 
 router.post('/clearNotifications', function(req, res, next){
   User.findById(req.body.uid).populate("notifications").exec(function(err, user){
-    user.notifications.map(function(notif){
-      return notif.seen = true;
+    user.notifications.forEach(function(notif){
+      notif.seen = true;
+      notif.save();
     })
     user.save();
     res.send(user);

@@ -1,16 +1,16 @@
 'use strict';
 
 
-app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, userFactory ,postFactory, $rootScope) {
+app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory, auth, userFactory, postFactory, $rootScope) {
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
+  $scope.posts;
 
   (function getTopicPosts(){
-    $scope.posts = [];
-    $scope.topicFeed = [];
-
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
+      console.log("TOPIC: ", topic)
+      postFactory.formatLikedPosts(topic.posts, currentUser);
       $scope.topic = topic;
       $scope.posts = topic.posts;
     })
@@ -38,7 +38,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
       $rootScope.isNotLoggedIn();
     } else {
       var action;
-      $scope.posts[index].liked ? action = "dislike" : action = "like";
+      $scope.posts[index].liked ? action = "unlike" : action = "like";
       var statsObject = {
         pid: $scope.posts[index]._id,
         uid: currentUser._id,
@@ -61,12 +61,40 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     }
   }
 
+  $scope.togglePostDislike = function(index){
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.posts[index].disliked ? action = "undo" : action = "dislike";
+      var statsObject = {
+        pid: $scope.posts[index]._id,
+        uid: currentUser._id,
+        type: action,
+        token: auth.getToken()
+      }
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "dislike"){
+          $scope.posts[index].dislikes += 1
+          $scope.posts[index].disliked = true;
+        } else {
+          $scope.posts[index].dislikes -= 1;
+          $scope.posts[index].disliked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
+  }
+
   $scope.toggleCommentLike = function(index){
     if(!$scope.loggedIn){
       $rootScope.isNotLoggedIn();
     } else {
       var action;
-      $scope.comments[index].liked ? action = "dislike" : action = "like";
+      $scope.comments[index].liked ? action = "unlike" : action = "like";
       var statsObject = {
         pid: $scope.comments[index]._id,
         uid: currentUser._id,
@@ -89,6 +117,33 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     }
   }
 
+  $scope.toggleCommentDislike = function(index){
+    if(!$scope.loggedIn){
+      $rootScope.isNotLoggedIn();
+    } else {
+      var action;
+      $scope.comments[index].disliked ? action = "undo" : action = "dislike";
+      var statsObject = {
+        pid: $scope.comments[index]._id,
+        uid: currentUser._id,
+        type: action,
+        token: auth.getToken()
+      }
+      postFactory.changeStats(statsObject)
+      .success(function(post){
+        if(action === "dislike"){
+          $scope.comments[index].dislikes += 1
+          $scope.comments[index].disliked = true;
+        } else {
+          $scope.comments[index].dislikes -= 1;
+          $scope.comments[index].disliked = false;
+        }
+      })
+      .error(function(err){
+        console.log("error: ", err);
+      })
+    }
+  }
   $scope.showComments = function(index){
     $scope.posts[index].showComments = true;
     var comments = $scope.posts[index].comments;

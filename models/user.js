@@ -3,11 +3,13 @@
 var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
+var gridfstore = require('gridfstore');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var UserSchema = new mongoose.Schema({
   username: {type: String, unique: true},
   fullName: {type: String, lowercase: true},
+  picture: String,
   email: String,
   home: String,
   work: String,
@@ -54,5 +56,6 @@ UserSchema.methods.generateJWT = function() {
     exp: parseInt(exp.getTime() / 1000),
   }, process.env.JWT_SECRET);
 };
+
 
 module.exports = mongoose.model('User', UserSchema);

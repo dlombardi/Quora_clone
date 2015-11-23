@@ -44,7 +44,7 @@ function loggedIn(req, res, next) {
 }
 
 router.get('/:pid', function(req, res, next){
-  Post.findById(req.params.pid).populate('author comments.comments topic responseTo').exec(function (err, post){
+  Post.findById(req.params.pid).deepPopulate('author comments.author answers.author topic responseTo').exec(function (err, post){
     res.send(post);
   });
 })
@@ -75,11 +75,15 @@ router.post('/add', loggedIn, function(req, res, next){
     case "answer":
       var post = new Post(req.body);
       post.content = marked(post.content);
-      post.save(function(err){
-        if(err){res.send("error: ",err)};
-        PostEmitter.emit("addAnswerToQuestionAndUser", post);
-        res.send(post);
-      });
+      User.findById(post.author, function(err, user){
+        console.log(user);
+        post.author = user;
+        post.save(function(err){
+          if(err){res.send("error: ",err)};
+          PostEmitter.emit("addAnswerToQuestionAndUser", post);
+          res.send(post);
+        });
+      })
       break;
     case "comment":
       var post = new Post(req.body);

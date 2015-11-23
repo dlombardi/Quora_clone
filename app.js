@@ -6,6 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var multer = require("multer");
 
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/quora");

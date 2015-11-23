@@ -8,14 +8,15 @@
 }
 
 .newNotification{
-  background-color: $quora-highlight;
   padding: 10px;
   border-bottom: 1px solid $grey;
+  background-color: $quora-light;
   color: white;
 }
 
 .newNotification:hover{
-  background-color: white;
+  background-color: $quora-base;
+  color: white;
 }
 
 .oldNotification{

@@ -6987,13 +6987,14 @@ div.post.ng-scope > div > h4 > a:hover {
   margin-top: -20px; }
 
 .newNotification {
-  background-color: #F9807D;
   padding: 10px;
   border-bottom: 1px solid #a6a6a6;
+  background-color: #D54d4A;
   color: white; }
 
 .newNotification:hover {
-  background-color: white; }
+  background-color: #B92B27;
+  color: white; }
 
 .oldNotification {
   padding: 10px;
@@ -7001,6 +7002,21 @@ div.post.ng-scope > div > h4 > a:hover {
 
 .oldNotification:hover {
   background-color: #f7f7f7; }
+
+#answerText {
+  height: 100px;
+  width: 100%; }
+
+#answerSection {
+  margin-top: 70px;
+  padding: 10px; }
+
+.answer {
+  padding: 10px;
+  border: 10px solid #e5f2ff;
+  border-radius: 5px;
+  background-color: white;
+  width: 100%; }
 
 .sweet-alert {
   border-radius: 0px; }

@@ -7,6 +7,7 @@ var passport = require("passport");
 var marked = require('marked');
 var router = express.Router();
 
+
 var User = require('../models/user');
 var Topic = require('../models/topic');
 var Post = require('../models/post');

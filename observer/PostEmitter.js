@@ -11,11 +11,12 @@ var mixpanel = Mixpanel.init('66b2b8969a8e0b1d6694945c0259ac12');
 var PostEmitter = new emitter();
 
 
-function createNotification(uid, rid, pid, action, subject){
+function createNotification(uid, rid, pid, postType, action, subject){
   var notification = new Notification();
   notification.actor = uid;
   notification.receiver = rid;
   notification.post = pid;
+  notification.postType = postType;
   notification.action = action;
   notification.subject = subject;
   return notification;
@@ -35,7 +36,8 @@ PostEmitter.on("likePost", function(data){
   Post.findById(data.pid).deepPopulate("author.notifications").exec(function(err, post){
     User.findById(data.uid, function(err, user){
       if(post.author._id.toString() !== user._id.toString()){
-        var newNotification = createNotification(user._id, post.author._id, post._id, "liked","Post");
+        console.log(post);
+        var newNotification = createNotification(user._id, post.author._id, post._id, post.postType, "liked","Post");
         post.author.notifications.push(newNotification);
         newNotification.save();
       }
@@ -120,10 +122,18 @@ PostEmitter.on("addQuestionToTopicAndUser", function(post){
 });
 
 PostEmitter.on("addAnswerToQuestionAndUser", function(post){
-  Post.findById(post.responseTo, function(err, post){
-    post.answers.push(post._id);
-    post.save();
-  });
+  Post.findById(post.responseTo, function(err, question){
+    User.findById(question.author, function(err, author){
+      if(author._id.toString() !== post.author._id.toString()){
+        var newNotification = createNotification(post.author, author._id, question._id, post.postType, "answered","question");
+        author.notifications.push(newNotification);
+        newNotification.save();
+      }
+      author.save();
+      question.answers.push(post._id);
+      question.save();
+    });
+  })
   User.findById(post.author, function(err, user){
     if(user.posts.indexOf(post._id) === -1){
       user.posts.push(post._id);
@@ -134,8 +144,16 @@ PostEmitter.on("addAnswerToQuestionAndUser", function(post){
 
 PostEmitter.on("addCommentToPostAndUser", function(post){
   Post.findById(post.responseTo, function(err, parentPost){
-    parentPost.comments.push(post._id);
-    parentPost.save();
+    User.findById(parentPost.author, function(err, author){
+      if(author._id.toString() !== post.author.toString()){
+        var newNotification = createNotification(post.author, author._id, parentPost._id, post.postType, "commented","post");
+        author.notifications.push(newNotification);
+        newNotification.save();
+      }
+      author.save();
+      parentPost.comments.push(post._id);
+      parentPost.save();
+    })
   });
   User.findById(post.author, function(err, user){
     if(user.posts.indexOf(post._id) === -1){

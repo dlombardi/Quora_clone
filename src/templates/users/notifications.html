@@ -17,12 +17,24 @@
     <div class="large-9 small-12 columns buttons">
       <div class="header">All Notifications</div>
       <div id="notifications">
-        <div class="newNotifications" ng-repeat="newNotification in newNotifications">
-          {{newNotification.subject}}
+        <div class="newNotification" ng-repeat="newNotification in newNotifications">
+          <div class="row">
+            <div class="large-1 columns">
+              <img src="/assets/Exclamation Mark-100.png" alt="">
+            </div>
+            <div class="large-11 columns">
+              {{newNotification.actor.username}} {{newNotification.action}} your <a ng-href='/thread/{{oldNotification.post}}'>{{newNotification.subject}}</a>
+            </div>
+          </div>
         </div>
         <div class="oldNotification" ng-repeat="oldNotification in oldNotifications">
-          <div>
-            {{oldNotification.subject}}
+          <div class="row">
+            <div class="large-1 columns">
+              <img src="assets/Megaphone Filled-100.png" alt="">
+            </div>
+            <div class="large-11 columns">
+              {{oldNotification.actor.username}} {{oldNotification.action}} your <a ng-href='/thread/{{oldNotification.post}}'>{{oldNotification.subject}}</a> - {{oldNotification.date | date : shortDate}}
+            </div>
           </div>
         </div>
       </div>

@@ -11,6 +11,15 @@ app.factory('userFactory', function($window, $http){
     return $http.get('/users/notifications/'+userObject.uid+'');
   };
 
+  userFactory.addPhoto = function(fd){
+    return $http.post('/users/addPhoto', fd, {
+      transformRequest:angular.identity,
+      headers:{
+        'Content-Type': undefined
+      }
+    })
+  }
+
   userFactory.clearNotifs = function(userObject) {
     return $http.post('/users/clearNotifications', userObject);
   };
@@ -38,6 +47,7 @@ app.factory('userFactory', function($window, $http){
   userFactory.unsubscribe = function(unsubscribeObject){
     return $http.put('/users/unsubscribe', unsubscribeObject);
   };
+
 
   return userFactory;
 });
