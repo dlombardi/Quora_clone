@@ -71,9 +71,20 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
     topicFactory.createTopic(topicObject)
     .success(function(topic){
       $scope.topics.push(topic);
+       swal({
+         title: "Success!",
+         text: "You've made a new Topic!",
+         timer: 750,
+         showConfirmButton: false
+       });
+      $state.go("compose");
     })
     .error(function(err){
-      console.log(err);
+      swal({
+        title: "Error!",
+        text: "Missing fields!",
+        showConfirmButton: true
+      });
     })
   };
 
