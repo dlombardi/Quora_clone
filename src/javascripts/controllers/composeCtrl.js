@@ -88,5 +88,6 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
     })
   };
 
+  $scope.$emit("notHome");
   $scope.$emit("getNotifications");
 });

@@ -33,4 +33,6 @@ app.controller('notificationsCtrl', function($scope, $http, auth, userFactory, p
       console.log("error: ", err);
     })
   })();
+
+  $scope.$emit("notHome");
 });

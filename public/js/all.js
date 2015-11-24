@@ -23,6 +23,12 @@ app.filter('unsafe', function($sce){
     $rootScope.$on('getNotifications', function(event, posts){
       $rootScope.$broadcast("notifications", posts);
     })
+    $rootScope.$on('notHome', function(){
+      $rootScope.$broadcast("removeTagFilter");
+    })
+    $rootScope.$on('inHome', function(){
+      $rootScope.$broadcast("addTagFilter");
+    })
     $rootScope.isNotLoggedIn = function(){
       swal({
         title: "Not Logged In!",
@@ -166,6 +172,7 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
     })
   };
 
+  $scope.$emit("notHome");
   $scope.$emit("getNotifications");
 });
 
@@ -178,6 +185,10 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
 
+  if(!$scope.loggedIn){
+    $state.go("users.login");
+  }
+
   $scope.getPosts = function(sortingMethod){
     $scope.posts = [];
     $scope.topicFeed = [];
@@ -189,6 +200,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     .success(function(posts){
       if($scope.loggedIn){
         postFactory.formatLikedPosts(posts, currentUser);
+        postFactory.formatTags(posts);
+        console.log("tags", posts[0].tags);
         $scope.posts = posts;
       } else {
         $scope.posts = posts;
@@ -397,10 +410,12 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     }
   }
 
-  $scope.$emit("getNotifications")
+  $scope.$emit("getNotifications");
+  $scope.$emit("inHome");
 
   $scope.$on('filteredByTags', function(event, posts){
     postFactory.formatLikedPosts(posts, currentUser);
+    postFactory.formatTags(posts);
     $scope.posts = posts;
   })
 
@@ -452,6 +467,8 @@ app.controller('notificationsCtrl', function($scope, $http, auth, userFactory, p
       console.log("error: ", err);
     })
   })();
+
+  $scope.$emit("notHome");
 });
 
 'use strict';
@@ -461,6 +478,7 @@ app.controller('profileCtrl', function($scope, $state, auth){
 
   $(document).foundation();
   $scope.$emit("getNotifications");
+  $scope.$emit("notHome");
 });
 
 'use strict';
@@ -675,6 +693,7 @@ app.controller('threadCtrl', function($scope, $state, auth, postFactory, $rootSc
     }
   };
 
+  $scope.$emit("notHome");
   $scope.$emit("getNotifications")
 });
 
@@ -885,6 +904,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     }
   }
 
+  $scope.$emit("notHome");
   $scope.$emit("getNotifications")
 
   $scope.$on("loggedOut", function(){
@@ -895,14 +915,13 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     $scope.loggedIn = auth.isLoggedIn();
   })
 
-
-
 });
 
 'use strict';
 
 app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFactory, $rootScope){
   $scope.Login = false;
+  $scope.tagFilter = true;
   $scope.loggedIn = auth.isLoggedIn();
   $scope.currentUser = auth.currentUser();
   $scope.newNotifications = [];
@@ -957,6 +976,14 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
       console.log("error: ", err);
     })
   }
+
+  $scope.$on("removeTagFilter", function(){
+    $scope.tagFilter = false;
+  })
+
+  $scope.$on("addTagFilter", function(){
+    $scope.tagFilter = true;
+  })
 
   $scope.$on("notifications", function(){
     userFactory.getUser($scope.currentUser._id)
@@ -1117,6 +1144,20 @@ app.factory('postFactory', function($window, $http){
       })
     });
   };
+
+  postFactory.formatTags = function(posts){
+    posts.map(function(post){
+      var formattedTags = "";
+      post.tags.forEach(function(tag){
+        formattedTags += tag + ", ";
+      });
+      post.tags = formattedTags;
+      return post;
+    })
+  }
+
+
+
   return postFactory;
 });
 

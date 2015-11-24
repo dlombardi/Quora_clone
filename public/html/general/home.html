@@ -10,7 +10,7 @@
         <p class="header" ng-if="loggedIn">Subscriptions</p>
         <div class="row">
           <ul>
-            <li class="subscriptions" ng-repeat="subscription in subscriptions"><a ng-href='/topics/{{topic.name}}'>{{subscription.name}}</a></li>
+            <li class="subscriptions" ng-repeat="subscription in subscriptions"><a ng-href='/topics/{{subscription.name}}'>{{subscription.name}}</a></li>
           </ul>
         </div>
         <p class="header" ng-if="loggedIn">Random Topics</p>
@@ -23,7 +23,7 @@
     </div>
 
     <!-- MAIN COLUMN -->
-    <div class="large-8 medium-8 small-12 columns buttons">
+    <div class="large-10 medium-8 small-12 columns buttons">
       <div class="header">Top Stories For You</div>
       <dl class="sub-nav">
       <dt id="filterBar">Filter:</dt>
@@ -43,6 +43,7 @@
           <h4><a ng-href='/thread/{{post._id}}'>{{post.title}}</a></h4>
           <p><a href="" class="author">{{post.author.username}}</a> {{post.author.work}}</p>
           <p ng-bind-html="post.content | unsafe"></p>
+          <p>tags: {{post.tags}}</p>
           <button ng-show="!post.liked" ng-click="togglePostLike($index)">Like | <span>{{post.likes}}</span></button>
           <button ng-show="post.liked" ng-click="togglePostLike($index)">Unlike | <span>{{post.likes}}</span></button>
           <button class="dislikeBtn" ng-show="!post.disliked" ng-click="togglePostDislike($index)">Dislike | <span>{{post.dislikes}}</span></button>
@@ -79,12 +80,6 @@
         </div>
         <hr>
       </div>
-    </div>
-
-    <!-- TOPICS COLUMN -->
-    <div class="large-2 medium-2 small-12 columns buttons">
-      <div class="header">Random</div>
-
     </div>
   </div>
 </div>

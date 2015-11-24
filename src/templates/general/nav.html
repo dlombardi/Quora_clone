@@ -11,7 +11,7 @@
         <section class="top-bar-section">
           <ul class="left">
             <li class="has-form">
-              <div class="row collapse">
+              <div ng-if="tagFilter" class="row collapse">
                 <div class="medium-8 small-9 columns">
                   <input type="text" ng-model="tag" placeholder="Search By Tag">
                 </div>
@@ -23,8 +23,8 @@
           </ul>
           <!-- Right Nav Section -->
           <ul class="right navBar">
-            <li><a ui-sref="home"><i class="fi-home"></i> Home</a></li>
-            <li><a ui-sref="compose" ng-if="loggedIn"><i class="fi-pencil"></i>Compose</a></li>
+            <li><a ui-sref="home" ng-if="loggedIn"><i class="fi-home"></i> Home</a></li>
+            <li><a ui-sref="compose" ng-if="loggedIn"><i class="fi-pencil"></i> Compose</a></li>
             <li><a id="notifs" ui-sref="users.notifications" ng-if="loggedIn"><span ng-if="newNotifications.length > 0" id="notifNumber">{{newNotifications.length}}</span> Notifications</a></li>
             <li><a href="/profile/{{currentUser._id}}" ng-if="loggedIn"><i class="fi-torso"></i> {{currentUser.username}}</a></li>
             <li><a ui-sref="users.login" ng-if="!loggedIn"> Login</a></li>

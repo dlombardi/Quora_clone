@@ -70,5 +70,19 @@ app.factory('postFactory', function($window, $http){
       })
     });
   };
+
+  postFactory.formatTags = function(posts){
+    posts.map(function(post){
+      var formattedTags = "";
+      post.tags.forEach(function(tag){
+        formattedTags += tag + ", ";
+      });
+      post.tags = formattedTags;
+      return post;
+    })
+  }
+
+
+
   return postFactory;
 });

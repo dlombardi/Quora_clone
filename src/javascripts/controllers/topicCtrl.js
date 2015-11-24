@@ -205,6 +205,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     }
   }
 
+  $scope.$emit("notHome");
   $scope.$emit("getNotifications")
 
   $scope.$on("loggedOut", function(){
@@ -214,7 +215,5 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   $scope.$on("loggedIn", function(){
     $scope.loggedIn = auth.isLoggedIn();
   })
-
-
 
 });

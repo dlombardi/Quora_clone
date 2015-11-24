@@ -23,6 +23,12 @@ app.filter('unsafe', function($sce){
     $rootScope.$on('getNotifications', function(event, posts){
       $rootScope.$broadcast("notifications", posts);
     })
+    $rootScope.$on('notHome', function(){
+      $rootScope.$broadcast("removeTagFilter");
+    })
+    $rootScope.$on('inHome', function(){
+      $rootScope.$broadcast("addTagFilter");
+    })
     $rootScope.isNotLoggedIn = function(){
       swal({
         title: "Not Logged In!",

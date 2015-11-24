@@ -2,6 +2,7 @@
 
 app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFactory, $rootScope){
   $scope.Login = false;
+  $scope.tagFilter = true;
   $scope.loggedIn = auth.isLoggedIn();
   $scope.currentUser = auth.currentUser();
   $scope.newNotifications = [];
@@ -56,6 +57,14 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
       console.log("error: ", err);
     })
   }
+
+  $scope.$on("removeTagFilter", function(){
+    $scope.tagFilter = false;
+  })
+
+  $scope.$on("addTagFilter", function(){
+    $scope.tagFilter = true;
+  })
 
   $scope.$on("notifications", function(){
     userFactory.getUser($scope.currentUser._id)

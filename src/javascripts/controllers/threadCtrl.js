@@ -210,5 +210,6 @@ app.controller('threadCtrl', function($scope, $state, auth, postFactory, $rootSc
     }
   };
 
+  $scope.$emit("notHome");
   $scope.$emit("getNotifications")
 });

@@ -7,6 +7,10 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
 
+  if(!$scope.loggedIn){
+    $state.go("users.login");
+  }
+
   $scope.getPosts = function(sortingMethod){
     $scope.posts = [];
     $scope.topicFeed = [];
@@ -18,6 +22,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     .success(function(posts){
       if($scope.loggedIn){
         postFactory.formatLikedPosts(posts, currentUser);
+        postFactory.formatTags(posts);
+        console.log("tags", posts[0].tags);
         $scope.posts = posts;
       } else {
         $scope.posts = posts;
@@ -226,10 +232,12 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     }
   }
 
-  $scope.$emit("getNotifications")
+  $scope.$emit("getNotifications");
+  $scope.$emit("inHome");
 
   $scope.$on('filteredByTags', function(event, posts){
     postFactory.formatLikedPosts(posts, currentUser);
+    postFactory.formatTags(posts);
     $scope.posts = posts;
   })
 
