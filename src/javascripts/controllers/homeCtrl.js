@@ -23,7 +23,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
       if($scope.loggedIn){
         postFactory.formatLikedPosts(posts, currentUser);
         postFactory.formatTags(posts);
-        console.log("tags", posts[0].tags);
+        postFactory.formatUserPosts(posts, currentUser);
+        console.log("posts", posts);
         $scope.posts = posts;
       } else {
         $scope.posts = posts;

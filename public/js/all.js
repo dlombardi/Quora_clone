@@ -201,7 +201,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
       if($scope.loggedIn){
         postFactory.formatLikedPosts(posts, currentUser);
         postFactory.formatTags(posts);
-        console.log("tags", posts[0].tags);
+        postFactory.formatUserPosts(posts, currentUser);
+        console.log("posts", posts);
         $scope.posts = posts;
       } else {
         $scope.posts = posts;
@@ -712,6 +713,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     .success(function(topic){
       console.log("TOPIC: ", topic)
       postFactory.formatLikedPosts(topic.posts, currentUser);
+      postFactory.formatTags(topic.posts);
+      postFactory.formatUserPosts(topic.posts, currentUser);
       topic.subscribers.forEach(function(subscriber){
         subscriber === currentUser._id ? $scope.subscribed = true : $scope.subscribed = false;
       });
@@ -1153,6 +1156,12 @@ app.factory('postFactory', function($window, $http){
       });
       post.tags = formattedTags;
       return post;
+    })
+  }
+
+  postFactory.formatUserPosts = function(posts, currentUser){
+    posts.map(function(post){
+      post.author._id.toString() === currentUser._id.toString() ?  post.userPost = true :  post.userPost = false;
     })
   }
 

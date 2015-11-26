@@ -13,6 +13,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     .success(function(topic){
       console.log("TOPIC: ", topic)
       postFactory.formatLikedPosts(topic.posts, currentUser);
+      postFactory.formatTags(topic.posts);
+      postFactory.formatUserPosts(topic.posts, currentUser);
       topic.subscribers.forEach(function(subscriber){
         subscriber === currentUser._id ? $scope.subscribed = true : $scope.subscribed = false;
       });

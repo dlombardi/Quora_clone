@@ -27,6 +27,7 @@
     <div class="large-8 small-12 columns buttons">
       <div class="header">Feed</div>
       <div class="post" ng-repeat="post in posts track by $index">
+        <button ng-if="post.userPost" class="right">delete</button>
         <p><a ng-href="#/topic/{{post.topic._id}}">{{post.topic.name}}</a></p>
         <h4><a href="">{{post.title}}</a></h4>
         <p><a href="" class="author">{{post.author.username}}</a> {{post.author.work}}</p>
@@ -53,6 +54,7 @@
             <hr>
             <div class="comments" ng-repeat="comment in comments">
               <div class="commentBody">
+                <button ng-if="post.userPost" class="right">delete</button>
                 <h6><a href="">{{comment.author.username}}</a></h6>
                 <p ng-bind-html="comment.content | unsafe"></p>
                 <button ng-show="!comment.liked" ng-click="toggleCommentLike($index)">Like | <span>{{comment.likes}}</span></button>

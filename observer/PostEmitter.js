@@ -162,7 +162,7 @@ PostEmitter.on("addAnswerToQuestionAndUser", function(post){
 PostEmitter.on("addCommentToPostAndUser", function(post){
   Post.findById(post.responseTo, function(err, parentPost){
     User.findById(parentPost.author, function(err, author){
-      if(author._id.toString() !== post.author.toString()){
+      if(author._id.toString() !== post.author._id.toString()){
         var newNotification = createNotification(post.author, author._id, parentPost._id, post.postType, "commented","post");
         author.notifications.push(newNotification);
         newNotification.save();

@@ -19,6 +19,21 @@ marked.setOptions({
   smartypants: false
 });
 
+marked.setOptions({
+  highlight: function (code, lang, callback) {
+    require('pygmentize-bundled')({ lang: lang, format: 'html' }, code, function (err, result) {
+      callback(err, result.toString());
+    });
+  }
+});
+
+// Synchronous highlighting with highlight.js
+marked.setOptions({
+  highlight: function (code) {
+    return require('highlight.js').highlightAuto(code).value;
+  }
+});
+
 var User = require('../models/user');
 var Topic = require('../models/topic');
 var Post = require('../models/post');

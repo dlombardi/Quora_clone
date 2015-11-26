@@ -44,6 +44,7 @@
           <hr>
           <div class="comments" ng-repeat="comment in comments">
             <div class="commentBody">
+              <button ng-if="post.userPost" class="right">delete</button>
               <h6><a href="">{{comment.author.username}}</a></h6>
               <p ng-bind-html="comment.content | unsafe"></p>
               <button ng-show="!comment.liked" ng-click="toggleCommentLike($index)">Like | <span>{{comment.likes}}</span></button>

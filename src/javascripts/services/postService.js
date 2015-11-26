@@ -82,6 +82,12 @@ app.factory('postFactory', function($window, $http){
     })
   }
 
+  postFactory.formatUserPosts = function(posts, currentUser){
+    posts.map(function(post){
+      post.author._id.toString() === currentUser._id.toString() ?  post.userPost = true :  post.userPost = false;
+    })
+  }
+
 
 
   return postFactory;
