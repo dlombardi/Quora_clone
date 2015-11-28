@@ -16,7 +16,7 @@ app.factory('topicFactory', function($window, $http) {
   };
 
   topicFactory.getTopic = function(topicInput){
-    return $http.get('/topics/topic/'+topicInput+'')
+    return $http.get(`/topics/topic/${topicInput}`)
   };
 
   topicFactory.createTopic = function(topicInput){

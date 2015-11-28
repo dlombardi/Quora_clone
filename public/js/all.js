@@ -909,10 +909,10 @@ app.controller('usersCtrl', function ($scope, $state, auth, userFactory, postFac
 
   $scope.$on("notifications", function () {
     userFactory.getUser($scope.currentUser._id).success(function (user) {
+      $scope.picture = auth.loggedInUser.picture;
       $scope.newNotifications = user.notifications.filter(function (notif) {
         return !notif.seen;
       });
-      $scope.picture = auth.loggedInUser.picture;
     }).error(function (err) {
       console.log("error: ", err);
     });
@@ -928,19 +928,21 @@ app.controller('usersCtrl', function ($scope, $state, auth, userFactory, postFac
     $scope.currentUser = auth.currentUser();
   });
 });
-'use strict';
+"use strict";
 
-app.directive('fileInput', ['$parse', function ($parse) {
-  return {
-    restrict: "A",
-    link: function link(scope, elm, attrs) {
-      elm.bind("change", function () {
-        $parse(attrs.fileInput).assign(scope, elm[0].files);
-        scope.$apply();
-      });
-    }
-  };
-}]);
+app.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if (event.which === 13) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
 'use strict';
 
 app.factory('auth', function ($window, $http, tokenStorageKey) {
@@ -1015,7 +1017,7 @@ app.factory('postFactory', function ($window, $http) {
   };
 
   postFactory.getPost = function (postObject) {
-    return $http.get('/posts/' + postObject.pid + '');
+    return $http.get('/posts/' + postObject.pid);
   };
 
   postFactory.editPost = function (editObject) {
@@ -1031,17 +1033,17 @@ app.factory('postFactory', function ($window, $http) {
   };
 
   postFactory.getSortedPosts = function (sorting) {
-    return $http.get('/posts/sorted/' + sorting.sortingMethod + '/user/topic/tag/postType/' + sorting.postType + '');
+    return $http.get('/posts/sorted/' + sorting.sortingMethod + '/user/topic/tag/postType/' + sorting.postType);
   };
 
   postFactory.getSortedComments = function (sorting) {
     console.log(sorting);
-    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid + '');
+    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid);
   };
 
   postFactory.getSortedAnswers = function (sorting) {
     console.log(sorting);
-    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid + '');
+    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid);
   };
 
   postFactory.formatLikedPosts = function (posts, currentUser) {
@@ -1106,7 +1108,7 @@ app.factory('topicFactory', function ($window, $http) {
   };
 
   topicFactory.getTopic = function (topicInput) {
-    return $http.get('/topics/topic/' + topicInput + '');
+    return $http.get('/topics/topic/' + topicInput);
   };
 
   topicFactory.createTopic = function (topicInput) {
@@ -1125,11 +1127,11 @@ app.factory('userFactory', function ($window, $http) {
   var userFactory = {};
 
   userFactory.getUser = function (uid) {
-    return $http.get('/users/' + uid + '');
+    return $http.get('/users/' + uid);
   };
 
   userFactory.getNotifs = function (userObject) {
-    return $http.get('/users/notifications/' + userObject.uid + '');
+    return $http.get('/users/notifications/' + userObject.uid);
   };
 
   userFactory.clearNotifs = function (userObject) {

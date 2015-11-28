@@ -16,7 +16,7 @@ app.factory('postFactory', function($window, $http){
   };
 
   postFactory.getPost = function(postObject){
-    return $http.get('/posts/'+postObject.pid+'');
+    return $http.get(`/posts/${postObject.pid}`);
   };
 
   postFactory.editPost = function(editObject){
@@ -24,25 +24,25 @@ app.factory('postFactory', function($window, $http){
   };
 
   postFactory.getPostsByTag = function(tag){
-    return $http.get('/posts/sorted/user/topic/tag/'+ tag +'/postType/');
+    return $http.get(`/posts/sorted/user/topic/tag/${tag}/postType/`);
   };
 
   postFactory.getPostsByTopic = function(topic){
-    return $http.get('/posts/sorted/user/topic/'+ topic +'/tag/postType/');
+    return $http.get(`/posts/sorted/user/topic/${topic}/tag/postType/`);
   };
 
   postFactory.getSortedPosts = function(sorting){
-    return $http.get('/posts/sorted/'+sorting.sortingMethod+'/user/topic/tag/postType/'+ sorting.postType +'');
+    return $http.get(`/posts/sorted/${sorting.sortingMethod}/user/topic/tag/postType/${sorting.postType}`);
   };
 
   postFactory.getSortedComments = function(sorting){
     console.log(sorting);
-    return $http.get('/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
+    return $http.get(`/posts/sortedComments/${sorting.sortingMethod}/post/${sorting.pid}`);
   };
 
   postFactory.getSortedAnswers = function(sorting){
     console.log(sorting);
-    return $http.get('/posts/sortedComments/'+sorting.sortingMethod+'/post/'+sorting.pid+'');
+    return $http.get(`/posts/sortedComments/${sorting.sortingMethod}/post/${sorting.pid}`);
   };
 
 

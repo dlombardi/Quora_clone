@@ -57,13 +57,8 @@ UserSchema.methods.generateJWT = function() {
   }, process.env.JWT_SECRET);
 };
 
-UserSchema.statics.registerUser = function(picture, data) {
-  this.picture = picture;
-  this.fullName = data.fullName;
-  this.username = data.username;
-  this.email = data.email;
-  this.password = user.setPassword(data.password);
-};
-
+UserSchema.statics.sortBySubscriptions = function(uid, cb){
+  return this.findById(req.params.uid).deepPopulate('subscriptions.posts').exec(cb)
+}
 
 module.exports = mongoose.model('User', UserSchema);

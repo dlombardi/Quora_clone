@@ -33,4 +33,17 @@ PostSchema.methods.formatTags = function(tags, post) {
   });
 }
 
+PostSchema.statics.filterPostType = function(postType, sortParams, cb){
+  return this.find({postType: postType}).deepPopulate("topic comments.author answers author").sort(sortParams).exec(cb);
+}
+
+PostSchema.statics.filterByTag = function(tag, sortParams, cb){
+  return this.find({tags: {$in: [tag]}}).sort(sortParams).deepPopulate("author topic").exec(cb)
+}
+
+PostSchema.statics.filterByTopic = function(tid, sortParams, cb){
+  return this.find({topic:tid}).sort(sortParams).exec(cb)
+}
+
+
 module.exports = mongoose.model('Post', PostSchema);

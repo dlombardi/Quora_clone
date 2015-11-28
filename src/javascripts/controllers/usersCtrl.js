@@ -88,10 +88,10 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
   $scope.$on("notifications", function(){
     userFactory.getUser($scope.currentUser._id)
     .success(function(user){
+      $scope.picture = auth.loggedInUser.picture;
       $scope.newNotifications = user.notifications.filter(function(notif){
         return !notif.seen;
       })
-      $scope.picture = auth.loggedInUser.picture;
     })
     .error(function(err){
       console.log("error: ", err)

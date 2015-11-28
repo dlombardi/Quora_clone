@@ -209,22 +209,22 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       sortParams = {"likes" : 'desc'};
   }
   if(req.params.postType){
-    Post.find({postType: req.params.postType}).deepPopulate("topic comments.author answers author").sort(sortParams).exec(function(err, posts){
-      if(err)res.send("error: ",err);
+    Post.filterPostType(req.params.postType, sortParams, function(err, posts){
+      if(err)res.send("error", err)
       res.send(posts);
     });
   } else if (tag) {
-    Post.find({tags: {$in: [tag]}}).sort(sortParams).exec(function(err, posts){
+    Post.filterByTag(tag, sortParams, function(err, posts){
       if(err)res.send("error: ",err);
       res.send(posts);
     });
   } else if(req.params.tid){
-    Post.find({topic : req.params.tid}).sort(sortParams).exec(function(err, posts){
+    Post.filterByTopic(req.params.tid, sortParams, function(err, posts){
       if(err)res.send("error: ",err);
       res.send(posts);
     });
-  } else if(req.params.uid){
-    User.findById(req.params.uid).deepPopulate('subscriptions.posts').exec(function(err, user){
+  } else if (req.params.uid){
+    User.sortBySubscriptions(req.params.uid, function(err, user){
       if(err)res.send("error: ",err);
       var subscribedPosts = [];
       user.subscriptions.forEach(function(subscription){
