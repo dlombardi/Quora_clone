@@ -32,13 +32,12 @@ router.post('/register', upload.single('file'), function(req, res, next){
   user.username = data.username;
   user.email = data.email;
   user.password = user.setPassword(data.password);
-  console.log(user);
 
   user.save(function(err){
    if(err){
      return res.status(400).json({error: err});
    }
-   UserEmitter.emit("createUser", user);
+  //  UserEmitter.emit("createUser", user);
    return res.json({token: user.generateJWT()})
  });
 });

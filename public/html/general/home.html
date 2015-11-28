@@ -43,7 +43,7 @@
             <p>unanswered • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
           </div>
           <h4><a ng-href='/thread/{{post._id}}'>{{post.title}}</a></h4>
-          <p><img id="profilePicture" data-ng-src="data:image/png;base64,{{post.author.picture}}" data-err-src="images/png/avatar.png"/><a ng-href='/profile/{{post.author._id}}' class="author"> {{post.author.username}}</a> {{post.author.work}}</p>
+          <p><img id="profilePicture" data-ng-src="data:image/png;base64,{{post.author.picture}}" data-err-src="/assets/User-100.png"/><a ng-href='/profile/{{post.author._id}}' class="author"> {{post.author.username}}</a> {{post.author.work}}</p>
           <p ng-bind-html="post.content | unsafe"></p>
           <p>tags: {{post.tags}}</p>
           <button ng-show="!post.liked" ng-click="togglePostLike($index)">Like | <span>{{post.likes}}</span></button>

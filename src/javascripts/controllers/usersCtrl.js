@@ -34,7 +34,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
 
 
   $scope.register = function(file) {
-     user.register = Upload.upload({
+     file.upload = Upload.upload({
        url: 'auth/register',
        data: {
          file: file,
@@ -44,9 +44,9 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
          password: $scope.password
        },
      });
-     user.register.then(function (response) {
+     file.upload.then(function (response) {
+       auth.saveToken(response.data.token);
        $scope.$emit('login');
-       auth.saveToken(response.token);
 
        $timeout(function () {
          file.result = response.data;
@@ -106,6 +106,16 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
   $scope.$on("loggedIn", function(){
     $scope.loggedIn = auth.isLoggedIn();
     $scope.currentUser = auth.currentUser();
+    userFactory.getUser($scope.currentUser._id)
+    .success(function(user){
+      $scope.picture = auth.loggedInUser.picture;
+      $scope.newNotifications = user.notifications.filter(function(notif){
+        return !notif.seen;
+      })
+    })
+    .error(function(err){
+      console.log("error: ", err)
+    })
   })
 
 });
