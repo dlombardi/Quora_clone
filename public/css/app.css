@@ -6907,6 +6907,11 @@ quora-title {
   background-color: #D54d4A;
   color: white; }
 
+#profilePicture {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%; }
+
 .commentSection {
   padding: 10px;
   background-color: #f1f1f1;

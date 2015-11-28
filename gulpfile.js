@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-
+var babel = require('gulp-babel');
 var sass = require('gulp-sass');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -29,6 +29,9 @@ gulp.task('sass', function(){
 
 gulp.task('scripts', function(){
   return gulp.src(dirs.src.js)
+    .pipe(babel({
+      presets: ['es2015']
+     }))
     .pipe(concat('all.js'))
     .pipe(gulp.dest(dirs.dist.js))
     .pipe(rename('all.min.js'))

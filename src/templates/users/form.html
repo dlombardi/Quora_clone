@@ -1,48 +1,63 @@
 <div id="loginForm" class="animated fadeInDown">
   <div class="row">
     <div class="col-xs-12">
-      <h1 class="title">{{formState}}</h1>
-      <div ng-show="!Login">
-        <label class="col-xs-12 col-sm-4 control-label">Full Name</label>
-        <div class="col-xs-12 col-sm-4">
-          <input type="text" ng-model="user.fullName" placeholder="Full Name">
-        </div>
-      </div>
-      <div>
-        <label  class="col-xs-12 col-sm-4 control-label">Username</label>
-        <div class="col-xs-12 col-sm-4">
-          <input type="text" ng-model="user.username" placeholder="Username">
-        </div>
-      </div>
-      <div ng-show="!Login">
-        <label class="col-xs-12 col-sm-4 control-label">Email</label>
-        <div class="col-xs-12 col-sm-4">
-          <input type="text" ng-model="user.email" placeholder="Email">
-        </div>
-      </div>
-      <div>
-        <label class="col-xs-12 col-sm-4">Password</label>
-        <div class="col-xs-12 col-sm-4">
-          <input type="password" ng-model="user.password" placeholder="Password">
-        </div>
-      </div>
-      <div ng-show="!Login">
-        <label class="col-xs-12 col-sm-4">Profile Picture</label>
-        <div class="col-xs-12 col-sm-4">
-          <input type="file" file-input="files" multiple/>
-          <button ng-click="upload()">Upload</button>
-        </div>
-      </div>
-      <div>
-        <div class="col-sm-offset-4 col-sm-4 buttons text-center">
-          <button class="button" ng-click="submit(user)">{{formState}}</button>
-        </div>
-      </div>
-      <div>
-        <div class="col-sm-offset-4 col-sm-4 buttons text-center">
-          <button class="button quora-change animated" ng-click="switchState()">{{currentState}}</button>
-        </div>
-      </div>
+      <form name="myForm" novalidate>
+        <fieldset>
+          <h1 class="title">{{formState}}</h1>
+          <div ng-show="!Login">
+            <label class="col-xs-12 col-sm-4 control-label">Full Name</label>
+            <div class="col-xs-12 col-sm-4">
+              <input type="text" name="fullName" ng-model="fullName" size="31" required  placeholder="Full Name">
+            </div>
+          </div>
+          <div>
+            <label  class="col-xs-12 col-sm-4 control-label">Username</label>
+            <div class="col-xs-12 col-sm-4">
+              <input type="text" name="userName" ng-model="username" size="31" required placeholder="Username">
+            </div>
+          </div>
+          <div ng-show="!Login">
+            <label class="col-xs-12 col-sm-4 control-label">Email</label>
+            <div class="col-xs-12 col-sm-4">
+              <input type="text" name="email" ng-model="email" size="31" required placeholder="Email">
+            </div>
+          </div>
+          <div>
+            <label class="col-xs-12 col-sm-4">Password</label>
+            <div class="col-xs-12 col-sm-4">
+              <input type="password" name="password" ng-model="password" size="31" required placeholder="Password">
+            </div>
+          </div>
+          <input ng-show="!Login" type="file" ngf-select ng-model="picFile" name="file"
+                 accept="image/*" ngf-max-size="2MB" required>
+          <i ng-show="myForm.file.$error.maxSize">File too large
+              {{picFile.size / 1000000|number:1}}MB: max 2M</i>
+          <img ng-show="myForm.file.$valid" ngf-thumbnail="picFile" class="thumb"> <button class="button" ng-click="picFile = null" ng-show="picFile">Remove</button>
+          <br>
+          <div ng-show="!Login">
+            <div class="col-sm-offset-4 col-sm-4 buttons text-center">
+              <button class="button" ng-disabled="!myForm.$valid"
+                      ng-click="register(picFile)">Register</button>
+              <span class="progress" ng-show="picFile.progress >= 0">
+                <div style="width:{{picFile.progress}}%"
+                    ng-bind="picFile.progress + '%'"></div>
+              </span>
+              <span ng-show="picFile.result">Upload Successful</span>
+              <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+            </div>
+          </div>
+          <div ng-show="Login">
+            <div class="col-sm-offset-4 col-sm-4 buttons text-center">
+              <button class="button" ng-click="login(username, password)">{{formState}}</button>
+            </div>
+          </div>
+          <div>
+            <div class="col-sm-offset-4 col-sm-4 buttons text-center">
+              <button class="button quora-change animated" ng-click="switchState()">{{currentState}}</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
     </div>
   </div>
 </div>

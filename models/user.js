@@ -57,5 +57,13 @@ UserSchema.methods.generateJWT = function() {
   }, process.env.JWT_SECRET);
 };
 
+UserSchema.statics.registerUser = function(picture, data) {
+  this.picture = picture;
+  this.fullName = data.fullName;
+  this.username = data.username;
+  this.email = data.email;
+  this.password = user.setPassword(data.password);
+};
+
 
 module.exports = mongoose.model('User', UserSchema);

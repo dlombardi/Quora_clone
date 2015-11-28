@@ -1,6 +1,6 @@
 <div id="navContainer">
   <div class="row">
-    <div class="large-10 large-offset-1 columns ">
+    <div class="large-12  columns ">
       <nav class="top-bar" data-topbar role="navigation" ng-controller='usersCtrl'>
         <ul class="title-area">
           <li class="name">
@@ -26,7 +26,7 @@
             <li><a ui-sref="home" ng-if="loggedIn"><i class="fi-home"></i> Home</a></li>
             <li><a ui-sref="compose" ng-if="loggedIn"><i class="fi-pencil"></i> Compose</a></li>
             <li><a id="notifs" ui-sref="users.notifications" ng-if="loggedIn"><span ng-if="newNotifications.length > 0" id="notifNumber">{{newNotifications.length}}</span> Notifications</a></li>
-            <li><a href="/profile/{{currentUser._id}}" ng-if="loggedIn"><i class="fi-torso"></i> {{currentUser.username}}</a></li>
+            <li><a href="/profile/{{currentUser._id}}" ng-if="loggedIn"><img id="profilePicture" data-ng-src="data:image/png;base64,{{picture}}" data-err-src="images/png/avatar.png"/> {{currentUser.username}}</a></li>
             <li><a ui-sref="users.login" ng-if="!loggedIn"> Login</a></li>
             <li><a ui-sref="home" ng-if="loggedIn" ng-click="logout()"> Logout</a></li>
           </ul>

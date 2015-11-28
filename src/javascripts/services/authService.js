@@ -3,6 +3,8 @@
 app.factory('auth', function($window, $http, tokenStorageKey) {
   var auth = {};
 
+  auth.loggedInUser;
+
   auth.saveToken = function(token) {
     $window.localStorage[tokenStorageKey] = token;
   };
@@ -25,6 +27,13 @@ app.factory('auth', function($window, $http, tokenStorageKey) {
     if(auth.isLoggedIn()){
       var token = auth.getToken();
       var payload = JSON.parse($window.atob(token.split('.')[1]));
+      $http.get(`/users/${payload._id}`)
+      .then(res => {
+        auth.loggedInUser = res.data;
+      })
+      .catch(err => {
+        console.log("err", err);
+      });
       return payload;
     }
   };

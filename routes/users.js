@@ -3,8 +3,6 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
-var multer = require('multer');
-var upload = multer({ storage: multer.memoryStorage() });
 
 var User = require('../models/user');
 var Topic = require('../models/topic');
@@ -21,12 +19,6 @@ router.get('/:uid', function(req, res, next){
   User.findById(req.params.uid).deepPopulate("notifications.actor notifications.receiver subscriptions.posts ").exec(function(err, user){
     res.send(user);
   });
-});
-
-router.post('/addPhoto', function(req, res, next){
-  console.log(req.body);
-  // var profilePicture = new Buffer(req.file.buffer, 'base64').toString('ascii')
-  // console.log(profilePicture);
 });
 
 router.post('/addknowledge', function(req, res, next){

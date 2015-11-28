@@ -1,13 +1,11 @@
 'use strict';
 
-app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFactory, $rootScope){
+app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFactory, $rootScope, Upload, $timeout){
   $scope.Login = false;
   $scope.tagFilter = true;
   $scope.loggedIn = auth.isLoggedIn();
   $scope.currentUser = auth.currentUser();
   $scope.newNotifications = [];
-  $scope.currentUserName;
-  $scope.photo;
 
   ($scope.switchState = function(){
     $scope.Login = !$scope.Login;
@@ -15,9 +13,12 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
     $scope.Login ? $scope.formState = "Login" : $scope.formState = "Register"
   })();
 
-  $scope.submit = function(user) {
-    var submitFunc = $scope.Login ? auth.login : auth.register;
-    submitFunc(user).success(function(data){
+  $scope.login = function(username, password) {
+    var user = {
+      username: username,
+      password: password
+    }
+    auth.login(user).success(function(data){
       $scope.$emit('login');
       $state.go('home');
     }).error(function(err){
@@ -28,19 +29,37 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
         type: "error",
         confirmButtonColor: "#B92B27"
       });
-      $scope.user = {};
     });
   };
 
-  $scope.upload = function(){
-    var fd = new FormData();
-    fd.append('file', $scope.files[0])
-    console.log(fd);
-    userFactory.addPhoto(fd)
-    .success(function(data){
-      console.log("Data: ", data);
-    })
-  }
+
+  $scope.register = function(file) {
+     user.register = Upload.upload({
+       url: 'auth/register',
+       data: {
+         file: file,
+         username: $scope.username,
+         email: $scope.email,
+         fullName: $scope.fullName,
+         password: $scope.password
+       },
+     });
+     user.register.then(function (response) {
+       $scope.$emit('login');
+       auth.saveToken(response.token);
+
+       $timeout(function () {
+         file.result = response.data;
+         $state.go('home');
+       });
+     }, function (response) {
+       if (response.status > 0)
+         $scope.errorMsg = response.status + ': ' + response.data;
+     }, function (evt) {
+       // Math.min is to fix IE which reports 200% sometimes
+       file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+     });
+   }
 
   $scope.logout = function(){
     auth.logout();
@@ -72,6 +91,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
       $scope.newNotifications = user.notifications.filter(function(notif){
         return !notif.seen;
       })
+      $scope.picture = auth.loggedInUser.picture;
     })
     .error(function(err){
       console.log("error: ", err)
