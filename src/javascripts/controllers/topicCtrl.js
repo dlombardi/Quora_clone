@@ -12,9 +12,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
       console.log("TOPIC: ", topic)
-      postFactory.formatLikedPosts(topic.posts, currentUser);
-      postFactory.formatTags(topic.posts);
-      postFactory.formatUserPosts(topic.posts, currentUser);
+      postFactory.formatPosts(posts, currentUser);
       topic.subscribers.forEach(function(subscriber){
         subscriber === currentUser._id ? $scope.subscribed = true : $scope.subscribed = false;
       });
@@ -175,7 +173,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     }
     postFactory.getSortedComments(sortingObject)
     .success(function(posts){
-      postFactory.formatLikedPosts(posts, currentUser);
+      postFactory.formatPosts(posts, currentUser);
       console.log(posts);
       $scope.comments = posts;
     })

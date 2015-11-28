@@ -31,6 +31,7 @@
         <dd class="filter " id="dislikes"><a class="filterPill" href="#" id="views" ng-click="sortDislikes()">Dislikes</a></dd>
         <dd class="filter " id="newest"><a class="filterPill" href="#" ng-click="sortNewest()">Newest</a></dd>
         <dd class="filter " id="oldest" ><a class="filterPill" href="#" ng-click="sortOldest()">Oldest</a></dd>
+        <dd class="filter " id="subscriptions" ><a class="filterPill" href="#" ng-click="sortSubscriptions()">Subscriptions</a></dd>
       </dl>
       <div class="post" ng-repeat="post in posts track by $index">
         <div class="postBody">
@@ -42,7 +43,7 @@
             <p>unanswered • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
           </div>
           <h4><a ng-href='/thread/{{post._id}}'>{{post.title}}</a></h4>
-          <p>by <a href="" class="author">{{post.author.username}}</a> {{post.author.work}}</p>
+          <p><img id="profilePicture" data-ng-src="data:image/png;base64,{{post.author.picture}}" data-err-src="images/png/avatar.png"/><a ng-href='/profile/{{post.author._id}}' class="author"> {{post.author.username}}</a> {{post.author.work}}</p>
           <p ng-bind-html="post.content | unsafe"></p>
           <p>tags: {{post.tags}}</p>
           <button ng-show="!post.liked" ng-click="togglePostLike($index)">Like | <span>{{post.likes}}</span></button>
@@ -68,7 +69,7 @@
             <hr>
             <div class="comments" ng-repeat="comment in comments">
               <div class="commentBody">
-                <button ng-if="comment.userPost" class="right">delete</button>
+                <button ng-if="comment.userPost" ng-click="deletePost(comment)" class="right">delete</button>
                 <h6><a href="">{{comment.author.username}}</a></h6>
                 <p ng-bind-html="comment.content | unsafe"></p>
                 <button ng-show="!comment.liked" ng-click="toggleCommentLike($index)">Like | <span>{{comment.likes}}</span></button>

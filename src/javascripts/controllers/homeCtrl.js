@@ -21,9 +21,7 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     postFactory.getSortedPosts(sorting)
     .success(function(posts){
       if($scope.loggedIn){
-        postFactory.formatLikedPosts(posts, currentUser);
-        postFactory.formatTags(posts);
-        postFactory.formatUserPosts(posts, currentUser);
+        postFactory.formatPosts(posts, currentUser)
         console.log("posts", posts);
         $scope.posts = posts;
       } else {
@@ -54,28 +52,41 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
 
   $scope.getPosts("likes");
 
-  $scope.sortLikes = function(){
+  $scope.sortLikes = () => {
     $(".filter").removeClass("active");
     $("#likes").addClass("active");
     $scope.getPosts("likes");
   }
 
-  $scope.sortDislikes = function(){
+  $scope.sortDislikes = () => {
     $(".filter").removeClass("active");
     $("#dislikes").addClass("active");
     $scope.getPosts("dislikes");
   }
 
-  $scope.sortOldest = function(){
+  $scope.sortOldest = () => {
     $(".filter").removeClass("active");
     $("#oldest").addClass("active");
     $scope.getPosts("oldest");
   }
 
-  $scope.sortNewest = function(){
+  $scope.sortNewest = () => {
     $(".filter").removeClass("active");
     $("#newest").addClass("active");
     $scope.getPosts("newest");
+  }
+
+  $scope.sortSubscriptions = () => {
+    $(".filter").removeClass("active");
+    $("#subscriptions").addClass("active");
+    postFactory.subscriptionsPosts(currentUser._id)
+    .success(posts => {
+      postFactory.formatPosts(posts, currentUser)
+      $scope.posts = posts;
+    })
+    .error(err => {
+      console.log("error: ", err);
+    })
   }
 
   $scope.togglePostLike = function(index){
@@ -200,7 +211,7 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     postFactory.getSortedComments(sortingObject)
     .success(function(posts){
       if(currentUser){
-        postFactory.formatLikedPosts(posts, currentUser);
+        postFactory.formatPosts(posts, currentUser)
         $scope.comments = posts;
       } else {
         $scope.comments = posts;
@@ -232,6 +243,16 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
       })
     }
   }
+
+  // $scope.deletePost = (post) => {
+  //   postFactory.deletePost(post._id)
+  //   .success(res => {
+  //     $scope.comments.forEach()
+  //   })
+  //   .error(err => {
+  //     console.log("error: ", err)
+  //   });
+  // }
 
   $scope.$emit("getNotifications");
   $scope.$emit("inHome");

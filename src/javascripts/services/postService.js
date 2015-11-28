@@ -35,6 +35,10 @@ app.factory('postFactory', function($window, $http){
     return $http.get(`/posts/sorted/${sorting.sortingMethod}/user/topic/tag/postType/${sorting.postType}`);
   };
 
+  postFactory.subscriptionsPosts = function(uid){
+    return $http.get(`/posts/sorted/user/${uid}/topic/tag/postType/`);
+  };
+
   postFactory.getSortedComments = function(sorting){
     console.log(sorting);
     return $http.get(`/posts/sortedComments/${sorting.sortingMethod}/post/${sorting.pid}`);
@@ -88,7 +92,12 @@ app.factory('postFactory', function($window, $http){
     })
   }
 
-
+  postFactory.formatPosts = (posts, currentUser) => {
+    postFactory.formatLikedPosts(posts, currentUser)
+    postFactory.formatUserPosts(posts, currentUser)
+    postFactory.formatTags(posts)
+    return posts;
+  }
 
   return postFactory;
 });

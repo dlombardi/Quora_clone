@@ -224,6 +224,7 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       res.send(posts);
     });
   } else if (req.params.uid){
+    
     User.sortBySubscriptions(req.params.uid, function(err, user){
       if(err)res.send("error: ",err);
       var subscribedPosts = [];
@@ -238,7 +239,7 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       res.send(rankedSubscribedPosts);
     });
   } else {
-    Post.find().deepPopulate("author comments.comments likers").sort(sortParams).exec(function(err, posts){
+    Post.findAll(sortParams, function(err, posts){
       if(err)res.send("error: ",err);
       res.send(posts);
     });

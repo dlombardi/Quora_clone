@@ -45,5 +45,9 @@ PostSchema.statics.filterByTopic = function(tid, sortParams, cb){
   return this.find({topic:tid}).sort(sortParams).exec(cb)
 }
 
+PostSchema.statics.findAll = function(sortParams, cb){
+  return this.find().deepPopulate("author comments.comments likers").sort(sortParams).exec(cb)
+}
+
 
 module.exports = mongoose.model('Post', PostSchema);

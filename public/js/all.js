@@ -167,9 +167,7 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
     };
     postFactory.getSortedPosts(sorting).success(function (posts) {
       if ($scope.loggedIn) {
-        postFactory.formatLikedPosts(posts, currentUser);
-        postFactory.formatTags(posts);
-        postFactory.formatUserPosts(posts, currentUser);
+        postFactory.formatPosts(posts, currentUser);
         console.log("posts", posts);
         $scope.posts = posts;
       } else {
@@ -217,6 +215,17 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
     $(".filter").removeClass("active");
     $("#newest").addClass("active");
     $scope.getPosts("newest");
+  };
+
+  $scope.sortSubscriptions = function () {
+    $(".filter").removeClass("active");
+    $("#subscriptions").addClass("active");
+    postFactory.subscriptionsPosts(currentUser._id).success(function (posts) {
+      postFactory.formatPosts(posts, currentUser);
+      $scope.posts = posts;
+    }).error(function (err) {
+      console.log("error: ", err);
+    });
   };
 
   $scope.togglePostLike = function (index) {
@@ -332,7 +341,7 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
     };
     postFactory.getSortedComments(sortingObject).success(function (posts) {
       if (currentUser) {
-        postFactory.formatLikedPosts(posts, currentUser);
+        postFactory.formatPosts(posts, currentUser);
         $scope.comments = posts;
       } else {
         $scope.comments = posts;
@@ -447,7 +456,7 @@ app.controller('threadCtrl', function ($scope, $state, auth, postFactory, $rootS
         pid: question._id
       };
       postFactory.getSortedAnswers(sortingObject).success(function (answers) {
-        postFactory.formatLikedPosts(answers, currentUser);
+        postFactory.formatPosts(posts, currentUser);
         $scope.answers = answers;
       });
     }).error(function (err) {
@@ -582,7 +591,7 @@ app.controller('threadCtrl', function ($scope, $state, auth, postFactory, $rootS
     };
     postFactory.getSortedComments(sortingObject).success(function (posts) {
       if (currentUser) {
-        postFactory.formatLikedPosts(posts, currentUser);
+        postFactory.formatPosts(posts, currentUser);
         $scope.comments = posts;
       } else {
         $scope.comments = posts;
@@ -634,9 +643,7 @@ app.controller('topicCtrl', function ($scope, $state, $stateParams, topicFactory
   (function getTopicPosts() {
     topicFactory.getTopic($stateParams.topic).success(function (topic) {
       console.log("TOPIC: ", topic);
-      postFactory.formatLikedPosts(topic.posts, currentUser);
-      postFactory.formatTags(topic.posts);
-      postFactory.formatUserPosts(topic.posts, currentUser);
+      postFactory.formatPosts(posts, currentUser);
       topic.subscribers.forEach(function (subscriber) {
         subscriber === currentUser._id ? $scope.subscribed = true : $scope.subscribed = false;
       });
@@ -783,7 +790,7 @@ app.controller('topicCtrl', function ($scope, $state, $stateParams, topicFactory
       pid: $scope.posts[index]._id
     };
     postFactory.getSortedComments(sortingObject).success(function (posts) {
-      postFactory.formatLikedPosts(posts, currentUser);
+      postFactory.formatPosts(posts, currentUser);
       console.log(posts);
       $scope.comments = posts;
     });
@@ -1036,6 +1043,10 @@ app.factory('postFactory', function ($window, $http) {
     return $http.get('/posts/sorted/' + sorting.sortingMethod + '/user/topic/tag/postType/' + sorting.postType);
   };
 
+  postFactory.subscriptionsPosts = function (uid) {
+    return $http.get('/posts/sorted/user/' + uid + '/topic/tag/postType/');
+  };
+
   postFactory.getSortedComments = function (sorting) {
     console.log(sorting);
     return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid);
@@ -1086,6 +1097,13 @@ app.factory('postFactory', function ($window, $http) {
     posts.map(function (post) {
       post.author._id.toString() === currentUser._id.toString() ? post.userPost = true : post.userPost = false;
     });
+  };
+
+  postFactory.formatPosts = function (posts, currentUser) {
+    postFactory.formatLikedPosts(posts, currentUser);
+    postFactory.formatUserPosts(posts, currentUser);
+    postFactory.formatTags(posts);
+    return posts;
   };
 
   return postFactory;

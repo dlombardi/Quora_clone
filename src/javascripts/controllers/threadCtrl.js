@@ -24,7 +24,7 @@ app.controller('threadCtrl', function($scope, $state, auth, postFactory, $rootSc
       }
       postFactory.getSortedAnswers(sortingObject)
       .success(function(answers){
-        postFactory.formatLikedPosts(answers, currentUser);
+        postFactory.formatPosts(posts, currentUser)
         $scope.answers = answers
       })
     })
@@ -171,7 +171,7 @@ app.controller('threadCtrl', function($scope, $state, auth, postFactory, $rootSc
     postFactory.getSortedComments(sortingObject)
     .success(function(posts){
       if(currentUser){
-        postFactory.formatLikedPosts(posts, currentUser);
+        postFactory.formatPosts(posts, currentUser)
         $scope.comments = posts;
       } else {
         $scope.comments = posts;

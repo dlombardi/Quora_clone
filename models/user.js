@@ -58,7 +58,7 @@ UserSchema.methods.generateJWT = function() {
 };
 
 UserSchema.statics.sortBySubscriptions = function(uid, cb){
-  return this.findById(req.params.uid).deepPopulate('subscriptions.posts').exec(cb)
+  return this.findById(uid).deepPopulate('subscriptions.posts').exec(cb)
 }
 
 module.exports = mongoose.model('User', UserSchema);
