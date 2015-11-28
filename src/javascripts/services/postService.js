@@ -3,59 +3,80 @@
 app.factory('postFactory', function($window, $http, auth){
   var postFactory= {};
 
-  postFactory.createPost = function(newPost) {
+  postFactory.createPost = (newPost) => {
     return $http.post('/posts/add', newPost);
   };
 
-  postFactory.deletePost = function(pid){
+  postFactory.deletePost = (pid) => {
     return $http.delete(`/posts/delete/${pid}`);
   };
 
-  postFactory.changeStats = function(statObject){
+  postFactory.changeStats = (statObject) => {
     return $http.put('/posts/changeStats', statObject);
   };
 
-  postFactory.getPost = function(postObject){
-    return $http.get(`/posts/${postObject.pid}`);
+  postFactory.getPost = (pid) => {
+    return $http.get(`/posts/${pid}`);
   };
 
-  postFactory.editPost = function(editObject){
+  postFactory.editPost = (editObject) => {
     return $http.put('/posts/edit', editObject);
   };
 
-  postFactory.getPostsByTag = function(tag){
-    return $http.get(`/posts/sorted/user/topic/tag/${tag}/postType/`);
+  postFactory.getPostsByTag = (tag) => {
+    return $http.get(`/posts/sorted/user/topic/tag/${tag}/postType/`)
+    .success(posts => {
+      postFactory.formatPosts(posts, auth.currentUser());
+      return posts;
+    })
   };
 
-  postFactory.getPostsByTopic = function(topic){
-    return $http.get(`/posts/sorted/user/topic/${topic}/tag/postType/`);
+  postFactory.getPostsByTopic = (topic) => {
+    return $http.get(`/posts/sorted/user/topic/${topic}/tag/postType/`)
+    .success(posts => {
+      postFactory.formatPosts(posts, auth.currentUser());
+      return posts;
+    })
   };
 
-  postFactory.getSortedPosts = function(sorting){
-    return $http.get(`/posts/sorted/${sorting.sortingMethod}/user/topic/tag/postType/${sorting.postType}`);
+  postFactory.getSortedPosts = (sorting) => {
+   return $http.get(`/posts/sorted/${sorting.sortingMethod}/user/topic/tag/postType/${sorting.postType}`)
+    .success(posts => {
+      postFactory.formatPosts(posts, auth.currentUser());
+      return posts;
+    })
   };
 
-  postFactory.subscriptionsPosts = function(uid){
-    return $http.get(`/posts/sorted/user/${uid}/topic/tag/postType/`);
-
+  postFactory.subscriptionsPosts = (uid) => {
+    return $http.get(`/posts/sorted/user/${uid}/topic/tag/postType/`)
+    .success(posts => {
+      postFactory.formatPosts(posts, auth.currentUser())
+      return posts;
+    })
   };
 
-  postFactory.getSortedComments = function(sorting){
-    console.log(sorting);
-    return $http.get(`/posts/sortedComments/${sorting.sortingMethod}/post/${sorting.pid}`);
+  postFactory.getSortedComments = (sorting) => {
+    return $http.get(`/posts/sortedComments/${sorting.sortingMethod}/post/${sorting.pid}`)
+    .success(posts => {
+      postFactory.formatPosts(posts, auth.currentUser())
+      return posts;
+    })
   };
 
-  postFactory.getSortedAnswers = function(sorting){
-    console.log(sorting);
-    return $http.get(`/posts/sortedComments/${sorting.sortingMethod}/post/${sorting.pid}`);
+  postFactory.getSortedAnswers = (sorting) => {
+    return $http.get(`/posts/sortedComments/${sorting.sortingMethod}/post/${sorting.pid}`)
+    .success(posts => {
+      postFactory.formatPosts(posts, auth.currentUser())
+      return posts;
+    })
   };
 
 
-  postFactory.formatLikedPosts = function(posts, currentUser){
-    posts.map(function(post){
-      return post.likers.forEach(function(liker){
+  postFactory.formatLikedPosts = (posts, currentUser) => {
+    posts.map(post => {
+      return post.likers.forEach(liker => {
         if(liker.toString() === currentUser._id.toString()){
-          var likedPost = post;
+          let likedPost = post;
           likedPost.liked = true;
           return likedPost;
         } else {
@@ -63,10 +84,10 @@ app.factory('postFactory', function($window, $http, auth){
         }
       })
     });
-    posts.map(function(post){
-      return post.dislikers.forEach(function(disliker){
+    posts.map(post => {
+      return post.dislikers.forEach(disliker => {
         if(disliker.toString() === currentUser._id.toString()){
-          var dislikedPost = post;
+          let dislikedPost = post;
           dislikedPost.disliked = true;
           return dislikedPost;
         } else {
@@ -76,10 +97,11 @@ app.factory('postFactory', function($window, $http, auth){
     });
   };
 
-  postFactory.formatTags = function(posts){
-    posts.map(function(post){
+  postFactory.formatTags = (posts) => {
+    posts.map(post => {
+      console.log(posts);
       var formattedTags = "";
-      post.tags.forEach(function(tag){
+      post.tags.forEach(tag => {
         formattedTags += tag + ", ";
       });
       post.tags = formattedTags;

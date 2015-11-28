@@ -22,13 +22,7 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
     var questionObject = {
       postType: "question"
     }
-    postFactory.getSortedPosts(questionObject)
-    .success(function(questions){
-      $scope.topQuestion = questions[0];
-    })
-    .error(function(err){
-      console.log("error: ", err);
-    })
+    $scope.topQuestion = postFactory.getSortedPosts(questionObject)[0];
   })();
 
 

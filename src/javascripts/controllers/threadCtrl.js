@@ -10,10 +10,7 @@ app.controller('threadCtrl', function($scope, $state, auth, postFactory, $rootSc
   $scope.question;
 
   ($scope.getPost = function(){
-    var postObject = {
-      pid: $stateParams.thread
-    }
-    postFactory.getPost(postObject)
+    postFactory.getPost($stateParams.thread)
     .success(function(question){
       $scope.question = question;
       $scope.topic = question.topic;
@@ -23,8 +20,7 @@ app.controller('threadCtrl', function($scope, $state, auth, postFactory, $rootSc
         pid: question._id
       }
       postFactory.getSortedAnswers(sortingObject)
-      .success(function(answers){
-        postFactory.formatPosts(posts, currentUser)
+      .success(answers => {
         $scope.answers = answers
       })
     })
@@ -44,7 +40,6 @@ app.controller('threadCtrl', function($scope, $state, auth, postFactory, $rootSc
     postFactory.createPost(answerObject)
     .success(function(answer){
       $scope.answers.push(answer);
-      console.log(answer);
     })
     .error(function(err){
       console.log("error: ", err);

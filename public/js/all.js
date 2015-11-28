@@ -66,6 +66,21 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
   $urlRouterProvider.otherwise('/');
 }]);
+"use strict";
+
+app.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if (event.which === 13) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
 'use strict';
 
 app.controller('composeCtrl', function ($scope, $http, $location, $state, auth, postFactory, topicFactory) {
@@ -85,11 +100,7 @@ app.controller('composeCtrl', function ($scope, $http, $location, $state, auth, 
     var questionObject = {
       postType: "question"
     };
-    postFactory.getSortedPosts(questionObject).success(function (questions) {
-      $scope.topQuestion = questions[0];
-    }).error(function (err) {
-      console.log("error: ", err);
-    });
+    $scope.topQuestion = postFactory.getSortedPosts(questionObject)[0];
   })();
 
   $scope.addTopicToPost = function (topic) {
@@ -166,30 +177,13 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
       sortingMethod: sortingMethod
     };
     postFactory.getSortedPosts(sorting).success(function (posts) {
-      console.log(posts);
-      if ($scope.loggedIn) {
-
-        postFactory.formatPosts(posts, currentUser);
-        console.log("posts", posts);
-        $scope.posts = posts;
-      } else {
-        $scope.posts = posts;
-      }
-    }).error(function (err) {
-      console.log("error: ", err);
+      $scope.posts = posts;
     });
-
     topicFactory.get7Topics().success(function (posts) {
       $scope.topicFeed = posts;
-    }).error(function (err) {
-      console.log("error: ", err);
     });
-
     userFactory.getUser(currentUser._id).success(function (user) {
-      console.log("user: ", user);
       $scope.subscriptions = user.subscriptions;
-    }).error(function (err) {
-      console.log("error: ", err);
     });
   };
 
@@ -223,115 +217,52 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
     $(".filter").removeClass("active");
     $("#subscriptions").addClass("active");
     postFactory.subscriptionsPosts(currentUser._id).success(function (posts) {
-      postFactory.formatPosts(posts, currentUser);
       $scope.posts = posts;
-    }).error(function (err) {
-      console.log("error: ", err);
     });
   };
 
-  $scope.togglePostLike = function (index) {
-    if (!$scope.loggedIn) {
-      $rootScope.isNotLoggedIn();
-    } else {
-      var action;
-      $scope.posts[index].liked ? action = "unlike" : action = "like";
-      var statsObject = {
-        pid: $scope.posts[index]._id,
-        uid: currentUser._id,
-        type: action,
-        token: auth.getToken()
-      };
-      postFactory.changeStats(statsObject).success(function (post) {
-        if (action === "like") {
-          $scope.posts[index].likes += 1;
-          $scope.posts[index].liked = true;
-        } else {
-          $scope.posts[index].likes -= 1;
-          $scope.posts[index].liked = false;
-        }
-      }).error(function (err) {
-        console.log("error: ", err);
-      });
-    }
+  $scope.togglePostLike = function (postSpecies, index) {
+    var postType = undefined;
+    var action = undefined;
+    postSpecies === "post" ? postType = $scope.posts : postType = $scope.comments;
+    postType[index].liked ? action = "unlike" : action = "like";
+    var statsObject = {
+      pid: postType[index]._id,
+      uid: currentUser._id,
+      type: action,
+      token: auth.getToken()
+    };
+    postFactory.changeStats(statsObject).success(function (post) {
+      if (action === "like") {
+        postType[index].likes += 1;
+        postType[index].liked = true;
+      } else {
+        postType[index].likes -= 1;
+        postType[index].liked = false;
+      }
+    });
   };
 
-  $scope.togglePostDislike = function (index) {
-    if (!$scope.loggedIn) {
-      $rootScope.isNotLoggedIn();
-    } else {
-      var action;
-      $scope.posts[index].disliked ? action = "undo" : action = "dislike";
-      var statsObject = {
-        pid: $scope.posts[index]._id,
-        uid: currentUser._id,
-        type: action,
-        token: auth.getToken()
-      };
-      postFactory.changeStats(statsObject).success(function (post) {
-        if (action === "dislike") {
-          $scope.posts[index].dislikes += 1;
-          $scope.posts[index].disliked = true;
-        } else {
-          $scope.posts[index].dislikes -= 1;
-          $scope.posts[index].disliked = false;
-        }
-      }).error(function (err) {
-        console.log("error: ", err);
-      });
-    }
-  };
-
-  $scope.toggleCommentLike = function (index) {
-    if (!$scope.loggedIn) {
-      $rootScope.isNotLoggedIn();
-    } else {
-      var action;
-      $scope.comments[index].liked ? action = "unlike" : action = "like";
-      var statsObject = {
-        pid: $scope.comments[index]._id,
-        uid: currentUser._id,
-        type: action,
-        token: auth.getToken()
-      };
-      postFactory.changeStats(statsObject).success(function (post) {
-        if (action === "like") {
-          $scope.comments[index].likes += 1;
-          $scope.comments[index].liked = true;
-        } else {
-          $scope.comments[index].likes -= 1;
-          $scope.comments[index].liked = false;
-        }
-      }).error(function (err) {
-        console.log("error: ", err);
-      });
-    }
-  };
-
-  $scope.toggleCommentDislike = function (index) {
-    if (!$scope.loggedIn) {
-      $rootScope.isNotLoggedIn();
-    } else {
-      var action;
-      $scope.comments[index].disliked ? action = "undo" : action = "dislike";
-      var statsObject = {
-        pid: $scope.comments[index]._id,
-        uid: currentUser._id,
-        type: action,
-        token: auth.getToken()
-      };
-      postFactory.changeStats(statsObject).success(function (post) {
-        if (action === "dislike") {
-          $scope.comments[index].dislikes += 1;
-          $scope.comments[index].disliked = true;
-        } else {
-          $scope.comments[index].dislikes -= 1;
-          $scope.comments[index].disliked = false;
-        }
-      }).error(function (err) {
-        console.log("error: ", err);
-      });
-    }
+  $scope.togglePostDislike = function (postSpecies, index) {
+    var postType = undefined;
+    var action = undefined;
+    postSpecies === "post" ? postType = $scope.posts : postType = $scope.comments;
+    postType[index].disliked ? action = "undo" : action = "dislike";
+    var statsObject = {
+      pid: postType[index]._id,
+      uid: currentUser._id,
+      type: action,
+      token: auth.getToken()
+    };
+    postFactory.changeStats(statsObject).success(function (post) {
+      if (action === "dislike") {
+        postType[index].dislikes += 1;
+        postType[index].disliked = true;
+      } else {
+        postType[index].dislikes -= 1;
+        postType[index].disliked = false;
+      }
+    });
   };
 
   $scope.showComments = function (index) {
@@ -369,7 +300,8 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
       postFactory.createPost(commentObject).success(function (post) {
         $scope.comments.push(post);
       }).error(function (err) {
-        console.log("error: ", err);
+        console.log("failed to submit comment");
+        console.error(err);
       });
     }
   };
@@ -378,13 +310,10 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
     postFactory.deletePost(post._id).success(function (post) {
       switch (post.postType) {
         case "comment":
-          console.log("index: ", $index);
           $scope.comments.splice($index, 1);
           break;
         case "question":
           $scope.posts.splice($index, 1);
-          break;
-        case "answer":
           break;
       }
     }).error(function (err) {
@@ -394,11 +323,10 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
   };
 
   $scope.$emit("getNotifications");
+
   $scope.$emit("inHome");
 
   $scope.$on('filteredByTags', function (event, posts) {
-    postFactory.formatLikedPosts(posts, currentUser);
-    postFactory.formatTags(posts);
     $scope.posts = posts;
   });
 
@@ -410,8 +338,6 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
   $scope.$on("loggedIn", function () {
     $scope.loggedIn = auth.isLoggedIn();
   });
-
-  postFactory.getPostsByTag();
 });
 'use strict';
 
@@ -465,10 +391,7 @@ app.controller('threadCtrl', function ($scope, $state, auth, postFactory, $rootS
   $scope.question;
 
   ($scope.getPost = function () {
-    var postObject = {
-      pid: $stateParams.thread
-    };
-    postFactory.getPost(postObject).success(function (question) {
+    postFactory.getPost($stateParams.thread).success(function (question) {
       $scope.question = question;
       $scope.topic = question.topic;
       $scope.comments = question.comments;
@@ -477,7 +400,6 @@ app.controller('threadCtrl', function ($scope, $state, auth, postFactory, $rootS
         pid: question._id
       };
       postFactory.getSortedAnswers(sortingObject).success(function (answers) {
-        postFactory.formatPosts(posts, currentUser);
         $scope.answers = answers;
       });
     }).error(function (err) {
@@ -495,7 +417,6 @@ app.controller('threadCtrl', function ($scope, $state, auth, postFactory, $rootS
     };
     postFactory.createPost(answerObject).success(function (answer) {
       $scope.answers.push(answer);
-      console.log(answer);
     }).error(function (err) {
       console.log("error: ", err);
     });
@@ -964,21 +885,6 @@ app.controller('usersCtrl', function ($scope, $state, auth, userFactory, postFac
     });
   });
 });
-"use strict";
-
-app.directive('ngEnter', function () {
-    return function (scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
-            if (event.which === 13) {
-                scope.$apply(function () {
-                    scope.$eval(attrs.ngEnter);
-                });
-
-                event.preventDefault();
-            }
-        });
-    };
-});
 'use strict';
 
 app.factory('auth', function ($window, $http, tokenStorageKey) {
@@ -1052,8 +958,8 @@ app.factory('postFactory', function ($window, $http, auth) {
     return $http.put('/posts/changeStats', statObject);
   };
 
-  postFactory.getPost = function (postObject) {
-    return $http.get('/posts/' + postObject.pid);
+  postFactory.getPost = function (pid) {
+    return $http.get('/posts/' + pid);
   };
 
   postFactory.editPost = function (editObject) {
@@ -1061,29 +967,45 @@ app.factory('postFactory', function ($window, $http, auth) {
   };
 
   postFactory.getPostsByTag = function (tag) {
-    return $http.get('/posts/sorted/user/topic/tag/' + tag + '/postType/');
+    return $http.get('/posts/sorted/user/topic/tag/' + tag + '/postType/').success(function (posts) {
+      postFactory.formatPosts(posts, auth.currentUser());
+      return posts;
+    });
   };
 
   postFactory.getPostsByTopic = function (topic) {
-    return $http.get('/posts/sorted/user/topic/' + topic + '/tag/postType/');
+    return $http.get('/posts/sorted/user/topic/' + topic + '/tag/postType/').success(function (posts) {
+      postFactory.formatPosts(posts, auth.currentUser());
+      return posts;
+    });
   };
 
   postFactory.getSortedPosts = function (sorting) {
-    return $http.get('/posts/sorted/' + sorting.sortingMethod + '/user/topic/tag/postType/' + sorting.postType);
+    return $http.get('/posts/sorted/' + sorting.sortingMethod + '/user/topic/tag/postType/' + sorting.postType).success(function (posts) {
+      postFactory.formatPosts(posts, auth.currentUser());
+      return posts;
+    });
   };
 
   postFactory.subscriptionsPosts = function (uid) {
-    return $http.get('/posts/sorted/user/' + uid + '/topic/tag/postType/');
+    return $http.get('/posts/sorted/user/' + uid + '/topic/tag/postType/').success(function (posts) {
+      postFactory.formatPosts(posts, auth.currentUser());
+      return posts;
+    });
   };
 
   postFactory.getSortedComments = function (sorting) {
-    console.log(sorting);
-    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid);
+    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid).success(function (posts) {
+      postFactory.formatPosts(posts, auth.currentUser());
+      return posts;
+    });
   };
 
   postFactory.getSortedAnswers = function (sorting) {
-    console.log(sorting);
-    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid);
+    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid).success(function (posts) {
+      postFactory.formatPosts(posts, auth.currentUser());
+      return posts;
+    });
   };
 
   postFactory.formatLikedPosts = function (posts, currentUser) {
@@ -1113,6 +1035,7 @@ app.factory('postFactory', function ($window, $http, auth) {
 
   postFactory.formatTags = function (posts) {
     posts.map(function (post) {
+      console.log(posts);
       var formattedTags = "";
       post.tags.forEach(function (tag) {
         formattedTags += tag + ", ";

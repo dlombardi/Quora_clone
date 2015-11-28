@@ -46,10 +46,10 @@
           <p><img id="profilePicture" data-ng-src="data:image/png;base64,{{post.author.picture}}" data-err-src="/assets/User-100.png"/><a ng-href='/profile/{{post.author._id}}' class="author"> {{post.author.username}}</a> {{post.author.work}}</p>
           <p ng-bind-html="post.content | unsafe"></p>
           <p>tags: {{post.tags}}</p>
-          <button ng-show="!post.liked" ng-click="togglePostLike($index)">Like | <span>{{post.likes}}</span></button>
-          <button ng-show="post.liked" ng-click="togglePostLike($index)">Unlike | <span>{{post.likes}}</span></button>
-          <button class="dislikeBtn" ng-show="!post.disliked" ng-click="togglePostDislike($index)">Dislike | <span>{{post.dislikes}}</span></button>
-          <button class="dislikeBtn" ng-show="post.disliked" ng-click="togglePostDislike($index)">Undo | <span>{{post.dislikes}}</span></button>
+          <button ng-show="!post.liked" ng-click="togglePostLike('post', $index)">Like | <span>{{post.likes}}</span></button>
+          <button ng-show="post.liked" ng-click="togglePostLike('post', $index)">Unlike | <span>{{post.likes}}</span></button>
+          <button class="dislikeBtn" ng-show="!post.disliked" ng-click="togglePostDislike('post', $index)">Dislike | <span>{{post.dislikes}}</span></button>
+          <button class="dislikeBtn" ng-show="post.disliked" ng-click="togglePostDislike('post', $index)">Undo | <span>{{post.dislikes}}</span></button>
           <a class='right' href="" ng-if="!post.showComments" ng-click="showComments($index)">Comments<span> {{post.comments.length}}</span></a>
           <a class='right' href="" ng-if="post.showComments" ng-click="hideComments($index)">Comments<span> {{post.comments.length}}</span></a>
         </div>
@@ -72,10 +72,10 @@
                 <button ng-if="comment.userPost" ng-click="deletePost(comment, $index)" class="right">delete</button>
                 <h6><a href="">{{comment.author.username}}</a></h6>
                 <p ng-bind-html="comment.content | unsafe"></p>
-                <button ng-show="!comment.liked" ng-click="toggleCommentLike($index)">Like | <span>{{comment.likes}}</span></button>
-                <button ng-show="comment.liked" ng-click="toggleCommentLike($index)">Unlike | <span>{{comment.likes}}</span></button>
-                <button class="dislikeBtn" ng-show="!comment.disliked" ng-click="toggleCommentDislike($index)">Dislike | <span>{{comment.dislikes}}</span></button>
-                <button class="dislikeBtn" ng-show="comment.disliked" ng-click="toggleCommentDislike($index)">Undo | <span>{{comment.dislikes}}</span></button>
+                <button ng-show="!comment.liked" ng-click="togglePostLike('comment', $index)">Like | <span>{{comment.likes}}</span></button>
+                <button ng-show="comment.liked" ng-click="togglePostLike('comment', $index)">Unlike | <span>{{comment.likes}}</span></button>
+                <button class="dislikeBtn" ng-show="!comment.disliked" ng-click="togglePostDislike('comment', $index)">Dislike | <span>{{comment.dislikes}}</span></button>
+                <button class="dislikeBtn" ng-show="comment.disliked" ng-click="togglePostDislike('comment', $index)">Undo | <span>{{comment.dislikes}}</span></button>
               </div>
               <hr>
             </div>
