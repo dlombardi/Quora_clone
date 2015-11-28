@@ -244,15 +244,21 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     }
   }
 
-  // $scope.deletePost = (post) => {
-  //   postFactory.deletePost(post._id)
-  //   .success(res => {
-  //     $scope.comments.forEach()
-  //   })
-  //   .error(err => {
-  //     console.log("error: ", err)
-  //   });
-  // }
+  $scope.deletePost = (post) => {
+    for(let [key, comment] of $scope.comments){
+      console.log(key + " " + comment);
+      // if(comment._id = post._id){
+      //
+      // }
+    }
+    // postFactory.deletePost(post._id)
+    // .success(post => {
+    //
+    // })
+    // .error(err => {
+    //   console.log("error: ", err)
+    // });
+  }
 
   $scope.$emit("getNotifications");
   $scope.$emit("inHome");
