@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "postinstall": "bower i && gulp default",
+    "postinstall": "bower i && gulp deploy",
     "setup": "rm -rf node_modules public/vendor && touch .env && npm i && bower i"
   },
   "dependencies": {

@@ -117,10 +117,10 @@ router.post('/add', loggedIn, function(req, res, next){
   }
 });
 
-router.delete('/delete', function(req, res, next){
-  Post.findByIdAndRemove(req.body.pid, function(err, post){
-    if(err){res.send("error: ",err)};
-    PostEmitter.emit("removePost", post)
+router.delete('/delete/:pid', function(req, res, next){
+  Post.findByIdAndRemove(req.params.pid, function(err, post){
+    if(err){res.send("error: ", err)};
+    PostEmitter.emit("removePost", post);
     res.send(post);
   })
 });
@@ -224,7 +224,7 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       res.send(posts);
     });
   } else if (req.params.uid){
-    
+
     User.sortBySubscriptions(req.params.uid, function(err, user){
       if(err)res.send("error: ",err);
       var subscribedPosts = [];

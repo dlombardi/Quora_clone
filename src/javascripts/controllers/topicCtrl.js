@@ -12,11 +12,11 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
       console.log("TOPIC: ", topic)
-      postFactory.formatPosts(posts, currentUser);
       topic.subscribers.forEach(function(subscriber){
         subscriber === currentUser._id ? $scope.subscribed = true : $scope.subscribed = false;
       });
       $scope.topic = topic;
+      postFactory.formatPosts(topic.posts, currentUser);
       $scope.posts = topic.posts;
     })
     .error(function(err){

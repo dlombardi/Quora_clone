@@ -184,7 +184,7 @@ PostEmitter.on("addCommentToPostAndUser", function(post){
 
 PostEmitter.on("removePost", function(post){
   switch(post.postType){
-    case "question":
+    case 'question':
       Topic.findById(post.topic, function(err, topic){
         topic.posts.forEach(function(topicPost, i){
           if(topicPost.toString() === post._id.toString()){
@@ -194,7 +194,7 @@ PostEmitter.on("removePost", function(post){
         });
       });
       break;
-    case "answer":
+    case 'answer':
       Post.findById(post.responseTo, function(err, parentPost){
         parentPost.answers.forEach(function(answer){
           if(answer.toString() === post._id.toString()){
@@ -212,9 +212,9 @@ PostEmitter.on("removePost", function(post){
         });
       });
       break;
-    case "comment":
+    case 'comment':
       Post.findById(post.responseTo, function(err, parentPost){
-        parentPost.comments.forEach(function(comment){
+        parentPost.comments.forEach(function(comment, i){
           if(comment.toString() === post._id.toString()){
             parentPost.comments.splice(i, 1);
             parentPost.save();

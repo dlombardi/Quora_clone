@@ -37,7 +37,7 @@ router.post('/register', upload.single('file'), function(req, res, next){
    if(err){
      return res.status(400).json({error: err});
    }
-  //  UserEmitter.emit("createUser", user);
+   UserEmitter.emit("createUser", user);
    return res.json({token: user.generateJWT()})
  });
 });

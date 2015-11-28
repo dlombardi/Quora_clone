@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('postFactory', function($window, $http){
+app.factory('postFactory', function($window, $http, auth){
   var postFactory= {};
 
   postFactory.createPost = function(newPost) {
@@ -8,7 +8,7 @@ app.factory('postFactory', function($window, $http){
   };
 
   postFactory.deletePost = function(pid){
-    return $http.delete('/posts/delete', pid);
+    return $http.delete(`/posts/delete/${pid}`);
   };
 
   postFactory.changeStats = function(statObject){
@@ -37,6 +37,7 @@ app.factory('postFactory', function($window, $http){
 
   postFactory.subscriptionsPosts = function(uid){
     return $http.get(`/posts/sorted/user/${uid}/topic/tag/postType/`);
+
   };
 
   postFactory.getSortedComments = function(sorting){
@@ -98,6 +99,7 @@ app.factory('postFactory', function($window, $http){
     postFactory.formatTags(posts)
     return posts;
   }
+
 
   return postFactory;
 });

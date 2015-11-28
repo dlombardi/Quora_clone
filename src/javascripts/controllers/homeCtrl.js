@@ -20,7 +20,9 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     }
     postFactory.getSortedPosts(sorting)
     .success(function(posts){
+      console.log(posts);
       if($scope.loggedIn){
+
         postFactory.formatPosts(posts, currentUser)
         console.log("posts", posts);
         $scope.posts = posts;
@@ -244,20 +246,25 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     }
   }
 
-  $scope.deletePost = (post) => {
-    for(let [key, comment] of $scope.comments){
-      console.log(key + " " + comment);
-      // if(comment._id = post._id){
-      //
-      // }
-    }
-    // postFactory.deletePost(post._id)
-    // .success(post => {
-    //
-    // })
-    // .error(err => {
-    //   console.log("error: ", err)
-    // });
+  $scope.deletePost = (post, $index) => {
+    postFactory.deletePost(post._id)
+    .success(post => {
+      switch (post.postType){
+        case "comment":
+          console.log("index: ", $index);
+          $scope.comments.splice($index, 1);
+          break;
+        case "question":
+          $scope.posts.splice($index, 1);
+          break;
+        case "answer":
+          break;
+      }
+    })
+    .error(err => {
+      console.log("failed at deletePost function ");
+      console.error(err);
+    })
   }
 
   $scope.$emit("getNotifications");
