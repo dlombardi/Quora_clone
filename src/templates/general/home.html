@@ -6,14 +6,13 @@
     <!-- FEEDS COLUMN -->
     <div id="feedColumn" class="large-2 medium-2 small-12 columns buttons">
       <div class="row">
-        <p class="header" ng-if="!loggedIn">Topics</p>
         <p class="header" ng-if="loggedIn">Subscriptions</p>
         <div class="row">
           <ul>
             <li class="subscriptions" ng-repeat="subscription in subscriptions"><a ng-href='/topics/{{subscription.name}}'>{{subscription.name}}</a></li>
           </ul>
         </div>
-        <p class="header" ng-if="loggedIn">Random Topics</p>
+        <p class="header" ng-if="loggedIn">Topics</p>
         <div class="row">
           <ul>
             <li class="subscriptions" ng-repeat="topic in topicFeed"><a ng-href='/topics/{{topic.name}}'>{{topic.name}}</a></li>
@@ -43,7 +42,7 @@
             <p>unanswered • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
           </div>
           <h4><a ng-href='/thread/{{post._id}}'>{{post.title}}</a></h4>
-          <p><img id="profilePicture" data-ng-src="data:image/png;base64,{{post.author.picture}}" data-err-src="/assets/User-100.png"/><a ng-href='/profile/{{post.author._id}}' class="author"> {{post.author.username}}</a> {{post.author.work}}</p>
+          <p><img id="navPicture" data-ng-src="data:image/png;base64,{{post.author.picture}}" data-err-src="/assets/User-100.png"/><a ng-href='/profile/{{post.author._id}}' class="author"> {{post.author.username}}</a> {{post.author.work}}</p>
           <p ng-bind-html="post.content | unsafe"></p>
           <p>tags: {{post.tags}}</p>
           <button ng-show="!post.liked" ng-click="togglePostLike('post', $index)">Like | <span>{{post.likes}}</span></button>
@@ -70,7 +69,7 @@
             <div class="comments" ng-repeat="comment in comments track by $index">
               <div class="commentBody">
                 <button ng-if="comment.userPost" ng-click="deletePost(comment, $index)" class="right">delete</button>
-                <h6><a href="">{{comment.author.username}}</a></h6>
+                <h6><img id="navPicture" data-ng-src="data:image/png;base64,{{comment.author.picture}}" data-err-src="/assets/User-100.png"/><a ng-href='/profile/{{comment.author._id}}'> {{comment.author.username}}</a></h6>
                 <p ng-bind-html="comment.content | unsafe"></p>
                 <button ng-show="!comment.liked" ng-click="togglePostLike('comment', $index)">Like | <span>{{comment.likes}}</span></button>
                 <button ng-show="comment.liked" ng-click="togglePostLike('comment', $index)">Unlike | <span>{{comment.likes}}</span></button>

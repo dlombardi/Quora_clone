@@ -6,6 +6,7 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
   $scope.topicFeed;
   let currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
+  $(document).foundation();
 
   if(!$scope.loggedIn){
     $state.go("users.login");
@@ -122,12 +123,7 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     }
     postFactory.getSortedComments(sortingObject)
     .success(posts => {
-      if(currentUser){
-        postFactory.formatPosts(posts, currentUser)
-        $scope.comments = posts;
-      } else {
-        $scope.comments = posts;
-      }
+      $scope.comments = posts;
     })
   }
 
@@ -136,25 +132,21 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
   }
 
   $scope.submitComment = (comment, post) => {
-    if(!$scope.loggedIn){
-      $rootScope.isNotLoggedIn();
-    } else {
-      var commentObject = {
-        content: comment,
-        author: currentUser._id,
-        responseTo: post._id,
-        postType: "comment",
-        token: auth.getToken()
-      }
-      postFactory.createPost(commentObject)
-      .success(post => {
-        $scope.comments.push(post);
-      })
-      .error(err => {
-        console.log("failed to submit comment");
-        console.error(err);
-      })
+    var commentObject = {
+      content: comment,
+      author: currentUser._id,
+      responseTo: post._id,
+      postType: "comment",
+      token: auth.getToken()
     }
+    postFactory.createPost(commentObject)
+    .success(post => {
+      $scope.comments.push(post);
+    })
+    .error(err => {
+      console.log("failed to submit comment");
+      console.error(err);
+    })
   }
 
   $scope.deletePost = (post, $index) => {
@@ -182,12 +174,10 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
   $scope.$on('filteredByTags', function(event, posts){
     $scope.posts = posts;
   })
-
   $scope.$on("loggedOut", function(){
     $scope.loggedIn = auth.isLoggedIn();
     $scope.getPosts();
   })
-
   $scope.$on("loggedIn", function(){
     $scope.loggedIn = auth.isLoggedIn();
   })

@@ -7,6 +7,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   $scope.posts;
   $scope.topic;
   $scope.subscribed = false;
+  $(document).foundation();
 
   (function getTopicPosts(){
     topicFactory.getTopic($stateParams.topic)

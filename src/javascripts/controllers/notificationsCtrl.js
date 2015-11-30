@@ -6,6 +6,7 @@ app.controller('notificationsCtrl', function($scope, $http, auth, userFactory, p
   $scope.currentUser = auth.currentUser();
   $scope.newNotifications;
   $scope.oldNotifications;
+  $(document).foundation();
 
   ($scope.getNotifications = function(){
     $scope.newNotifications = [];

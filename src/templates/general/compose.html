@@ -5,21 +5,39 @@
 
   <!-- MAIN COLUMN -->
   <div class="buttons small-10 small-offset-1 large-6 large-offset-1 columns primaryColumn">
-    <div class="header">Ask a question</div>
+    <form name="questionForm" novalidate ng-submit="submitQuestion(questionForm.$valid, question, selectedTopic)">
+      <div class="header">Ask a question</div>
 
-    <input ng-model="question.title" placeholder="Question title">
-    <textarea ng-model="question.content" cols="30" rows="10" placeholder="Add extra details..."></textarea>
-    <input ng-model="question.tags" placeholder="Tags (comma separated)">
-    <div id="submitInput">
-      <input type="text" ng-model="selectedTopic" placeholder="topic">
-      <button class="button" data-dropdown="autoCloseExample" aria-controls="autoCloseExample" ng-click="showDropDown()" aria-expanded="false">Choose from topics</button>
-      <ul ng-hide="toggleDropdown" id="autoCloseExample" class="f-dropdown" data-dropdown-content tabindex="-1" aria-hidden="true" aria-autoclose="false" tabindex="-1">
-        <li><input type="text" ng-change="checkTopic()" ng-model="searchTopic" placeholder="Search Topics..."></li>
-        <li ng-repeat="topic in filteredTopics = ( topics | filter:searchTopic)"><a ng-click="addTopicToPost(topic)" href="#">{{topic.name}}</a></li>
-        <button ng-hide="filteredTopics.length" id="createTopic" data-reveal-id="myModal" href="#">Don't see your topic? Make it!</button>
-      </ul>
-      <button class="right button-submit" ng-click="submitQuestion(question, selectedTopic)">Post</button>
-    </div>
+      <div class="form-group">
+        <label>Title</label>
+        <input name="title" ng-model="question.title" ng-model-options="{updateOn: 'blur'}" ng-minlength="10" placeholder="Question title" required>
+        <p ng-show="questionForm.title.$error.minlength" class="help-block">title not long enough</p>
+      </div>
+      <div class="form-group">
+        <label>Content</label>
+        <textarea name="content" ng-model="question.content" ng-model-options="{updateOn: 'blur'}" ng-minlength="15" cols="30" rows="10" placeholder="Add extra details..." required></textarea>
+        <p ng-show="questionForm.content.$error.minlength" class="help-block">content not long enough</p>
+      </div>
+      <div class="form-group">
+        <label>Tags</label>
+        <input name="tags" ng-model="question.tags" placeholder="Tags (comma separated)" ng-minlength="5"  required>
+        <p ng-show="questionForm.tags.$error.minlength" class="help-block">content not long enough</p>
+      </div>
+      <div class="form-group">
+        <label>Topic</label>
+        <div id="submitInput">
+          <input type="text" name="topic" ng-model="selectedTopic" placeholder="topic" required>
+          <p ng-show="questionForm.topic.$invalid" class="help-block">content not long enough</p>
+          <button class="button" data-dropdown="autoCloseExample" aria-controls="autoCloseExample" ng-click="showDropDown()" aria-expanded="false">Choose from topics</button>
+          <ul ng-hide="toggleDropdown" id="autoCloseExample" class="f-dropdown" data-dropdown-content tabindex="-1" aria-hidden="true" aria-autoclose="false" tabindex="-1">
+            <li><input type="text" ng-change="checkTopic()" ng-model="searchTopic" placeholder="Search Topics..."></li>
+            <li ng-repeat="topic in filteredTopics = ( topics | filter:searchTopic)"><a ng-click="addTopicToPost(topic)" href="#">{{topic.name}}</a></li>
+            <button ng-hide="filteredTopics.length" id="createTopic" data-reveal-id="myModal" href="#">Don't see your topic? Make it!</button>
+          </ul>
+          <button class="right button-submit" type="submit">Post</button>
+        </div>
+      </div>
+    </form>
   </div>
 
   <!-- TOPICS COLUMN -->

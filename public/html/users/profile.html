@@ -1,45 +1,89 @@
 
-<div class="row">
-  <div class="small-10 small-offset-1 medium-6 medium-offset-1 large-7 large-push-3 large-offset-1 columns">
-    <img class="profilePicture" src="http://www.lorempixel.com/150/150/people" alt="Profile Picture">
-    <div class="small-only-text-center buttons">
+<div class="row buttons">
+  <div class="large-4 columns">
+    <img id="profilePicture" data-ng-src="data:image/png;base64,{{user.picture}}" data-err-src="images/png/avatar.png"/>
+    <div class="text-center buttons">
       <h4>{{user.username}}</h4>
-        <button class="right" ng-click="follow()">Follow</button>
-        <button class="right" ng-click="unfollow()">Unfollow</button>
-        <button class="right crammedButton" ng-click="subscribe()">Subscribe</button>
-        <a href="#" data-reveal-id="editUserModal"><button class="right crammedButton">Edit Profile</button></a>
-
+        <button class="left" ng-click="follow(user)" ng-if="!currentUser && !followed">Follow</button>
+        <button class="left" ng-click="unfollow(user)" ng-if="!currentUser && followed">Unfollow</button>
+        <a href="#" data-reveal-id="editUserModal"><button class="right crammedButton" ng-if="currentUser">Edit Profile</button></a>
       <br>
-      <h6>{{user.about}}</small></h6>
     </div>
     <hr>
-
-      <!-- FEED ----------------------------------------------->
-    <div class="feed">
-      Feed Here of all user activity?
-    </div>
-  </div>
-    <br>
-  <div class="small-10 small-offset-1 medium-4 medium-offset-1 large-3 large-offset-1 large-pull-8 columns">
-    <div class="panel">
-      <div>
-        <p>Posts</p>
-        <i class="fi-heart"></i> {{user.likes}} likes<br>
-        <i class="fi-eye"></i> {{user.views}} views
-      </div><br>
-      <div>
-        <p>Activity</p>
-        <i class="fi-torsos-all"></i> {{user.followers}} followers <br>
-        <i class="fi-torso"></i> {{user.following}} following
+    <div class="large-12 columns">
+      <div id="info">
+        <div id="contact">
+          <ul>
+            <li>email: {{user.email}}</li>
+            <li>home: {{user.home}}</li>
+            <li>work: {{user.work}}</li>
+            <li>about: {{user.about}}</li>
+          </ul>
+        </div>
+        <div id="stats">
+          <ul>
+            <li>posts: {{user.posts.length}}</li>
+            <li>followers: {{user.followers.length}}</li>
+            <li>following: {{user.following.length}}</li>
+            <li>views: {{user.views}}</li>
+          </ul>
+        </div>
       </div>
     </div>
-      <i class="fi-pencil"></i>
-      <strong> {{user.posts.length}} posts</strong>
-      <br>
-      <h5>I can answer questions about...</h5>
-      <ul>
-        <li ng-repeat="topic in knowledge">{{user.knowledge.topic.name}}</li>
-      </ul>
+  </div>
+
+    <!-- FEED ----------------------------------------------->
+  <div class="feed large-8 columns">
+    <div class="post" ng-repeat="post in user.posts track by $index">
+      <div class="postBody">
+        <button ng-if="post.userPost" ng-click="deletePost(post, $index)" class="right">delete</button>
+        <div ng-if="post.answerWritten">
+          <p>answered • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
+        </div>
+        <div ng-if="!post.answerWritten">
+          <p>unanswered • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
+        </div>
+        <h4><a ng-href='/thread/{{post._id}}'>{{post.title}}</a></h4>
+        <p><img id="navPicture" data-ng-src="data:image/png;base64,{{post.author.picture}}" data-err-src="/assets/User-100.png"/><a ng-href='/profile/{{post.author._id}}' class="author"> {{post.author.username}}</a> {{post.author.work}}</p>
+        <p ng-bind-html="post.content | unsafe"></p>
+        <p>tags: {{post.tags}}</p>
+        <button ng-show="!post.liked" ng-click="togglePostLike('post', $index)">Like | <span>{{post.likes}}</span></button>
+        <button ng-show="post.liked" ng-click="togglePostLike('post', $index)">Unlike | <span>{{post.likes}}</span></button>
+        <button class="dislikeBtn" ng-show="!post.disliked" ng-click="togglePostDislike('post', $index)">Dislike | <span>{{post.dislikes}}</span></button>
+        <button class="dislikeBtn" ng-show="post.disliked" ng-click="togglePostDislike('post', $index)">Undo | <span>{{post.dislikes}}</span></button>
+        <a class='right' href="" ng-if="!post.showComments" ng-click="showComments($index)">Comments<span> {{post.comments.length}}</span></a>
+        <a class='right' href="" ng-if="post.showComments" ng-click="hideComments($index)">Comments<span> {{post.comments.length}}</span></a>
+      </div>
+      <div class="commentsChain" ng-if="post.showComments">
+        <hr>
+        <div class="commentSection">
+          <div class="commentInput">
+            <div class="row">
+              <div class="columns small-11">
+                <textarea type="text" ng-model="comment" style="width: 85%;" placeholder="comment..."></textarea>
+              </div>
+              <div class="columns small-1">
+                <button class="right" ng-click="submitComment(comment, post)">Submit</button>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="comments" ng-repeat="comment in comments track by $index">
+            <div class="commentBody">
+              <button ng-if="comment.userPost" ng-click="deletePost(comment, $index)" class="right">delete</button>
+              <h6><a href="">{{comment.author.username}}</a></h6>
+              <p ng-bind-html="comment.content | unsafe"></p>
+              <button ng-show="!comment.liked" ng-click="togglePostLike('comment', $index)">Like | <span>{{comment.likes}}</span></button>
+              <button ng-show="comment.liked" ng-click="togglePostLike('comment', $index)">Unlike | <span>{{comment.likes}}</span></button>
+              <button class="dislikeBtn" ng-show="!comment.disliked" ng-click="togglePostDislike('comment', $index)">Dislike | <span>{{comment.dislikes}}</span></button>
+              <button class="dislikeBtn" ng-show="comment.disliked" ng-click="togglePostDislike('comment', $index)">Undo | <span>{{comment.dislikes}}</span></button>
+            </div>
+            <hr>
+          </div>
+        </div>
+      </div>
+      <hr>
+    </div>
   </div>
 </div>
   <!-- MODAL ------------------------->

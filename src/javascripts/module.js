@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('quora', ['ui.router', 'infinite-scroll', 'hc.marked', "oitozero.ngSweetAlert", "ngFileUpload"]);
+var app = angular.module('quora', ['ui.router', 'infinite-scroll', 'hc.marked', "ngFileUpload"]);
 
 app.constant('tokenStorageKey', 'my-token');
 

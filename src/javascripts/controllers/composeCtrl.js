@@ -12,22 +12,24 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
 
   (function init(){
     topicFactory.getTopics()
-    .success(function(topics){
+    .success(topics => {
       $scope.topics = topics;
-      console.log(topics);
     })
-    .error(function(err){
+    .error(err => {
       console.log("error: ", err)
     })
     var questionObject = {
       postType: "question"
     }
-    $scope.topQuestion = postFactory.getSortedPosts(questionObject)[0];
+    postFactory.getSortedPosts(questionObject)
+    .success(questions => {
+      $scope.topQuestion = questions[0];
+    })
   })();
 
 
 
-  $scope.addTopicToPost = function(topic){
+  $scope.addTopicToPost = (topic) => {
     $scope.selectedTopic = topic.name;
     $scope.toggleDropdown = true;
     window.setTimeout(function(){
@@ -35,27 +37,36 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
     }, 50);
   }
 
-  $scope.submitQuestion = function(question, selectedTopic){
-    var questionObject = {
-      author: currentUser._id,
-      title: question.title,
-      tags: question.tags,
-      content: question.content,
-      topic: selectedTopic,
-      postType: "question",
-      token: auth.getToken()
+  $scope.submitQuestion = (isValid, question, selectedTopic) => {
+    if(isValid){
+      var questionObject = {
+        author: currentUser._id,
+        title: question.title,
+        tags: question.tags,
+        content: question.content,
+        topic: selectedTopic,
+        postType: "question",
+        token: auth.getToken()
+      }
+      postFactory.createPost(questionObject)
+      .success(data => {
+        $location.path('thread/'+data._id+'');
+      })
+      .error(err => {
+        console.log(err);
+      })
+    } else {
+      swal({
+        title: "Invalid Form",
+        text: "Incorrect Inputs",
+        timer: 2000,
+        type: "error",
+        confirmButtonColor: "#B92B27"
+      });
     }
-    console.log(questionObject);
-    postFactory.createPost(questionObject)
-    .success(function(data){
-      $location.path('thread/'+data._id+'');
-    })
-    .error(function(err){
-      console.log(err);
-    })
   };
 
-  $scope.submitTopic = function(topic){
+  $scope.submitTopic = (topic) => {
     console.log("SUBMIT POST FUNCTION STARTS");
     var topicObject = {
       name: topic.name,
@@ -63,7 +74,7 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
       token: auth.getToken()
     }
     topicFactory.createTopic(topicObject)
-    .success(function(topic){
+    .success(topic => {
       $scope.topics.push(topic);
        swal({
          title: "Success!",
@@ -73,7 +84,7 @@ app.controller('composeCtrl', function($scope, $http, $location, $state, auth, p
        });
       $state.go("compose");
     })
-    .error(function(err){
+    .error(err => {
       swal({
         title: "Error!",
         text: "Missing fields!",

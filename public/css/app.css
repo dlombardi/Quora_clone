@@ -6866,6 +6866,31 @@ hr {
 .right {
   margin-left: 10px; }
 
+#profilePicture {
+  display: block;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin: 0 auto;
+  margin-top: 30px; }
+
+#info {
+  background-color: #f7f7f7;
+  padding: 10px; }
+
+#contact {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: white; }
+  #contact li {
+    margin-top: 10px; }
+
+#stats {
+  padding: 10px;
+  background-color: white; }
+  #stats li {
+    margin-top: 10px; }
+
 #navContainer {
   border-top: 3px solid #B92B27; }
 
@@ -6907,7 +6932,7 @@ quora-title {
   background-color: #D54d4A;
   color: white; }
 
-#profilePicture {
+#navPicture {
   height: 25px;
   width: 25px;
   border-radius: 50%; }
@@ -7061,3 +7086,6 @@ button {
 
 .buttons .dislikeBtn:hover {
   background-color: #797979; }
+
+.sweet-alert fieldset {
+  display: none; }

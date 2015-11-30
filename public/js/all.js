@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('quora', ['ui.router', 'infinite-scroll', 'hc.marked', "oitozero.ngSweetAlert", "ngFileUpload"]);
+var app = angular.module('quora', ['ui.router', 'infinite-scroll', 'hc.marked', "ngFileUpload"]);
 
 app.constant('tokenStorageKey', 'my-token');
 
@@ -66,21 +66,6 @@ app.config(["$stateProvider", "$locationProvider", "$urlRouterProvider", "marked
 
   $urlRouterProvider.otherwise('/');
 }]);
-"use strict";
-
-app.directive('ngEnter', function () {
-    return function (scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
-            if (event.which === 13) {
-                scope.$apply(function () {
-                    scope.$eval(attrs.ngEnter);
-                });
-
-                event.preventDefault();
-            }
-        });
-    };
-});
 'use strict';
 
 app.controller('composeCtrl', function ($scope, $http, $location, $state, auth, postFactory, topicFactory) {
@@ -93,14 +78,15 @@ app.controller('composeCtrl', function ($scope, $http, $location, $state, auth, 
   (function init() {
     topicFactory.getTopics().success(function (topics) {
       $scope.topics = topics;
-      console.log(topics);
     }).error(function (err) {
       console.log("error: ", err);
     });
     var questionObject = {
       postType: "question"
     };
-    $scope.topQuestion = postFactory.getSortedPosts(questionObject)[0];
+    postFactory.getSortedPosts(questionObject).success(function (questions) {
+      $scope.topQuestion = questions[0];
+    });
   })();
 
   $scope.addTopicToPost = function (topic) {
@@ -111,22 +97,31 @@ app.controller('composeCtrl', function ($scope, $http, $location, $state, auth, 
     }, 50);
   };
 
-  $scope.submitQuestion = function (question, selectedTopic) {
-    var questionObject = {
-      author: currentUser._id,
-      title: question.title,
-      tags: question.tags,
-      content: question.content,
-      topic: selectedTopic,
-      postType: "question",
-      token: auth.getToken()
-    };
-    console.log(questionObject);
-    postFactory.createPost(questionObject).success(function (data) {
-      $location.path('thread/' + data._id + '');
-    }).error(function (err) {
-      console.log(err);
-    });
+  $scope.submitQuestion = function (isValid, question, selectedTopic) {
+    if (isValid) {
+      var questionObject = {
+        author: currentUser._id,
+        title: question.title,
+        tags: question.tags,
+        content: question.content,
+        topic: selectedTopic,
+        postType: "question",
+        token: auth.getToken()
+      };
+      postFactory.createPost(questionObject).success(function (data) {
+        $location.path('thread/' + data._id + '');
+      }).error(function (err) {
+        console.log(err);
+      });
+    } else {
+      swal({
+        title: "Invalid Form",
+        text: "Incorrect Inputs",
+        timer: 2000,
+        type: "error",
+        confirmButtonColor: "#B92B27"
+      });
+    }
   };
 
   $scope.submitTopic = function (topic) {
@@ -164,6 +159,7 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
   $scope.topicFeed;
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
+  $(document).foundation();
 
   if (!$scope.loggedIn) {
     $state.go("users.login");
@@ -273,12 +269,7 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
       pid: $scope.posts[index]._id
     };
     postFactory.getSortedComments(sortingObject).success(function (posts) {
-      if (currentUser) {
-        postFactory.formatPosts(posts, currentUser);
-        $scope.comments = posts;
-      } else {
-        $scope.comments = posts;
-      }
+      $scope.comments = posts;
     });
   };
 
@@ -287,23 +278,19 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
   };
 
   $scope.submitComment = function (comment, post) {
-    if (!$scope.loggedIn) {
-      $rootScope.isNotLoggedIn();
-    } else {
-      var commentObject = {
-        content: comment,
-        author: currentUser._id,
-        responseTo: post._id,
-        postType: "comment",
-        token: auth.getToken()
-      };
-      postFactory.createPost(commentObject).success(function (post) {
-        $scope.comments.push(post);
-      }).error(function (err) {
-        console.log("failed to submit comment");
-        console.error(err);
-      });
-    }
+    var commentObject = {
+      content: comment,
+      author: currentUser._id,
+      responseTo: post._id,
+      postType: "comment",
+      token: auth.getToken()
+    };
+    postFactory.createPost(commentObject).success(function (post) {
+      $scope.comments.push(post);
+    }).error(function (err) {
+      console.log("failed to submit comment");
+      console.error(err);
+    });
   };
 
   $scope.deletePost = function (post, $index) {
@@ -329,12 +316,10 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
   $scope.$on('filteredByTags', function (event, posts) {
     $scope.posts = posts;
   });
-
   $scope.$on("loggedOut", function () {
     $scope.loggedIn = auth.isLoggedIn();
     $scope.getPosts();
   });
-
   $scope.$on("loggedIn", function () {
     $scope.loggedIn = auth.isLoggedIn();
   });
@@ -345,6 +330,7 @@ app.controller('notificationsCtrl', function ($scope, $http, auth, userFactory, 
   $scope.currentUser = auth.currentUser();
   $scope.newNotifications;
   $scope.oldNotifications;
+  $(document).foundation();
 
   ($scope.getNotifications = function () {
     $scope.newNotifications = [];
@@ -373,9 +359,18 @@ app.controller('notificationsCtrl', function ($scope, $http, auth, userFactory, 
 });
 'use strict';
 
-app.controller('profileCtrl', function ($scope, $state, auth) {
-
+app.controller('profileCtrl', function ($scope, $stateParams, $state, auth, userFactory) {
   $(document).foundation();
+  $scope.currentUser = false;
+  $scope.followed = false;
+  userFactory.getUser($stateParams.user).success(function (user) {
+    if (user._id === auth.currentUser()._id) {
+      $scope.currentUser = true;
+    }
+    user.followers.indexOf(auth.currentUser()._id) !== -1 ? $scope.followed = true : $scope.followed = false;
+    $scope.user = user;
+  });
+
   $scope.$emit("getNotifications");
   $scope.$emit("notHome");
 });
@@ -385,6 +380,7 @@ app.controller('threadCtrl', function ($scope, $state, auth, postFactory, $rootS
   $scope.displayAnswerForm = false;
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
+  $(document).foundation();
 
   $scope.answers;
   $scope.comments;
@@ -581,6 +577,7 @@ app.controller('topicCtrl', function ($scope, $state, $stateParams, topicFactory
   $scope.posts;
   $scope.topic;
   $scope.subscribed = false;
+  $(document).foundation();
 
   (function getTopicPosts() {
     topicFactory.getTopic($stateParams.topic).success(function (topic) {
@@ -798,7 +795,7 @@ app.controller('usersCtrl', function ($scope, $state, auth, userFactory, postFac
       $state.go('home');
     }).error(function (err) {
       swal({
-        title: "Input Not Valid",
+        title: "Input Not Valid??",
         text: "Either the username or password was entered incorrectly",
         timer: 2000,
         type: "error",
@@ -818,18 +815,17 @@ app.controller('usersCtrl', function ($scope, $state, auth, userFactory, postFac
         password: $scope.password
       }
     });
-    file.upload.then(function (response) {
-      auth.saveToken(response.data.token);
+    file.upload.then(function (res) {
+      auth.saveToken(res.data.token);
       $scope.$emit('login');
 
       $timeout(function () {
-        file.result = response.data;
+        file.result = res.data;
         $state.go('home');
       });
-    }, function (response) {
-      if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+    }, function (res) {
+      if (res.status > 0) $scope.errorMsg = res.status + ': ' + res.data;
     }, function (evt) {
-      // Math.min is to fix IE which reports 200% sometimes
       file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
     });
   };
@@ -837,7 +833,7 @@ app.controller('usersCtrl', function ($scope, $state, auth, userFactory, postFac
   $scope.logout = function () {
     auth.logout();
     $scope.$emit('logout');
-    $state.go('home');
+    $state.go('users.login');
   };
 
   $scope.filterByTag = function (tag) {
@@ -884,6 +880,21 @@ app.controller('usersCtrl', function ($scope, $state, auth, userFactory, postFac
       console.log("error: ", err);
     });
   });
+});
+"use strict";
+
+app.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if (event.which === 13) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
 });
 'use strict';
 

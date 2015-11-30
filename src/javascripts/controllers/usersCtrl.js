@@ -7,23 +7,23 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
   $scope.currentUser = auth.currentUser();
   $scope.newNotifications = [];
 
-  ($scope.switchState = function(){
+  ($scope.switchState = () => {
     $scope.Login = !$scope.Login;
     $scope.Login ? $scope.currentState = "Create Account" : $scope.currentState = "Go to Login"
     $scope.Login ? $scope.formState = "Login" : $scope.formState = "Register"
   })();
 
-  $scope.login = function(username, password) {
-    var user = {
+  $scope.login = (username, password) => {
+    let user = {
       username: username,
       password: password
     }
-    auth.login(user).success(function(data){
+    auth.login(user).success(data => {
       $scope.$emit('login');
       $state.go('home');
-    }).error(function(err){
+    }).error(err => {
       swal({
-        title: "Input Not Valid",
+        title: "Input Not Valid??",
         text: "Either the username or password was entered incorrectly",
         timer: 2000,
         type: "error",
@@ -33,7 +33,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
   };
 
 
-  $scope.register = function(file) {
+  $scope.register = (file) => {
      file.upload = Upload.upload({
        url: 'auth/register',
        data: {
@@ -44,35 +44,34 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
          password: $scope.password
        },
      });
-     file.upload.then(function (response) {
-       auth.saveToken(response.data.token);
+     file.upload.then(res =>  {
+       auth.saveToken(res.data.token);
        $scope.$emit('login');
 
-       $timeout(function () {
-         file.result = response.data;
+       $timeout(function() {
+         file.result = res.data;
          $state.go('home');
        });
-     }, function (response) {
-       if (response.status > 0)
-         $scope.errorMsg = response.status + ': ' + response.data;
+     }, function (res) {
+       if (res.status > 0)
+         $scope.errorMsg = res.status + ': ' + res.data;
      }, function (evt) {
-       // Math.min is to fix IE which reports 200% sometimes
        file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
      });
    }
 
-  $scope.logout = function(){
+  $scope.logout = () => {
     auth.logout();
     $scope.$emit('logout');
-    $state.go('home');
+    $state.go('users.login');
   }
 
-  $scope.filterByTag = function(tag){
+  $scope.filterByTag = (tag) => {
     postFactory.getPostsByTag(tag)
-    .success(function(posts){
+    .success(posts => {
       $scope.$emit('tag posts', posts);
     })
-    .error(function(err){
+    .error(err => {
       console.log("error: ", err);
     })
   }
@@ -93,7 +92,7 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
         return !notif.seen;
       })
     })
-    .error(function(err){
+    .error(err => {
       console.log("error: ", err)
     })
   })
@@ -107,13 +106,13 @@ app.controller('usersCtrl', function($scope, $state, auth, userFactory, postFact
     $scope.loggedIn = auth.isLoggedIn();
     $scope.currentUser = auth.currentUser();
     userFactory.getUser($scope.currentUser._id)
-    .success(function(user){
+    .success(user => {
       $scope.picture = auth.loggedInUser.picture;
       $scope.newNotifications = user.notifications.filter(function(notif){
         return !notif.seen;
       })
     })
-    .error(function(err){
+    .error(err => {
       console.log("error: ", err)
     })
   })

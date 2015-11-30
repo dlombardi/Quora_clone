@@ -4,6 +4,7 @@ app.controller('threadCtrl', function($scope, $state, auth, postFactory, $rootSc
   $scope.displayAnswerForm = false;
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
+  $(document).foundation();
 
   $scope.answers;
   $scope.comments;
