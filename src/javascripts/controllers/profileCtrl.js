@@ -61,6 +61,64 @@ app.controller('profileCtrl', function($scope, $stateParams, $state, auth, userF
     })
   }
 
+  $scope.showComments = function(index){
+    $scope.user.posts[index].showComments = true;
+    let comments = $scope.user.posts[index].comments;
+    let sortingObject = {
+      sortingMethod: "likes",
+      pid: $scope.user.posts[index]._id
+    }
+    postFactory.getSortedComments(sortingObject)
+    .success(posts => {
+      $scope.comments = posts;
+    })
+  }
+
+  $scope.hideComments = (index) => {
+    $scope.user.posts[index].showComments = false;
+  }
+
+  $scope.submitComment = (comment, post) => {
+    var commentObject = {
+      content: comment,
+      author: currentUser._id,
+      responseTo: post._id,
+      postType: "comment",
+      token: auth.getToken()
+    }
+    postFactory.createPost(commentObject)
+    .success(post => {
+      $scope.comments.push(post);
+    })
+    .error(err => {
+      console.log("failed to submit comment");
+      console.error(err);
+    })
+  }
+
+  $scope.deletePost = (post, $index) => {
+    postFactory.deletePost(post._id)
+    .success(post => {
+      switch (post.postType){
+        case "comment":
+          $scope.comments.splice($index, 1);
+          break;
+        case "question":
+          $scope.posts.splice($index, 1);
+          break;
+      }
+    })
+    .error(err => {
+      console.log("failed at deletePost function ");
+      console.error(err);
+    })
+  }
+
+  $scope.updateInfo = function(){
+    console.log("inside");
+  }
+
+
   $scope.$emit("getNotifications");
   $scope.$emit("notHome");
 });

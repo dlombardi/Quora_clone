@@ -1,6 +1,6 @@
 
 <div class="row buttons">
-  <div class="large-4 columns">
+  <div id="profile" class="large-4 columns">
     <img id="profilePicture" data-ng-src="data:image/png;base64,{{user.picture}}" data-err-src="images/png/avatar.png"/>
     <div class="text-center buttons">
       <h4>{{user.username}}</h4>
@@ -14,7 +14,7 @@
       <p>{{user.about}}</p>
         <button class="left" ng-click="follow(user)" ng-if="!currentUser && !followed">Follow</button>
         <button class="left" ng-click="unfollow(user)" ng-if="!currentUser && followed">Unfollow</button>
-        <a href="#" data-reveal-id="editUserModal"><button class="right crammedButton" ng-if="currentUser">Edit Profile</button></a>
+        <a href="#" data-reveal-id="editUserModal"><button class="right" ng-if="currentUser">Edit Profile</button></a>
       <br>
     </div>
     <hr>
@@ -98,29 +98,26 @@
 <div id="editUserModal" class="reveal-modal buttons" data-reveal aria-labelledby="Edit Profile" aria-hidden="true" role="dialog">
   <div class="row">
     <div class="small-12 large-6 columns">
-      Username
-      <input type="text">
+      <label for="username"></label>
+      <input name="username" ng-model="info.username" type="text">
       Email
-      <input type="text">
-      Password
-      <input type="text">
+      <input name="email" ng-model="info.email" type="text">
+      Name - Please enter your full name.
+      <input name="fullName" ng-model="info.fullName" type="text">
     </div>
     <div class="small-12 large-6 columns">
-      Name - Please enter your full name.
-      <input type="text">
       Job Title
-      <input type="text">
+      <input name="work" ng-model="info.work" type="text">
       Location
-      <input type="text">
+      <input name="home" ng-model="info.home" type="text">
     </div>
   </div>
   <div class="row">
     <div class="large-12 columns">
       Bio
-      <textarea name="" id="" cols="30" rows="3"></textarea>
+      <textarea name="bio" ng-model="info.bio" id="" cols="30" rows="3"></textarea>
     </div>
   </div>
    <!-- ng-click="" -->
-  <a class="close"><button class="right">Save</button></a>
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
