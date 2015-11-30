@@ -6984,6 +6984,9 @@ div.post.ng-scope > div > h4 > a:hover {
   color: black;
   text-decoration: underline; }
 
+.topic {
+  margin-left: 15px; }
+
 #topicBanner {
   height: 15vh;
   vertical-align: middle; }
@@ -7089,3 +7092,9 @@ button {
 
 .sweet-alert fieldset {
   display: none; }
+
+.answered {
+  background-color: #f7f7f7;
+  width: 100px;
+  text-align: center;
+  color: #F9807D; }

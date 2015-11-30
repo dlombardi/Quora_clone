@@ -36,10 +36,16 @@
         <div class="postBody">
           <button ng-if="post.userPost" ng-click="deletePost(post, $index)" class="right">delete</button>
           <div ng-if="post.answerWritten">
-            <p>answered • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
+            <div class="row">
+                <p class="answered">answered</p>
+                <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a>
+            </div>
           </div>
           <div ng-if="!post.answerWritten">
-            <p>unanswered • <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a></p>
+            <div class="row">
+              <p class="answered">unanswered</p>
+              <a class="topic" ng-href="/topics/{{post.topic.name}}">{{post.topic.name}}</a>
+            </div>
           </div>
           <h4><a ng-href='/thread/{{post._id}}'>{{post.title}}</a></h4>
           <p><img id="navPicture" data-ng-src="data:image/png;base64,{{post.author.picture}}" data-err-src="/assets/User-100.png"/><a ng-href='/profile/{{post.author._id}}' class="author"> {{post.author.username}}</a> {{post.author.work}}</p>

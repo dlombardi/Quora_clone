@@ -16,7 +16,7 @@ router.get('/:uid', function(req, res, next){
   if(!req.params.uid){
     return res.send("no entry");
   }
-  User.findById(req.params.uid).deepPopulate("notifications.actor notifications.receiver subscriptions.posts ").exec(function(err, user){
+  User.findById(req.params.uid).deepPopulate("posts.author posts.topic notifications.actor notifications.receiver subscriptions.posts ").exec(function(err, user){
     res.send(user);
   });
 });

@@ -359,17 +359,62 @@ app.controller('notificationsCtrl', function ($scope, $http, auth, userFactory, 
 });
 'use strict';
 
-app.controller('profileCtrl', function ($scope, $stateParams, $state, auth, userFactory) {
+app.controller('profileCtrl', function ($scope, $stateParams, $state, auth, userFactory, postFactory) {
   $(document).foundation();
   $scope.currentUser = false;
   $scope.followed = false;
+  var currentUser = auth.currentUser();
   userFactory.getUser($stateParams.user).success(function (user) {
     if (user._id === auth.currentUser()._id) {
       $scope.currentUser = true;
     }
-    user.followers.indexOf(auth.currentUser()._id) !== -1 ? $scope.followed = true : $scope.followed = false;
+    user.followers.indexOf(currentUser._id) !== -1 ? $scope.followed = true : $scope.followed = false;
     $scope.user = user;
   });
+
+  $scope.togglePostLike = function (postSpecies, index) {
+    var postType = undefined;
+    var action = undefined;
+    postSpecies === "post" ? postType = $scope.user.posts : postType = $scope.comments;
+    postType[index].liked ? action = "unlike" : action = "like";
+    var statsObject = {
+      pid: postType[index]._id,
+      uid: currentUser._id,
+      type: action,
+      token: auth.getToken()
+    };
+    postFactory.changeStats(statsObject).success(function (post) {
+      if (action === "like") {
+        postType[index].likes += 1;
+        postType[index].liked = true;
+      } else {
+        postType[index].likes -= 1;
+        postType[index].liked = false;
+      }
+    });
+  };
+
+  $scope.togglePostDislike = function (postSpecies, index) {
+    var postType = undefined;
+    var action = undefined;
+    postSpecies === "post" ? postType = $scope.user.posts : postType = $scope.comments;
+    postType[index].disliked ? action = "undo" : action = "dislike";
+    var statsObject = {
+      pid: postType[index]._id,
+      uid: currentUser._id,
+      type: action,
+      token: auth.getToken()
+    };
+    postFactory.changeStats(statsObject).success(function (post) {
+      if (action === "dislike") {
+        postType[index].dislikes += 1;
+        postType[index].disliked = true;
+      } else {
+        postType[index].dislikes -= 1;
+        postType[index].disliked = false;
+      }
+    });
+  };
 
   $scope.$emit("getNotifications");
   $scope.$emit("notHome");
@@ -1104,11 +1149,14 @@ app.factory('topicFactory', function ($window, $http) {
 });
 'use strict';
 
-app.factory('userFactory', function ($window, $http) {
+app.factory('userFactory', function ($window, $http, postFactory, auth) {
   var userFactory = {};
 
   userFactory.getUser = function (uid) {
-    return $http.get('/users/' + uid);
+    return $http.get('/users/' + uid).success(function (user) {
+      postFactory.formatPosts(user.posts, auth.currentUser());
+      return user;
+    });
   };
 
   userFactory.getNotifs = function (userObject) {

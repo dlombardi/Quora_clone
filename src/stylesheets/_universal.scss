@@ -35,3 +35,10 @@ button{
 .sweet-alert fieldset{
   display: none;
 }
+
+.answered{
+  background-color: $quora-hover-grey;
+  width: 100px;
+  text-align: center;
+  color: $quora-highlight;
+}
