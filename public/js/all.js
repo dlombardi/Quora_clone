@@ -359,7 +359,7 @@ app.controller('notificationsCtrl', function ($scope, $http, auth, userFactory, 
 });
 'use strict';
 
-app.controller('profileCtrl', function ($scope, $stateParams, $state, auth, userFactory, postFactory) {
+app.controller('profileCtrl', function ($scope, $log, $stateParams, $state, auth, userFactory, postFactory) {
   $(document).foundation();
   $scope.currentUser = false;
   $scope.followed = false;
@@ -443,8 +443,8 @@ app.controller('profileCtrl', function ($scope, $stateParams, $state, auth, user
     postFactory.createPost(commentObject).success(function (post) {
       $scope.comments.push(post);
     }).error(function (err) {
-      console.log("failed to submit comment");
-      console.error(err);
+      $log.warning("failed to submit comment");
+      $log.error(err);
     });
   };
 
@@ -459,13 +459,15 @@ app.controller('profileCtrl', function ($scope, $stateParams, $state, auth, user
           break;
       }
     }).error(function (err) {
-      console.log("failed at deletePost function ");
-      console.error(err);
+      $log.warning("failed at deletePost function ");
+      $log.error(err);
     });
   };
 
-  $scope.updateInfo = function () {
-    console.log("inside");
+  $scope.updateInfo = function (info) {
+    userFactory.updateInfo(info).then(function (user) {
+      $scope.user = user.data;
+    });
   };
 
   $scope.$emit("getNotifications");
@@ -1224,7 +1226,14 @@ app.factory('userFactory', function ($window, $http, postFactory, auth) {
   };
 
   userFactory.updateInfo = function (updateObject) {
-    return $http.put('/users/updateInfo', updateObject);
+    var updateInfo = new Object();
+    for (var key in updateObject) {
+      if (updateObject[key].length !== 0) {
+        updateInfo[key] = updateObject[key];
+      }
+    }
+    updateInfo.uid = auth.currentUser()._id;
+    return $http.put('/users/updateInfo', updateInfo);
   };
 
   userFactory.follow = function (followObject) {

@@ -1,7 +1,7 @@
 'use strict';
 
 
-app.controller('profileCtrl', function($scope, $stateParams, $state, auth, userFactory, postFactory){
+app.controller('profileCtrl', function($scope, $log, $stateParams, $state, auth, userFactory, postFactory){
   $(document).foundation();
   $scope.currentUser = false;
   $scope.followed = false;
@@ -61,7 +61,7 @@ app.controller('profileCtrl', function($scope, $stateParams, $state, auth, userF
     })
   }
 
-  $scope.showComments = function(index){
+  $scope.showComments = (index) => {
     $scope.user.posts[index].showComments = true;
     let comments = $scope.user.posts[index].comments;
     let sortingObject = {
@@ -91,8 +91,8 @@ app.controller('profileCtrl', function($scope, $stateParams, $state, auth, userF
       $scope.comments.push(post);
     })
     .error(err => {
-      console.log("failed to submit comment");
-      console.error(err);
+      $log.warning("failed to submit comment");
+      $log.error(err);
     })
   }
 
@@ -109,13 +109,16 @@ app.controller('profileCtrl', function($scope, $stateParams, $state, auth, userF
       }
     })
     .error(err => {
-      console.log("failed at deletePost function ");
-      console.error(err);
+      $log.warning("failed at deletePost function ");
+      $log.error(err);
     })
   }
 
-  $scope.updateInfo = function(){
-    console.log("inside");
+  $scope.updateInfo = (info) => {
+    userFactory.updateInfo(info)
+    .then(user => {
+      $scope.user = user.data;
+    });
   }
 
 

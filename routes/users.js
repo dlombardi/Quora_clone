@@ -3,6 +3,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var Q = require('q');
 
 var User = require('../models/user');
 var Topic = require('../models/topic');
@@ -16,7 +17,7 @@ router.get('/:uid', function(req, res, next){
   if(!req.params.uid){
     return res.send("no entry");
   }
-  User.findById(req.params.uid).deepPopulate("posts.author posts.topic notifications.actor notifications.receiver subscriptions.posts ").exec(function(err, user){
+  User.findById(req.params.uid).deepPopulate("posts.author posts.topic notifications.actor notifications.receiver subscriptions.posts").exec(function(err, user){
     res.send(user);
   });
 });
@@ -40,17 +41,25 @@ router.put('/updateInfo', function(req, res, next){
   if(!req.body){
     return res.send("no entry");
   }
-  updateInfo(req.body.uid, req.body.type, req.body.content);
-  function updateInfo(uid, infoType, content){
-    var infoObj = {};
-    var type = infoType;
-    infoObj[type] = content;
-    User.findByIdAndUpdate(uid, { $set: infoObj }, function(err, user){
-      user.save();
-      UserEmitter.emit("updateInfo", user);
+  let uid = req.body.uid;
+  delete req.body.uid;
+  let promises = [];
+  for(let key in req.body){
+    let set = {$set: {}}
+    set.$set[key] = req.body[key]
+    let promise = Q(User.findByIdAndUpdate(uid, set).exec());
+    promises.push(promise);
+  }
+  Q.all(promises)
+  .then(() => {
+    User.findById(uid).deepPopulate("posts.topic posts.comments").exec(function(err, user){
       res.send(user);
     });
-  }
+  })
+  .catch(err => {
+    console.log("failed to update info: ");
+    console.error(err);
+  })
 });
 
 router.get('/notifications/:uid', function(req, res, next){

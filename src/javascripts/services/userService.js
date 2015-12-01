@@ -24,7 +24,14 @@ app.factory('userFactory', function($window, $http, postFactory, auth){
   };
 
   userFactory.updateInfo = (updateObject) => {
-    return $http.put('/users/updateInfo', updateObject);
+    let updateInfo = new Object();
+    for(let key in updateObject){
+      if(updateObject[key].length !== 0){
+        updateInfo[key] = updateObject[key];
+      }
+    }
+    updateInfo.uid = auth.currentUser()._id
+    return $http.put('/users/updateInfo', updateInfo);
   };
 
   userFactory.follow = (followObject) => {

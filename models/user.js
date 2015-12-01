@@ -61,4 +61,13 @@ UserSchema.statics.sortBySubscriptions = function(uid, cb){
   return this.findById(uid).deepPopulate('subscriptions.posts').exec(cb)
 }
 
+// UserSchema.statics.updateInfo = function(uid, update, cb){
+//   console.log(update);
+//
+// }
+
+UserSchema.methods.updateInfo = (updateInfo) => {
+
+}
+
 module.exports = mongoose.model('User', UserSchema);

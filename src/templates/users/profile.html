@@ -98,26 +98,32 @@
 <div id="editUserModal" class="reveal-modal buttons" data-reveal aria-labelledby="Edit Profile" aria-hidden="true" role="dialog">
   <div class="row">
     <div class="small-12 large-6 columns">
-      <label for="username"></label>
+      <label for="username">Username</label>
       <input name="username" ng-model="info.username" type="text">
-      Email
+      <label for="email">Email</label>
       <input name="email" ng-model="info.email" type="text">
-      Name - Please enter your full name.
+      <label for="fullName">Full Name</label>
       <input name="fullName" ng-model="info.fullName" type="text">
     </div>
     <div class="small-12 large-6 columns">
-      Job Title
+      <label for="work">Job Title</label>
       <input name="work" ng-model="info.work" type="text">
-      Location
+      <label for="home">Location</label>
       <input name="home" ng-model="info.home" type="text">
     </div>
   </div>
   <div class="row">
     <div class="large-12 columns">
-      Bio
-      <textarea name="bio" ng-model="info.bio" id="" cols="30" rows="3"></textarea>
+      <label for="about">Bio</label>
+      <textarea name="bio" ng-model="info.about" id="" cols="30" rows="3"></textarea>
     </div>
   </div>
-   <!-- ng-click="" -->
+  <div class="row">
+    <div class="large-12 columns">
+      <button ng-click="updateInfo(info)" class="btn btn-default right">Save</button>
+    </div>
+  </div>
+
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
