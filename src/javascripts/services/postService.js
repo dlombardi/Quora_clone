@@ -112,6 +112,7 @@ app.factory('postFactory', function($window, $http, auth){
   postFactory.formatUserPosts = function(posts, currentUser){
     posts.map(function(post){
       post.author._id.toString() === currentUser._id.toString() ?  post.userPost = true :  post.userPost = false;
+      post.answers.length > 0 ? post.answerWritten = true : post.answerWritten = false;
     })
   }
 
