@@ -6,6 +6,10 @@ app.controller('profileCtrl', function($scope, $log, $stateParams, $state, auth,
   $scope.currentUser = false;
   $scope.followed = false;
   let currentUser = auth.currentUser();
+  $scope.posts;
+
+
+
   userFactory.getUser($stateParams.user)
   .success(user => {
     if(user._id === auth.currentUser()._id){
@@ -66,7 +70,8 @@ app.controller('profileCtrl', function($scope, $log, $stateParams, $state, auth,
     let comments = $scope.user.posts[index].comments;
     let sortingObject = {
       sortingMethod: "likes",
-      pid: $scope.user.posts[index]._id
+      pid: $scope.user.posts[index]._id,
+      postType: "comment"
     }
     postFactory.getSortedComments(sortingObject)
     .success(posts => {
@@ -101,10 +106,10 @@ app.controller('profileCtrl', function($scope, $log, $stateParams, $state, auth,
     .success(post => {
       switch (post.postType){
         case "comment":
-          $scope.comments.splice($index, 1);
+          $scope.user.comments.splice($index, 1);
           break;
         case "question":
-          $scope.posts.splice($index, 1);
+          $scope.user.posts.splice($index, 1);
           break;
       }
     })

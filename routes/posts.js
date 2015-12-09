@@ -60,6 +60,7 @@ function loggedIn(req, res, next) {
 
 router.get('/:pid', function(req, res, next){
   Post.findById(req.params.pid).deepPopulate('author comments.author answers.author topic responseTo').exec(function (err, post){
+    console.log(post);
     res.send(post);
   });
 })
@@ -187,29 +188,11 @@ router.put('/edit', function(req, res, next){
 router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:postType?', function(req, res, next){
   var tag = req.params.tag
   var sortingMethod = req.params.sortingMethod;
-  var sortParams;
-  var postType;
-  switch(sortingMethod){
-    case "newest":
-      sortParams = {"updated" : 'desc'};
-      break;
-    case "oldest":
-      sortParams = {"updated" : 'asc'};
-      break;
-    case "likes":
-      sortParams = {"likes" : 'desc'};
-      break;
-    case "dislikes":
-      sortParams = {"dislikes" : 'desc'};
-      break;
-    case "views":
-      sortParams = {"views" : 'asc'};
-      break;
-    default:
-      sortParams = {"likes" : 'desc'};
-  }
-  if(req.params.postType){
-    Post.filterPostType(req.params.postType, sortParams, function(err, posts){
+  var postType = req.params.postType;
+  var sortParams = sortSwitch(sortingMethod);
+
+  if(postType){
+    Post.filterPostType(postType, sortParams, function(err, posts){
       if(err)res.send("error", err)
       res.send(posts);
     });
@@ -224,7 +207,6 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
       res.send(posts);
     });
   } else if (req.params.uid){
-
     User.sortBySubscriptions(req.params.uid, function(err, user){
       if(err)res.send("error: ",err);
       var subscribedPosts = [];
@@ -246,35 +228,39 @@ router.get('/sorted/:sortingMethod?/user/:uid?/topic/:tid?/tag/:tag?/postType/:p
   }
 });
 
-router.get("/sortedComments/:sortingMethod?/post/:pid?", function(req, res, next){
+router.get('/sortedReplies/postType/:postType?/sortingMethod/:sortingMethod?/post/:pid?', function(req, res, next){
   var sortingMethod = req.params.sortingMethod;
-  var sortParams;
-  switch(sortingMethod){
-    case "newest":
-      sortParams = {"updated" : 'desc'};
-      break;
-    case "oldest":
-      sortParams = {"updated" : 'asc'};
-      break;
-    case "likes":
-      sortParams = {"likes" : 'desc'};
-      break;
-    case "dislikes":
-      sortParams = {"likes" : 'desc'};
-      break;
-    case "views":
-      sortParams = {"views" : 'asc'};
-      break;
-    default:
-      sortParams = {"likes" : 'desc'};
-  }
-  Post.find({responseTo: req.params.pid}).deepPopulate("author comments.comments topic").sort(sortParams).exec(function(err, posts){
+  var postType = req.params.postType;
+  var pid = req.params.pid;
+  var sortParams = sortSwitch(sortingMethod);
+  Post.find({responseTo: pid}).where('postType').equals(postType.toString()).deepPopulate("author comments.author answers.author topic").sort(sortParams).exec(function(err, replies){
     if(err){res.send("error: ",err)};
-    res.send(posts);
+    console.log("replies:", replies);
+    res.send(replies);
   });
 });
 
 
-
+function sortSwitch(sortingMethod){
+  switch(sortingMethod){
+    case "newest":
+      return {"updated" : 'desc'};
+      break;
+    case "oldest":
+      return {"updated" : 'asc'};
+      break;
+    case "likes":
+      return {"likes" : 'desc'};
+      break;
+    case "dislikes":
+      return {"likes" : 'desc'};
+      break;
+    case "views":
+      return {"views" : 'asc'};
+      break;
+    default:
+      return {"likes" : 'desc'};
+  }
+}
 
 module.exports = router;

@@ -2,7 +2,6 @@
 
 
 app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, topicFactory, auth, marked, $sce, $rootScope) {
-  $scope.posts;
   $scope.topicFeed;
   let currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
@@ -119,11 +118,12 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
     let comments = $scope.posts[index].comments;
     let sortingObject = {
       sortingMethod: "likes",
-      pid: $scope.posts[index]._id
+      pid: $scope.posts[index]._id,
+      postType: "comment"
     }
     postFactory.getSortedComments(sortingObject)
-    .success(posts => {
-      $scope.comments = posts;
+    .success(comments => {
+      $scope.comments = comments;
     })
   }
 
@@ -140,8 +140,8 @@ app.controller('homeCtrl', function($scope, $state, postFactory, userFactory, to
       token: auth.getToken()
     }
     postFactory.createPost(commentObject)
-    .success(post => {
-      $scope.comments.push(post);
+    .success(comment => {
+      $scope.comments.push(comment);
     })
     .error(err => {
       console.log("failed to submit comment");

@@ -12,8 +12,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
   (function getTopicPosts(){
     topicFactory.getTopic($stateParams.topic)
     .success(function(topic){
-      console.log("TOPIC: ", topic)
-      topic.subscribers.forEach(function(subscriber){
+      topic.subscribers.forEach(subscriber => {
         subscriber === currentUser._id ? $scope.subscribed = true : $scope.subscribed = false;
       });
       $scope.topic = topic;
@@ -95,7 +94,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
         token: auth.getToken()
       }
       postFactory.changeStats(statsObject)
-      .success(function(post){
+      .success(post => {
         if(action === "dislike"){
           $scope.posts[index].dislikes += 1
           $scope.posts[index].disliked = true;
@@ -104,7 +103,7 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
           $scope.posts[index].disliked = false;
         }
       })
-      .error(function(err){
+      .error(err => {
         console.log("error: ", err);
       })
     }
@@ -170,7 +169,8 @@ app.controller('topicCtrl', function($scope, $state, $stateParams, topicFactory,
     var comments = $scope.posts[index].comments;
     var sortingObject = {
       sortingMethod: "likes",
-      pid: $scope.posts[index]._id
+      pid: $scope.posts[index]._id,
+      postType: "comment"
     }
     postFactory.getSortedComments(sortingObject)
     .success(function(posts){

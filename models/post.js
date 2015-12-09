@@ -25,8 +25,8 @@ var PostSchema = new mongoose.Schema({
 
 PostSchema.plugin(deepPopulate);
 
-PostSchema.methods.formatTags = function(tags, post) {
-  tags.split(",").forEach(function(tag){
+PostSchema.methods.formatTags =  (tags, post) => {
+  tags.split(",").forEach((tag) => {
     if(post.tags.indexOf(tag) === -1){
       post.tags.push(tag.toLowerCase().trim());
     }
@@ -46,7 +46,7 @@ PostSchema.statics.filterByTopic = function(tid, sortParams, cb){
 }
 
 PostSchema.statics.findAll = function(sortParams, cb){
-  return this.find().deepPopulate("author comments.comments likers").sort(sortParams).exec(cb)
+  return this.find({}).deepPopulate("author comments.comments likers").sort(sortParams).exec(cb)
 }
 
 

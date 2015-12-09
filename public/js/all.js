@@ -155,7 +155,6 @@ app.controller('composeCtrl', function ($scope, $http, $location, $state, auth, 
 'use strict';
 
 app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, topicFactory, auth, marked, $sce, $rootScope) {
-  $scope.posts;
   $scope.topicFeed;
   var currentUser = auth.currentUser();
   $scope.loggedIn = auth.isLoggedIn();
@@ -266,10 +265,11 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
     var comments = $scope.posts[index].comments;
     var sortingObject = {
       sortingMethod: "likes",
-      pid: $scope.posts[index]._id
+      pid: $scope.posts[index]._id,
+      postType: "comment"
     };
-    postFactory.getSortedComments(sortingObject).success(function (posts) {
-      $scope.comments = posts;
+    postFactory.getSortedComments(sortingObject).success(function (comments) {
+      $scope.comments = comments;
     });
   };
 
@@ -285,8 +285,8 @@ app.controller('homeCtrl', function ($scope, $state, postFactory, userFactory, t
       postType: "comment",
       token: auth.getToken()
     };
-    postFactory.createPost(commentObject).success(function (post) {
-      $scope.comments.push(post);
+    postFactory.createPost(commentObject).success(function (comment) {
+      $scope.comments.push(comment);
     }).error(function (err) {
       console.log("failed to submit comment");
       console.error(err);
@@ -364,6 +364,8 @@ app.controller('profileCtrl', function ($scope, $log, $stateParams, $state, auth
   $scope.currentUser = false;
   $scope.followed = false;
   var currentUser = auth.currentUser();
+  $scope.posts;
+
   userFactory.getUser($stateParams.user).success(function (user) {
     if (user._id === auth.currentUser()._id) {
       $scope.currentUser = true;
@@ -421,7 +423,8 @@ app.controller('profileCtrl', function ($scope, $log, $stateParams, $state, auth
     var comments = $scope.user.posts[index].comments;
     var sortingObject = {
       sortingMethod: "likes",
-      pid: $scope.user.posts[index]._id
+      pid: $scope.user.posts[index]._id,
+      postType: "comment"
     };
     postFactory.getSortedComments(sortingObject).success(function (posts) {
       $scope.comments = posts;
@@ -452,10 +455,10 @@ app.controller('profileCtrl', function ($scope, $log, $stateParams, $state, auth
     postFactory.deletePost(post._id).success(function (post) {
       switch (post.postType) {
         case "comment":
-          $scope.comments.splice($index, 1);
+          $scope.user.comments.splice($index, 1);
           break;
         case "question":
-          $scope.posts.splice($index, 1);
+          $scope.user.posts.splice($index, 1);
           break;
       }
     }).error(function (err) {
@@ -512,127 +515,86 @@ app.controller('threadCtrl', function ($scope, $state, auth, postFactory, $rootS
     };
     postFactory.createPost(answerObject).success(function (answer) {
       $scope.answers.push(answer);
+      console.log(answer);
     }).error(function (err) {
       console.log("error: ", err);
     });
   };
 
-  $scope.toggleAnswerLike = function (index) {
-    if (!$scope.loggedIn) {
-      $rootScope.isNotLoggedIn();
-    } else {
-      var action;
-      $scope.answers[index].liked ? action = "unlike" : action = "like";
-      var statsObject = {
-        pid: $scope.answers[index]._id,
-        uid: currentUser._id,
-        type: action,
-        token: auth.getToken()
-      };
-      postFactory.changeStats(statsObject).success(function (post) {
-        if (action === "like") {
-          $scope.answers[index].likes += 1;
-          $scope.answers[index].liked = true;
-        } else {
-          $scope.answers[index].likes -= 1;
-          $scope.answers[index].liked = false;
-        }
-      }).error(function (err) {
-        console.log("error: ", err);
-      });
-    }
+  $scope.togglePostLike = function (postSpecies, index) {
+    var postType = undefined;
+    var action = undefined;
+    postSpecies === "answer" ? postType = $scope.answers : postType = $scope.comments;
+    postType[index].liked ? action = "unlike" : action = "like";
+    var statsObject = {
+      pid: postType[index]._id,
+      uid: currentUser._id,
+      type: action,
+      token: auth.getToken()
+    };
+    postFactory.changeStats(statsObject).success(function (post) {
+      if (action === "like") {
+        postType[index].likes += 1;
+        postType[index].liked = true;
+      } else {
+        postType[index].likes -= 1;
+        postType[index].liked = false;
+      }
+    });
   };
 
-  $scope.toggleAnswerDislike = function (index) {
-    if (!$scope.loggedIn) {
-      $rootScope.isNotLoggedIn();
-    } else {
-      var action;
-      $scope.answers[index].disliked ? action = "undo" : action = "dislike";
-      var statsObject = {
-        pid: $scope.answers[index]._id,
-        uid: currentUser._id,
-        type: action,
-        token: auth.getToken()
-      };
-      postFactory.changeStats(statsObject).success(function (post) {
-        if (action === "dislike") {
-          $scope.answers[index].dislikes += 1;
-          $scope.answers[index].disliked = true;
-        } else {
-          $scope.answers[index].dislikes -= 1;
-          $scope.answers[index].disliked = false;
-        }
-      }).error(function (err) {
-        console.log("error: ", err);
-      });
-    }
-  };
-
-  $scope.toggleCommentLike = function (index) {
-    if (!$scope.loggedIn) {
-      $rootScope.isNotLoggedIn();
-    } else {
-      var action;
-      $scope.comments[index].liked ? action = "unlike" : action = "like";
-      var statsObject = {
-        pid: $scope.comments[index]._id,
-        uid: currentUser._id,
-        type: action,
-        token: auth.getToken()
-      };
-      postFactory.changeStats(statsObject).success(function (post) {
-        if (action === "like") {
-          $scope.comments[index].likes += 1;
-          $scope.comments[index].liked = true;
-        } else {
-          $scope.comments[index].likes -= 1;
-          $scope.comments[index].liked = false;
-        }
-      }).error(function (err) {
-        console.log("error: ", err);
-      });
-    }
-  };
-
-  $scope.toggleCommentDislike = function (index) {
-    if (!$scope.loggedIn) {
-      $rootScope.isNotLoggedIn();
-    } else {
-      var action;
-      $scope.comments[index].disliked ? action = "undo" : action = "dislike";
-      var statsObject = {
-        pid: $scope.comments[index]._id,
-        uid: currentUser._id,
-        type: action,
-        token: auth.getToken()
-      };
-      postFactory.changeStats(statsObject).success(function (post) {
-        if (action === "dislike") {
-          $scope.comments[index].dislikes += 1;
-          $scope.comments[index].disliked = true;
-        } else {
-          $scope.comments[index].dislikes -= 1;
-          $scope.comments[index].disliked = false;
-        }
-      }).error(function (err) {
-        console.log("error: ", err);
-      });
-    }
+  $scope.togglePostDislike = function (postSpecies, index) {
+    var postType = undefined;
+    var action = undefined;
+    postSpecies === "answer" ? postType = $scope.answers : postType = $scope.comments;
+    postType[index].disliked ? action = "undo" : action = "dislike";
+    var statsObject = {
+      pid: postType[index]._id,
+      uid: currentUser._id,
+      type: action,
+      token: auth.getToken()
+    };
+    postFactory.changeStats(statsObject).success(function (post) {
+      if (action === "dislike") {
+        postType[index].dislikes += 1;
+        postType[index].disliked = true;
+      } else {
+        postType[index].dislikes -= 1;
+        postType[index].disliked = false;
+      }
+    });
   };
 
   $scope.showComments = function () {
     var sortingObject = {
       sortingMethod: "likes",
-      pid: $scope.posts[index]._id
+      pid: $scope.posts[index]._id,
+      postType: "comment"
     };
-    postFactory.getSortedComments(sortingObject).success(function (posts) {
+    postFactory.getSortedComments(sortingObject).success(function (comments) {
+      console.log(comments);
       if (currentUser) {
-        postFactory.formatPosts(posts, currentUser);
-        $scope.comments = posts;
+        postFactory.formatPosts(comments, currentUser);
+        $scope.comments = comments;
       } else {
-        $scope.comments = posts;
+        $scope.comments = comments;
       }
+    });
+  };
+
+  $scope.deletePost = function (post, $index) {
+    postFactory.deletePost(post._id).success(function (post) {
+      switch (post.postType) {
+        case "comment":
+          $scope.comments.splice($index, 1);
+          break;
+        case "question":
+          $scope.posts.splice($index, 1);
+          break;
+      }
+    }).error(function (err) {
+      console.log("failed at deletePost function ");
+      console.error(err);
     });
   };
 
@@ -680,7 +642,6 @@ app.controller('topicCtrl', function ($scope, $state, $stateParams, topicFactory
 
   (function getTopicPosts() {
     topicFactory.getTopic($stateParams.topic).success(function (topic) {
-      console.log("TOPIC: ", topic);
       topic.subscribers.forEach(function (subscriber) {
         subscriber === currentUser._id ? $scope.subscribed = true : $scope.subscribed = false;
       });
@@ -825,7 +786,8 @@ app.controller('topicCtrl', function ($scope, $state, $stateParams, topicFactory
     var comments = $scope.posts[index].comments;
     var sortingObject = {
       sortingMethod: "likes",
-      pid: $scope.posts[index]._id
+      pid: $scope.posts[index]._id,
+      postType: "comment"
     };
     postFactory.getSortedComments(sortingObject).success(function (posts) {
       postFactory.formatPosts(posts, currentUser);
@@ -1057,7 +1019,10 @@ app.factory('postFactory', function ($window, $http, auth) {
   var postFactory = {};
 
   postFactory.createPost = function (newPost) {
-    return $http.post('/posts/add', newPost);
+    return $http.post('/posts/add', newPost).success(function (post) {
+      postFactory.isUserPost(post, auth.currentUser());
+      return post;
+    });
   };
 
   postFactory.deletePost = function (pid) {
@@ -1105,16 +1070,18 @@ app.factory('postFactory', function ($window, $http, auth) {
   };
 
   postFactory.getSortedComments = function (sorting) {
-    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid).success(function (posts) {
-      postFactory.formatPosts(posts, auth.currentUser());
-      return posts;
+    return $http.get('/posts/sortedReplies/postType/' + sorting.postType + '/sortingMethod/' + sorting.sortingMethod + '/post/' + sorting.pid).success(function (comments) {
+      console.log(comments);
+      postFactory.formatPosts(comments, auth.currentUser());
+      return comments;
     });
   };
 
   postFactory.getSortedAnswers = function (sorting) {
-    return $http.get('/posts/sortedComments/' + sorting.sortingMethod + '/post/' + sorting.pid).success(function (posts) {
-      postFactory.formatPosts(posts, auth.currentUser());
-      return posts;
+
+    return $http.get('/posts/sortedReplies/' + sorting.postType + '/sortingMethod/' + sorting.sortingMethod + '/post/' + sorting.pid).success(function (answers) {
+      postFactory.formatPosts(answers, auth.currentUser());
+      return answers;
     });
   };
 
@@ -1145,7 +1112,6 @@ app.factory('postFactory', function ($window, $http, auth) {
 
   postFactory.formatTags = function (posts) {
     posts.map(function (post) {
-      console.log(posts);
       var formattedTags = "";
       post.tags.forEach(function (tag) {
         formattedTags += tag + ", ";
@@ -1155,9 +1121,18 @@ app.factory('postFactory', function ($window, $http, auth) {
     });
   };
 
+  postFactory.isUserPost = function (post, currentUser) {
+    post.author._id.toString() === currentUser._id.toString() ? post.userPost = true : post.userPost = false;
+  };
+
   postFactory.formatUserPosts = function (posts, currentUser) {
     posts.map(function (post) {
       post.author._id.toString() === currentUser._id.toString() ? post.userPost = true : post.userPost = false;
+    });
+  };
+
+  postFactory.answerWritten = function (posts) {
+    posts.map(function (post) {
       post.answers.length > 0 ? post.answerWritten = true : post.answerWritten = false;
     });
   };
@@ -1166,6 +1141,7 @@ app.factory('postFactory', function ($window, $http, auth) {
     postFactory.formatLikedPosts(posts, currentUser);
     postFactory.formatUserPosts(posts, currentUser);
     postFactory.formatTags(posts);
+    postFactory.answerWritten(posts);
     return posts;
   };
 

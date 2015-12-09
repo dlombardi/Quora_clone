@@ -4,7 +4,10 @@ app.factory('postFactory', function($window, $http, auth){
   var postFactory= {};
 
   postFactory.createPost = (newPost) => {
-    return $http.post('/posts/add', newPost);
+    return $http.post('/posts/add', newPost).success(post => {
+      postFactory.isUserPost(post, auth.currentUser());
+      return post;
+    })
   };
 
   postFactory.deletePost = (pid) => {
@@ -56,18 +59,20 @@ app.factory('postFactory', function($window, $http, auth){
   };
 
   postFactory.getSortedComments = (sorting) => {
-    return $http.get(`/posts/sortedComments/${sorting.sortingMethod}/post/${sorting.pid}`)
-    .success(posts => {
-      postFactory.formatPosts(posts, auth.currentUser())
-      return posts;
+    return $http.get(`/posts/sortedReplies/postType/${sorting.postType}/sortingMethod/${sorting.sortingMethod}/post/${sorting.pid}`)
+    .success(comments => {
+      console.log(comments);
+      postFactory.formatPosts(comments, auth.currentUser())
+      return comments;
     })
   };
 
   postFactory.getSortedAnswers = (sorting) => {
-    return $http.get(`/posts/sortedComments/${sorting.sortingMethod}/post/${sorting.pid}`)
-    .success(posts => {
-      postFactory.formatPosts(posts, auth.currentUser())
-      return posts;
+
+    return $http.get(`/posts/sortedReplies/${sorting.postType}/sortingMethod/${sorting.sortingMethod}/post/${sorting.pid}`)
+    .success(answers => {
+      postFactory.formatPosts(answers, auth.currentUser())
+      return answers;
     })
   };
 
@@ -99,7 +104,6 @@ app.factory('postFactory', function($window, $http, auth){
 
   postFactory.formatTags = (posts) => {
     posts.map(post => {
-      console.log(posts);
       var formattedTags = "";
       post.tags.forEach(tag => {
         formattedTags += tag + ", ";
@@ -109,9 +113,18 @@ app.factory('postFactory', function($window, $http, auth){
     })
   }
 
-  postFactory.formatUserPosts = function(posts, currentUser){
-    posts.map(function(post){
+  postFactory.isUserPost = (post, currentUser) => {
+    post.author._id.toString() === currentUser._id.toString() ?  post.userPost = true :  post.userPost = false;
+  }
+
+  postFactory.formatUserPosts = (posts, currentUser) => {
+    posts.map(post => {
       post.author._id.toString() === currentUser._id.toString() ?  post.userPost = true :  post.userPost = false;
+    })
+  }
+
+  postFactory.answerWritten = (posts) => {
+    posts.map(post => {
       post.answers.length > 0 ? post.answerWritten = true : post.answerWritten = false;
     })
   }
@@ -120,6 +133,7 @@ app.factory('postFactory', function($window, $http, auth){
     postFactory.formatLikedPosts(posts, currentUser)
     postFactory.formatUserPosts(posts, currentUser)
     postFactory.formatTags(posts)
+    postFactory.answerWritten(posts)
     return posts;
   }
 
